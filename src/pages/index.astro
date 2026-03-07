@@ -13,6 +13,14 @@ const tools = [
     description: '物件価格・家賃・空室率・諸費用を入力するだけで、表面利回りと実質利回りを即時算出。投資判断の第一歩に。',
     badge: '無料',
   },
+  {
+    href: '/calculators/roi',
+    icon: '💹',
+    label: 'Calculator',
+    title: '不動産投資ROI計算ツール',
+    description: '頭金・諸費用・ローン返済まで考慮した自己資金ベースの投資収益率（ROI）を計算。実際の手残りキャッシュフローも確認できます。',
+    badge: '無料',
+  },
 ];
 
 const jsonLd = {
@@ -26,7 +34,7 @@ const jsonLd = {
 
 <BaseLayout
   title="不動産ツールズ | kuras-plus"
-  description="不動産投資の意思決定をサポートする無料ツール集。利回り計算・税金シミュレーションなど。"
+  description="不動産投資の意思決定をサポートする無料ツール集。利回り計算・ROI計算など。"
   jsonLd={jsonLd}
 >
   <Header slot="header" currentPath="/" />

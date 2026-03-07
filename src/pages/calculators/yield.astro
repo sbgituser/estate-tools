@@ -202,6 +202,22 @@ const jsonLd = {
         </div>
       </div>
     </section>
+
+    <!-- Related tools -->
+    <section class="mt-48" style="max-width: 480px; padding-bottom: 80px;">
+      <h2 class="section-title">次のステップ</h2>
+      <p class="section-sub">利回りを確認したら、次はROIで投資効率を確認しましょう</p>
+      <a href="/calculators/roi" class="next-tool-card">
+        <div class="next-tool-inner">
+          <span class="next-tool-icon">💹</span>
+          <div>
+            <div class="next-tool-title">不動産投資ROI計算ツール</div>
+            <p class="next-tool-desc">頭金・ローン・諸費用まで含めた自己資金ベースのROIを計算</p>
+          </div>
+        </div>
+        <span class="next-tool-arrow">使ってみる →</span>
+      </a>
+    </section>
   </div>
 
   <Footer slot="footer" />
@@ -380,6 +396,33 @@ const jsonLd = {
 .howto-icon { font-size: 1.5rem; margin-bottom: 8px; }
 .howto-item h3 { font-size: 0.95rem; font-weight: 700; color: var(--c-primary); margin-bottom: 8px; }
 .howto-item p { font-size: 0.82rem; color: var(--c-text-muted); line-height: 1.6; }
+
+/* ── Next tool card ── */
+.next-tool-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--c-bg-card);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  text-decoration: none;
+  color: var(--c-text);
+  transition: box-shadow 0.2s, transform 0.2s, border-color 0.2s;
+  box-shadow: var(--shadow-sm);
+  gap: 12px;
+}
+.next-tool-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+  border-color: var(--c-primary);
+  text-decoration: none;
+}
+.next-tool-inner { display: flex; align-items: center; gap: 14px; }
+.next-tool-icon { font-size: 2rem; flex-shrink: 0; }
+.next-tool-title { font-size: 0.95rem; font-weight: 700; color: var(--c-primary); margin-bottom: 4px; }
+.next-tool-desc { font-size: 0.78rem; color: var(--c-text-muted); line-height: 1.5; }
+.next-tool-arrow { font-size: 0.8rem; color: var(--c-primary); font-weight: 600; white-space: nowrap; flex-shrink: 0; }
 </style>
 
 <script>

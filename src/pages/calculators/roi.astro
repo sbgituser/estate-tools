@@ -1,0 +1,809 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: '不動産投資ROI計算ツール',
+  url: 'https://estate.kuras-plus.com/calculators/roi',
+  description: '頭金・諸費用・ローン返済を含めた実質ROI（投資収益率）を無料で即計算。自己資金に対する収益率を正確に把握できます。',
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'JPY' },
+};
+---
+
+<BaseLayout
+  title="不動産投資ROI計算ツール"
+  description="頭金・諸費用・ローン返済を含めた実質ROI（投資収益率）を無料で即計算。表面利回りだけでは分からない、自己資金ベースの投資効率を把握できます。"
+  jsonLd={jsonLd}
+>
+  <Header slot="header" currentPath="/calculators/roi" />
+
+  <!-- Hero -->
+  <section class="page-hero">
+    <div class="container">
+      <nav class="breadcrumb" aria-label="パンくずリスト">
+        <a href="/">ホーム</a>
+        <span>›</span>
+        <span>ROI計算ツール</span>
+      </nav>
+      <p class="hero-eyebrow">ROI Calculator</p>
+      <h1 class="hero-title">不動産投資ROI計算ツール</h1>
+      <p class="hero-desc">
+        頭金・諸費用・ローン返済まで考慮した<br />
+        自己資金ベースの投資収益率（ROI）を即時算出します。
+      </p>
+    </div>
+  </section>
+
+  <!-- Calculator -->
+  <div class="container mt-48" style="padding-bottom: 80px;">
+    <div class="calc-layout">
+
+      <!-- ── Inputs ── -->
+      <section class="card" aria-label="入力フォーム">
+        <h2 class="card-heading">投資情報を入力</h2>
+
+        <p class="group-label">物件・自己資金</p>
+
+        <!-- 物件価格 -->
+        <div class="field-group">
+          <div class="field-label">
+            <label for="price">物件価格</label>
+            <span class="field-display"><span id="priceDisplay">3,000</span> 万円</span>
+          </div>
+          <input class="range-slider" type="range" id="priceSlider"
+            data-target="price" value="3000" min="100" max="20000" step="100" />
+          <input class="field-input" type="number" id="price"
+            value="3000" min="100" max="20000" step="100" inputmode="numeric" />
+        </div>
+
+        <!-- 頭金 -->
+        <div class="field-group">
+          <div class="field-label">
+            <label for="down">頭金</label>
+            <span class="field-display"><span id="downDisplay">600</span> 万円</span>
+          </div>
+          <input class="range-slider" type="range" id="downSlider"
+            data-target="down" value="600" min="0" max="3000" step="50" />
+          <input class="field-input" type="number" id="down"
+            value="600" min="0" max="3000" step="50" inputmode="numeric" />
+          <p class="field-hint">物件価格の20〜30%が一般的な目安。0の場合はフルローン。</p>
+        </div>
+
+        <!-- 諸費用 -->
+        <div class="field-group">
+          <div class="field-label">
+            <label for="expenses">諸費用</label>
+            <span class="field-display"><span id="expensesDisplay">120</span> 万円</span>
+          </div>
+          <input class="range-slider" type="range" id="expensesSlider"
+            data-target="expenses" value="120" min="0" max="500" step="10" />
+          <input class="field-input" type="number" id="expenses"
+            value="120" min="0" max="500" step="10" inputmode="numeric" />
+          <p class="field-hint">仲介手数料・登記費用・火災保険等。物件価格の3〜5%が目安。</p>
+        </div>
+
+        <hr class="divider" />
+        <p class="group-label">収益・費用</p>
+
+        <!-- 月額家賃 -->
+        <div class="field-group">
+          <div class="field-label">
+            <label for="rent">月額家賃（満室想定）</label>
+            <span class="field-display"><span id="rentDisplay">12.0</span> 万円</span>
+          </div>
+          <input class="range-slider" type="range" id="rentSlider"
+            data-target="rent" value="12" min="1" max="100" step="0.5" />
+          <input class="field-input" type="number" id="rent"
+            value="12" min="1" max="100" step="0.5" inputmode="decimal" />
+        </div>
+
+        <!-- 空室率 -->
+        <div class="field-group">
+          <div class="field-label">
+            <label for="vacancy">空室率</label>
+            <span class="field-display"><span id="vacancyDisplay">10</span> %</span>
+          </div>
+          <input class="range-slider" type="range" id="vacancySlider"
+            data-target="vacancy" value="10" min="0" max="50" step="1" />
+          <input class="field-input" type="number" id="vacancy"
+            value="10" min="0" max="50" step="1" inputmode="numeric" />
+        </div>
+
+        <!-- 年間固定費 -->
+        <div class="field-group">
+          <div class="field-label">
+            <label for="fixedCosts">年間固定費</label>
+            <span class="field-display"><span id="fixedCostsDisplay">0</span> 万円</span>
+          </div>
+          <input class="range-slider" type="range" id="fixedCostsSlider"
+            data-target="fixedCosts" value="0" min="0" max="200" step="5" />
+          <input class="field-input" type="number" id="fixedCosts"
+            value="0" min="0" max="200" step="5" inputmode="numeric" />
+          <p class="field-hint">固定資産税・都市計画税・保険料など。</p>
+        </div>
+
+        <!-- 管理費率 -->
+        <div class="field-group">
+          <div class="field-label">
+            <label for="mgmtRate">管理費率</label>
+            <span class="field-display"><span id="mgmtRateDisplay">5.0</span> %</span>
+          </div>
+          <input class="range-slider" type="range" id="mgmtRateSlider"
+            data-target="mgmtRate" value="5" min="0" max="20" step="0.5" />
+          <input class="field-input" type="number" id="mgmtRate"
+            value="5" min="0" max="20" step="0.5" inputmode="decimal" />
+          <p class="field-hint">家賃収入に対する管理会社手数料。5〜10%が目安。</p>
+        </div>
+
+        <!-- 修繕費 -->
+        <div class="field-group">
+          <div class="field-label">
+            <label for="repair">修繕費（年間）</label>
+            <span class="field-display"><span id="repairDisplay">6</span> 万円</span>
+          </div>
+          <input class="range-slider" type="range" id="repairSlider"
+            data-target="repair" value="6" min="0" max="100" step="1" />
+          <input class="field-input" type="number" id="repair"
+            value="6" min="0" max="100" step="1" inputmode="numeric" />
+        </div>
+
+        <!-- その他費用 -->
+        <div class="field-group">
+          <div class="field-label">
+            <label for="other">その他年間費用</label>
+            <span class="field-display"><span id="otherDisplay">0</span> 万円</span>
+          </div>
+          <input class="range-slider" type="range" id="otherSlider"
+            data-target="other" value="0" min="0" max="100" step="1" />
+          <input class="field-input" type="number" id="other"
+            value="0" min="0" max="100" step="1" inputmode="numeric" />
+        </div>
+
+        <hr class="divider" />
+        <p class="group-label">ローン条件</p>
+
+        <!-- ローン金利 -->
+        <div class="field-group">
+          <div class="field-label">
+            <label for="loanRate">ローン金利（年利）</label>
+            <span class="field-display"><span id="loanRateDisplay">1.5</span> %</span>
+          </div>
+          <input class="range-slider" type="range" id="loanRateSlider"
+            data-target="loanRate" value="1.5" min="0" max="10" step="0.1" />
+          <input class="field-input" type="number" id="loanRate"
+            value="1.5" min="0" max="10" step="0.1" inputmode="decimal" />
+          <p class="field-hint">変動金利は0.5〜1%台、固定金利は1〜2%台が現在の目安。</p>
+        </div>
+
+        <!-- ローン年数 -->
+        <div class="field-group">
+          <div class="field-label">
+            <label for="loanYears">ローン年数</label>
+            <span class="field-display"><span id="loanYearsDisplay">35</span> 年</span>
+          </div>
+          <input class="range-slider" type="range" id="loanYearsSlider"
+            data-target="loanYears" value="35" min="1" max="50" step="1" />
+          <input class="field-input" type="number" id="loanYears"
+            value="35" min="1" max="50" step="1" inputmode="numeric" />
+        </div>
+
+        <div id="errorMsg" class="error-msg" hidden></div>
+      </section>
+
+      <!-- ── Results ── -->
+      <section class="card results-card" aria-label="計算結果" aria-live="polite">
+        <h2 class="card-heading">計算結果</h2>
+
+        <div id="sampleBadge" class="sample-badge">
+          <span>📋</span> サンプル値による計算例 — 値を変更すると即時更新されます
+        </div>
+
+        <div id="resultContent">
+
+          <!-- ROI + Cashflow hero -->
+          <div class="hero-metrics">
+            <div class="metric-box" id="roiBox">
+              <div class="metric-label">ROI（自己資金収益率）</div>
+              <div class="metric-value" id="roiValue">—</div>
+              <div class="metric-bar-wrap">
+                <div class="metric-bar" id="roiBar" style="width:0%"></div>
+              </div>
+              <div class="metric-note" id="roiNote"></div>
+            </div>
+            <div class="metric-box sub" id="cashflowBox">
+              <div class="metric-label">年間手残り収益</div>
+              <div class="metric-value sm" id="cashflowValue">—</div>
+              <div class="metric-note" id="cashflowNote"></div>
+            </div>
+          </div>
+
+          <!-- Detail table -->
+          <table class="result-table">
+            <tbody>
+              <tr class="table-section"><td colspan="2">収益</td></tr>
+              <tr>
+                <th>年間家賃収入（満室）</th>
+                <td id="rAnnualRent">—</td>
+              </tr>
+              <tr>
+                <th>空室考慮後収入</th>
+                <td id="rEffectiveRent">—</td>
+              </tr>
+              <tr class="table-section"><td colspan="2">費用</td></tr>
+              <tr>
+                <th>管理費</th>
+                <td id="rMgmt">—</td>
+              </tr>
+              <tr>
+                <th>修繕費・固定費・その他</th>
+                <td id="rOtherCosts">—</td>
+              </tr>
+              <tr class="table-subtotal">
+                <th>年間総費用</th>
+                <td id="rTotalCost">—</td>
+              </tr>
+              <tr class="table-subtotal">
+                <th>年間営業利益（NOI）</th>
+                <td id="rNOI">—</td>
+              </tr>
+              <tr class="table-section"><td colspan="2">ローン</td></tr>
+              <tr>
+                <th>借入金額</th>
+                <td id="rLoanPrincipal">—</td>
+              </tr>
+              <tr>
+                <th>月額返済額</th>
+                <td id="rMonthlyLoan">—</td>
+              </tr>
+              <tr class="table-subtotal">
+                <th>年間ローン返済額</th>
+                <td id="rAnnualLoan">—</td>
+              </tr>
+              <tr class="table-section"><td colspan="2">投資効率</td></tr>
+              <tr>
+                <th>投下自己資金</th>
+                <td id="rOwnCapital">—</td>
+              </tr>
+              <tr class="table-total">
+                <th>年間手残り収益</th>
+                <td id="rCashflow">—</td>
+              </tr>
+              <tr class="table-roi">
+                <th>ROI</th>
+                <td id="rROI">—</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <p class="result-disclaimer">
+            ※ 元利均等返済での概算です。税金・減価償却・金利変動は含まれていません。
+          </p>
+        </div>
+      </section>
+    </div>
+
+    <!-- ── Related tool ── -->
+    <section class="related-section mt-48">
+      <h2 class="section-title">関連ツール</h2>
+      <div class="related-grid">
+        <a href="/calculators/yield" class="related-card">
+          <div class="related-icon">📊</div>
+          <div class="related-title">不動産利回り計算ツール</div>
+          <p class="related-desc">表面・実質利回りをシンプルに確認したい場合はこちら</p>
+          <span class="related-arrow">使ってみる →</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- ── Explanation ── -->
+    <section class="explain mt-48">
+      <h2 class="section-title">ROIの基礎知識</h2>
+      <div class="explain-grid">
+        <div class="explain-card">
+          <h3>📌 ROIとは何か</h3>
+          <p>
+            ROI（Return on Investment）とは、投下した自己資金に対してどれだけの収益を得られたかを示す指標です。
+            不動産投資においては <strong>年間手残り収益 ÷ 投下自己資金 × 100（%）</strong> で求めます。
+            ローン返済後に実際に手元に残るキャッシュフローベースで計算するため、
+            レバレッジ効果（借入による収益率の増幅）を把握できます。
+          </p>
+        </div>
+        <div class="explain-card">
+          <h3>🔄 利回りとの違い</h3>
+          <p>
+            <strong>表面利回り・実質利回り</strong>は物件価格全体に対する収益率です。
+            一方 <strong>ROI</strong>は自己資金（頭金＋諸費用）に対する収益率です。
+            たとえばフルローンに近い形で購入すると、ROIは利回りより大幅に高くなることがあります。
+            同じ物件でも資金調達方法によってROIは変わるため、
+            利回りとROIはセットで確認することが重要です。
+          </p>
+        </div>
+        <div class="explain-card">
+          <h3>⚠️ ROIが高くても注意すべき点</h3>
+          <ul>
+            <li>空室リスク：想定空室率を超えると手残りが急減する</li>
+            <li>金利上昇リスク：変動金利の場合、返済額が増加する可能性がある</li>
+            <li>修繕リスク：築年数が古い物件は突発的な修繕費が発生しやすい</li>
+            <li>出口リスク：売却時に想定価格で売れないと総合収益が悪化する</li>
+          </ul>
+        </div>
+        <div class="explain-card">
+          <h3>📐 あわせて確認したい指標</h3>
+          <ul>
+            <li><strong>表面利回り</strong>：物件の収益力の大まかな比較に</li>
+            <li><strong>実質利回り（NOI利回り）</strong>：費用控除後の物件収益力</li>
+            <li><strong>CCR（現金収益率）</strong>：ROIに近い概念、Cash on Cash Return</li>
+            <li><strong>DSC比率</strong>：NOIがローン返済額を何倍カバーするかの安全指標</li>
+            <li><strong>IRR</strong>：将来売却を含めたトータルリターン（内部収益率）</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <Footer slot="footer" />
+</BaseLayout>
+
+<style>
+/* ── Layout ── */
+.calc-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  align-items: start;
+}
+@media (max-width: 768px) {
+  .calc-layout { grid-template-columns: 1fr; }
+}
+
+/* ── Card ── */
+.card {
+  background: var(--c-bg-card);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  box-shadow: var(--shadow-sm);
+}
+.card-heading {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--c-primary);
+  margin-bottom: 20px;
+}
+
+/* ── Field group ── */
+.group-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--c-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 12px;
+}
+.field-group { margin-bottom: 16px; }
+.field-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 4px;
+}
+.field-label label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--c-text);
+}
+.field-display {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--c-primary);
+  white-space: nowrap;
+}
+
+/* ── Range slider ── */
+.range-slider {
+  width: 100%;
+  height: 20px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: linear-gradient(
+    to right,
+    var(--c-primary) var(--pct, 0%),
+    var(--c-border)  var(--pct, 0%)
+  );
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+  padding: 0;
+  margin: 0 0 6px;
+  display: block;
+}
+.range-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--c-primary);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+  transition: transform 0.1s, background 0.1s;
+}
+.range-slider::-webkit-slider-thumb:hover,
+.range-slider:active::-webkit-slider-thumb { background: var(--c-primary-hover); transform: scale(1.15); }
+.range-slider::-moz-range-thumb {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--c-primary);
+  border: none;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+}
+.range-slider::-moz-range-progress { background: var(--c-primary); height: 4px; border-radius: 2px; }
+.range-slider::-moz-range-track    { background: var(--c-border);  height: 4px; border-radius: 2px; }
+
+/* ── Number input (secondary) ── */
+.field-input {
+  width: 100%;
+  padding: 7px 10px;
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-sm);
+  font-size: 0.875rem;
+  font-family: var(--font);
+  color: var(--c-text);
+  background: var(--c-bg);
+  transition: border-color 0.15s;
+  -moz-appearance: textfield;
+}
+.field-input::-webkit-outer-spin-button,
+.field-input::-webkit-inner-spin-button { -webkit-appearance: none; }
+.field-input:focus {
+  outline: none;
+  border-color: var(--c-primary);
+  box-shadow: 0 0 0 2px rgba(26,74,58,0.1);
+}
+.field-hint { font-size: 0.72rem; color: var(--c-text-muted); margin-top: 3px; line-height: 1.5; }
+.divider { border: none; border-top: 1px solid var(--c-border); margin: 18px 0 14px; }
+
+/* ── Sample badge ── */
+.sample-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(201,148,58,0.10);
+  border: 1px solid var(--c-accent);
+  color: var(--c-warning);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 7px 12px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 14px;
+  line-height: 1.4;
+}
+
+/* ── Error ── */
+.error-msg {
+  background: rgba(192,57,43,0.08);
+  border: 1px solid var(--c-danger);
+  border-radius: var(--radius-sm);
+  color: var(--c-danger);
+  font-size: 0.82rem;
+  padding: 10px 12px;
+  margin-top: 8px;
+}
+
+/* ── Hero metrics ── */
+.hero-metrics {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+@media (max-width: 480px) {
+  .hero-metrics { grid-template-columns: 1fr; }
+}
+.metric-box {
+  border: 2px solid var(--c-border);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  text-align: center;
+  transition: border-color 0.2s;
+}
+.metric-box.good  { border-color: var(--c-success); background: rgba(45,122,79,0.04); }
+.metric-box.ok    { border-color: var(--c-accent);  background: rgba(201,148,58,0.04); }
+.metric-box.low   { border-color: var(--c-danger);  background: rgba(192,57,43,0.04); }
+.metric-box.sub   { border-color: var(--c-border); }
+.metric-label { font-size: 0.72rem; font-weight: 700; color: var(--c-text-muted); margin-bottom: 6px; }
+.metric-value {
+  font-size: 2rem; font-weight: 700; color: var(--c-primary);
+  line-height: 1; margin-bottom: 8px;
+}
+.metric-value.sm { font-size: 1.4rem; }
+.metric-box.good .metric-value { color: var(--c-success); }
+.metric-box.ok   .metric-value { color: var(--c-warning); }
+.metric-box.low  .metric-value { color: var(--c-danger); }
+.metric-bar-wrap {
+  height: 6px; background: var(--c-border); border-radius: 3px;
+  overflow: hidden; margin-bottom: 6px;
+}
+.metric-bar {
+  height: 100%; border-radius: 3px; background: var(--c-primary);
+  transition: width 0.4s ease;
+}
+.metric-box.good .metric-bar { background: var(--c-success); }
+.metric-box.ok   .metric-bar { background: var(--c-accent); }
+.metric-box.low  .metric-bar { background: var(--c-danger); }
+.metric-note { font-size: 0.7rem; color: var(--c-text-muted); }
+
+/* ── Result table ── */
+.result-table {
+  width: 100%; border-collapse: collapse;
+  font-size: 0.82rem; margin-bottom: 12px;
+}
+.result-table th, .result-table td {
+  padding: 7px 4px; border-bottom: 1px solid var(--c-border); text-align: left;
+}
+.result-table th { color: var(--c-text-muted); font-weight: 400; width: 58%; }
+.result-table td { text-align: right; font-weight: 600; color: var(--c-text); }
+.result-table .table-section td {
+  font-size: 0.68rem; font-weight: 700; letter-spacing: 0.06em;
+  text-transform: uppercase; color: var(--c-text-muted);
+  background: var(--c-bg); padding: 10px 4px 4px; border-bottom: none;
+}
+.result-table .table-subtotal th,
+.result-table .table-subtotal td { font-weight: 700; color: var(--c-text); border-top: 1px solid var(--c-border); }
+.result-table .table-total th,
+.result-table .table-total td { font-weight: 700; font-size: 0.9rem; color: var(--c-primary); border-top: 2px solid var(--c-border); border-bottom: none; }
+.result-table .table-roi th,
+.result-table .table-roi td { font-weight: 700; font-size: 1rem; color: var(--c-primary); border-bottom: none; }
+.result-disclaimer { font-size: 0.72rem; color: var(--c-text-muted); line-height: 1.6; }
+
+/* ── Related ── */
+.related-section { max-width: 680px; }
+.related-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; margin-top: 16px; }
+.related-card {
+  display: block; background: var(--c-bg-card); border: 1px solid var(--c-border);
+  border-radius: var(--radius-md); padding: 20px; text-decoration: none; color: var(--c-text);
+  transition: box-shadow 0.2s, transform 0.2s, border-color 0.2s; box-shadow: var(--shadow-sm);
+}
+.related-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); border-color: var(--c-primary); text-decoration: none; }
+.related-icon { font-size: 1.5rem; margin-bottom: 8px; }
+.related-title { font-size: 0.95rem; font-weight: 700; color: var(--c-primary); margin-bottom: 6px; }
+.related-desc { font-size: 0.8rem; color: var(--c-text-muted); line-height: 1.6; margin-bottom: 10px; }
+.related-arrow { font-size: 0.8rem; color: var(--c-primary); font-weight: 600; }
+
+/* ── Explanation ── */
+.explain-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; margin-top: 16px; }
+.explain-card { background: var(--c-bg-card); border: 1px solid var(--c-border); border-radius: var(--radius-md); padding: 20px; }
+.explain-card h3 { font-size: 0.95rem; font-weight: 700; color: var(--c-primary); margin-bottom: 10px; }
+.explain-card p, .explain-card ul { font-size: 0.82rem; color: var(--c-text-muted); line-height: 1.8; }
+.explain-card ul { padding-left: 1.2em; }
+.explain-card li { margin-bottom: 4px; }
+.explain-card strong { color: var(--c-text); }
+</style>
+
+<script>
+/* ─── Helpers ─────────────────────────────────────── */
+
+function fmt(val: number, dec = 0): string {
+  return val.toLocaleString('ja-JP', {
+    minimumFractionDigits: dec,
+    maximumFractionDigits: dec,
+  });
+}
+
+function getNum(id: string, fallback = 0): number {
+  const el = document.getElementById(id) as HTMLInputElement | null;
+  if (!el) return fallback;
+  const v = parseFloat(el.value);
+  return isNaN(v) ? fallback : v;
+}
+
+function setText(id: string, text: string) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = text;
+}
+
+function clamp(val: number, min: number, max: number): number {
+  return Math.max(min, Math.min(max, val));
+}
+
+/** スライダーの塗り色を更新 */
+function updateFill(slider: HTMLInputElement) {
+  const min = parseFloat(slider.min) || 0;
+  const max = parseFloat(slider.max) || 100;
+  const val = parseFloat(slider.value) || 0;
+  const pct = clamp((val - min) / (max - min) * 100, 0, 100);
+  slider.style.setProperty('--pct', `${pct}%`);
+}
+
+/** ライブ表示スパン更新 */
+function updateDisplay(id: string, val: string) {
+  const el = document.getElementById(`${id}Display`);
+  if (el) el.textContent = val;
+}
+
+/* ─── 計算 ─────────────────────────────────────────── */
+
+function pmt(principal: number, annualRatePct: number, years: number): number {
+  if (principal <= 0) return 0;
+  if (annualRatePct === 0) return principal / (years * 12);
+  const r = annualRatePct / 100 / 12;
+  const n = years * 12;
+  return principal * r * Math.pow(1 + r, n) / (Math.pow(1 + r, n) - 1);
+}
+
+function classifyROI(roi: number): 'good' | 'ok' | 'low' {
+  if (roi >= 6) return 'good';
+  if (roi >= 3) return 'ok';
+  return 'low';
+}
+
+function calculate() {
+  const price      = getNum('price',      3000);
+  const down       = getNum('down',        600);
+  const expenses   = getNum('expenses',    120);
+  const rent       = getNum('rent',         12);
+  const vacancy    = getNum('vacancy',      10);
+  const fixedCosts = getNum('fixedCosts',    0);
+  const mgmtRate   = getNum('mgmtRate',      5);
+  const repair     = getNum('repair',        6);
+  const other      = getNum('other',         0);
+  const loanRate   = getNum('loanRate',    1.5);
+  const loanYears  = getNum('loanYears',    35);
+
+  // バリデーション
+  const errEl = document.getElementById('errorMsg');
+  if (price <= 0 || rent <= 0) {
+    if (errEl) { errEl.textContent = '物件価格と月額家賃は1以上の値を入力してください。'; errEl.hidden = false; }
+    return;
+  }
+  if (errEl) errEl.hidden = true;
+
+  const loanPrincipal  = Math.max(0, price - down);
+  const annualRent     = rent * 12;
+  const effectiveRent  = annualRent * (1 - vacancy / 100);
+  const mgmtCost       = effectiveRent * (mgmtRate / 100);
+  const otherCosts     = fixedCosts + repair + other;
+  const totalCost      = mgmtCost + otherCosts;
+  const noi            = effectiveRent - totalCost;
+  const monthlyLoan    = pmt(loanPrincipal, loanRate, loanYears);
+  const annualLoan     = monthlyLoan * 12;
+  const cashflow       = noi - annualLoan;
+  const ownCapital     = down + expenses;
+  const roi            = ownCapital > 0 ? (cashflow / ownCapital) * 100 : 0;
+
+  // ROI ボックス
+  const roiBox = document.getElementById('roiBox');
+  const roiBar = document.getElementById('roiBar') as HTMLElement | null;
+  const cls = classifyROI(roi);
+  if (roiBox) { roiBox.classList.remove('good', 'ok', 'low'); roiBox.classList.add(cls); }
+  if (roiBar) roiBar.style.width = clamp(roi / 12 * 100, 0, 100) + '%';
+  setText('roiValue', roi.toFixed(2) + '%');
+  setText('roiNote', roi >= 6 ? '高ROI' : roi >= 3 ? '良好' : roi >= 0 ? 'やや低め' : 'マイナス');
+
+  // キャッシュフロー ボックス
+  const cfBox = document.getElementById('cashflowBox');
+  if (cfBox) {
+    cfBox.classList.remove('good', 'ok', 'low');
+    cfBox.classList.add(cashflow > 0 ? 'good' : 'low');
+  }
+  setText('cashflowValue', fmt(cashflow, 1) + '万円');
+  setText('cashflowNote', cashflow > 0 ? '毎年プラス収支' : cashflow === 0 ? '収支トントン' : '毎年マイナス収支');
+
+  // テーブル
+  setText('rAnnualRent',   fmt(annualRent,    2) + ' 万円');
+  setText('rEffectiveRent',fmt(effectiveRent, 2) + ' 万円');
+  setText('rMgmt',         fmt(mgmtCost,      2) + ' 万円');
+  setText('rOtherCosts',   fmt(otherCosts,    2) + ' 万円');
+  setText('rTotalCost',    fmt(totalCost,     2) + ' 万円');
+  setText('rNOI',          fmt(noi,           2) + ' 万円');
+  setText('rLoanPrincipal',fmt(loanPrincipal,  0) + ' 万円');
+  setText('rMonthlyLoan',  fmt(monthlyLoan,   2) + ' 万円');
+  setText('rAnnualLoan',   fmt(annualLoan,    2) + ' 万円');
+  setText('rOwnCapital',   fmt(ownCapital,     0) + ' 万円');
+  setText('rCashflow',     fmt(cashflow,      2) + ' 万円');
+  setText('rROI',          roi.toFixed(2) + '%');
+}
+
+/* ─── サンプルバッジ ─────────────────────────────────── */
+
+function hideSampleBadge() {
+  const badge = document.getElementById('sampleBadge');
+  if (badge) badge.hidden = true;
+}
+
+/* ─── スライダー ↔ 数値入力 の同期 ─────────────────── */
+
+function syncSliderToNum(slider: HTMLInputElement) {
+  const targetId = slider.dataset.target;
+  if (!targetId) return;
+  const numEl = document.getElementById(targetId) as HTMLInputElement | null;
+  if (!numEl) return;
+
+  numEl.value = slider.value;
+  updateFill(slider);
+  updateDisplay(targetId, slider.value);
+}
+
+function syncNumToSlider(numEl: HTMLInputElement) {
+  const slider = document.querySelector<HTMLInputElement>(
+    `input.range-slider[data-target="${numEl.id}"]`
+  );
+  if (!slider) return;
+
+  const min  = parseFloat(slider.min)  || 0;
+  const max  = parseFloat(slider.max)  || 100;
+  const step = parseFloat(slider.step) || 1;
+  let val = parseFloat(numEl.value);
+
+  // 負の値・範囲外を防止
+  if (isNaN(val) || val < min) val = min;
+  if (val > max)                val = max;
+  // ステップに丸める
+  val = Math.round(val / step) * step;
+
+  numEl.value   = String(val);
+  slider.value  = String(val);
+  updateFill(slider);
+  updateDisplay(numEl.id, numEl.value);
+}
+
+/** 頭金スライダーの max を物件価格に合わせて更新 */
+function updateDownMax() {
+  const price     = getNum('price', 3000);
+  const downSlider = document.querySelector<HTMLInputElement>('input.range-slider[data-target="down"]');
+  const downNum    = document.getElementById('down') as HTMLInputElement | null;
+  if (!downSlider || !downNum) return;
+
+  const newMax = price;
+  downSlider.max = String(newMax);
+  downNum.max    = String(newMax);
+
+  const curDown = getNum('down', 0);
+  if (curDown > newMax) {
+    downSlider.value = String(newMax);
+    downNum.value    = String(newMax);
+    updateDisplay('down', String(newMax));
+  }
+  updateFill(downSlider);
+}
+
+/* ─── 初期化 ─────────────────────────────────────────── */
+
+document.addEventListener('DOMContentLoaded', () => {
+
+  // 全スライダーの初期塗り設定
+  document.querySelectorAll<HTMLInputElement>('input.range-slider').forEach(slider => {
+    updateFill(slider);
+
+    slider.addEventListener('input', () => {
+      syncSliderToNum(slider);
+      if (slider.dataset.target === 'price') updateDownMax();
+      hideSampleBadge();
+      calculate();
+    });
+  });
+
+  // 数値入力の同期・バリデーション
+  document.querySelectorAll<HTMLInputElement>('input.field-input').forEach(numEl => {
+    // マイナス記号・e記号の入力を禁止
+    numEl.addEventListener('keydown', (e: KeyboardEvent) => {
+      if (e.key === '-' || e.key === 'e' || e.key === 'E' || e.key === '+') {
+        e.preventDefault();
+      }
+    });
+
+    numEl.addEventListener('change', () => {
+      syncNumToSlider(numEl);
+      if (numEl.id === 'price') updateDownMax();
+      hideSampleBadge();
+      calculate();
+    });
+  });
+
+  calculate(); // 初期計算（サンプル値）
+});
+</script>

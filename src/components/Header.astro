@@ -6,8 +6,9 @@ export interface Props {
 const { currentPath = Astro.url.pathname } = Astro.props;
 
 const nav = [
-  { href: '/',               label: 'ホーム' },
+  { href: '/',                  label: 'ホーム' },
   { href: '/calculators/yield', label: '利回り計算' },
+  { href: '/calculators/roi',   label: 'ROI計算' },
 ];
 ---
 
