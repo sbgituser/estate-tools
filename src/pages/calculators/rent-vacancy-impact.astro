@@ -1,0 +1,1260 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: '家賃下落・空室率影響シミュレーター',
+  url: 'https://estate.kuras-plus.com/calculators/rent-vacancy-impact',
+  description: '家賃下落率・空室率の上昇が不動産投資の利回り・収益にどう影響するか即シミュレーション。感度分析マトリクスで2軸のリスクを視覚的に把握できる無料ツール。',
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'JPY' },
+};
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: '家賃が下がると利回りはどれくらい下がりますか？',
+      acceptedAnswer: { '@type': 'Answer', text: '例えば月額10万円・物件価格3,000万円・年間費用25万円の場合、家賃が10%下落すると実質利回りは約2.97%から2.41%へ0.56ポイント低下します。家賃下落率が大きいほど収益への影響は加速度的に大きくなります。' },
+    },
+    {
+      '@type': 'Question',
+      name: '空室率が上がると年間収益はどう変わりますか？',
+      acceptedAnswer: { '@type': 'Answer', text: '空室率10%上昇（例：5%→15%）で年間収入は約10%減少します。月額10万円の物件なら年間約12万円の収入減です。固定費は変わらないため、収益への影響は収入の減少よりさらに大きくなります。' },
+    },
+    {
+      '@type': 'Question',
+      name: '表面利回りと実質利回りはなぜ違うのですか？',
+      acceptedAnswer: { '@type': 'Answer', text: '表面利回りは満室時の年間家賃収入を物件価格で割った理想値です。実質利回りは空室損失・管理費・修繕費・固定資産税などを差し引いた実態に近い値です。表面利回りより実質利回りが2〜3ポイント低いことがよくあります。' },
+    },
+    {
+      '@type': 'Question',
+      name: '不動産投資ではどれくらいの空室率を見込むべきですか？',
+      acceptedAnswer: { '@type': 'Answer', text: '一般的に都市部で5〜10%、地方で10〜20%程度を見込むことが多いです。ただし築年数・立地・管理状況によって大きく異なります。ベースケースで10%、ワーストケースで15〜20%をシミュレーションしておくことをおすすめします。' },
+    },
+    {
+      '@type': 'Question',
+      name: '家賃下落と空室率ではどちらの影響が大きいですか？',
+      acceptedAnswer: { '@type': 'Answer', text: '物件・状況によりますが、長期的には家賃下落の影響のほうが大きくなる傾向があります。空室は改善できる可能性がありますが、地域の家賃相場の下落は構造的なため、一度下がると回復しにくいためです。' },
+    },
+    {
+      '@type': 'Question',
+      name: 'シミュレーション結果は実際の投資判断にどう使えばよいですか？',
+      acceptedAnswer: { '@type': 'Answer', text: 'ベースケース（想定どおり）とワーストケース（家賃-15%・空室15%）の2つをシミュレーションし、ワーストケースでもキャッシュフローがプラスかどうかを確認することがポイントです。ワーストケースでも赤字にならない物件を選ぶことがリスク管理の基本です。' },
+    },
+  ],
+};
+---
+
+<BaseLayout
+  title="家賃下落・空室率影響シミュレーター | 不動産投資リスクを即試算"
+  description="家賃下落率・空室率の上昇が不動産投資の実質利回りとキャッシュフローにどう影響するかをリアルタイムでシミュレーション。感度分析マトリクスで2軸のリスクを一目で把握できる無料ツールです。"
+  jsonLd={jsonLd}
+>
+  <Header slot="header" currentPath="/calculators/rent-vacancy-impact" />
+
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+
+  <!-- Hero -->
+  <section class="page-hero">
+    <div class="container">
+      <nav class="breadcrumb" aria-label="パンくずリスト">
+        <a href="/">ホーム</a>
+        <span>›</span>
+        <span>家賃下落・空室率影響シミュレーター</span>
+      </nav>
+      <p class="hero-eyebrow">Rent Decline &amp; Vacancy Impact Simulator</p>
+      <h1 class="hero-title">家賃下落・空室率影響シミュレーター</h1>
+      <p class="hero-desc">
+        家賃下落と空室率の上昇が収益・利回りにどう効くかをリアルタイム試算。<br />
+        感度分析マトリクスでリスクを2軸で見える化します。
+      </p>
+    </div>
+  </section>
+
+  <!-- Calculator -->
+  <div class="container mt-48">
+    <div class="calc-layout">
+
+      <!-- ── Inputs ── -->
+      <section class="card" aria-label="入力フォーム">
+        <h2 class="card-heading">物件・費用条件を入力</h2>
+
+        <p class="group-label">基本条件</p>
+
+        <!-- 物件価格 -->
+        <div class="field-group">
+          <div class="field-label">
+            <label for="propertyPrice">物件価格</label>
+            <span class="field-display"><span id="propertyPriceDisplay">3,000</span> 万円</span>
+          </div>
+          <input class="range-slider" type="range" id="propertyPriceSlider"
+            data-target="propertyPrice" value="3000" min="500" max="20000" step="100" />
+          <input class="field-input" type="number" id="propertyPrice"
+            value="3000" min="100" max="999999" step="100" inputmode="numeric" />
+        </div>
+
+        <!-- 月額家賃 -->
+        <div class="field-group">
+          <div class="field-label">
+            <label for="currentRent">現在の月額家賃</label>
+            <span class="field-display"><span id="currentRentDisplay">10</span> 万円</span>
+          </div>
+          <input class="range-slider" type="range" id="currentRentSlider"
+            data-target="currentRent" value="10" min="1" max="100" step="0.5" />
+          <input class="field-input" type="number" id="currentRent"
+            value="10" min="0.1" max="9999" step="0.5" inputmode="decimal" />
+        </div>
+
+        <!-- 現在空室率 -->
+        <div class="field-group">
+          <div class="field-label">
+            <label for="currentVacancy">現在の空室率</label>
+            <span class="field-display"><span id="currentVacancyDisplay">5</span> %</span>
+          </div>
+          <input class="range-slider" type="range" id="currentVacancySlider"
+            data-target="currentVacancy" value="5" min="0" max="50" step="1" />
+          <input class="field-input" type="number" id="currentVacancy"
+            value="5" min="0" max="100" step="1" inputmode="numeric" />
+          <p class="field-hint">都市部: 5〜10%、地方: 10〜20% が目安です。</p>
+        </div>
+
+        <hr class="divider" />
+        <p class="group-label">年間費用</p>
+
+        <!-- 管理費 -->
+        <div class="field-group">
+          <div class="field-label">
+            <label for="expMgmt">管理費（年間）</label>
+            <span class="field-display"><span id="expMgmtDisplay">6</span> 万円</span>
+          </div>
+          <input class="range-slider" type="range" id="expMgmtSlider"
+            data-target="expMgmt" value="6" min="0" max="100" step="1" />
+          <input class="field-input" type="number" id="expMgmt"
+            value="6" min="0" max="9999" step="1" inputmode="numeric" />
+          <p class="field-hint">管理委託費は月額家賃の5〜10%程度が一般的です。</p>
+        </div>
+
+        <!-- 修繕費 -->
+        <div class="field-group">
+          <div class="field-label">
+            <label for="expRepair">修繕費（年間）</label>
+            <span class="field-display"><span id="expRepairDisplay">6</span> 万円</span>
+          </div>
+          <input class="range-slider" type="range" id="expRepairSlider"
+            data-target="expRepair" value="6" min="0" max="100" step="1" />
+          <input class="field-input" type="number" id="expRepair"
+            value="6" min="0" max="9999" step="1" inputmode="numeric" />
+        </div>
+
+        <!-- 固定資産税 -->
+        <div class="field-group">
+          <div class="field-label">
+            <label for="expPropTax">固定資産税（年間）</label>
+            <span class="field-display"><span id="expPropTaxDisplay">10</span> 万円</span>
+          </div>
+          <input class="range-slider" type="range" id="expPropTaxSlider"
+            data-target="expPropTax" value="10" min="0" max="100" step="1" />
+          <input class="field-input" type="number" id="expPropTax"
+            value="10" min="0" max="9999" step="1" inputmode="numeric" />
+          <p class="field-hint">
+            <a href="/calculators/fixed-asset-tax" class="inline-link">固定資産税シミュレーター</a>で試算できます。
+          </p>
+        </div>
+
+        <!-- その他 -->
+        <div class="field-group">
+          <div class="field-label">
+            <label for="expOther">その他費用（年間）</label>
+            <span class="field-display"><span id="expOtherDisplay">3</span> 万円</span>
+          </div>
+          <input class="range-slider" type="range" id="expOtherSlider"
+            data-target="expOther" value="3" min="0" max="100" step="1" />
+          <input class="field-input" type="number" id="expOther"
+            value="3" min="0" max="9999" step="1" inputmode="numeric" />
+          <p class="field-hint">火災保険・税理士費用など。</p>
+        </div>
+
+        <hr class="divider" />
+        <p class="group-label">🎯 変動条件（リスクシナリオ）</p>
+
+        <!-- 家賃下落率 -->
+        <div class="field-group">
+          <div class="field-label">
+            <label for="rentDecline">家賃下落率</label>
+            <span class="field-display decline-display"><span id="rentDeclineDisplay">10</span> %下落</span>
+          </div>
+          <input class="range-slider decline-slider" type="range" id="rentDeclineSlider"
+            data-target="rentDecline" value="10" min="0" max="40" step="1" />
+          <input class="field-input" type="number" id="rentDecline"
+            value="10" min="0" max="100" step="1" inputmode="numeric" />
+          <p class="field-hint" id="futureRentHint">変動後の想定月額家賃: <strong id="futureRentCalc">—</strong></p>
+        </div>
+
+        <!-- 将来空室率 -->
+        <div class="field-group">
+          <div class="field-label">
+            <label for="futureVacancy">将来の想定空室率</label>
+            <span class="field-display decline-display"><span id="futureVacancyDisplay">10</span> %</span>
+          </div>
+          <input class="range-slider decline-slider" type="range" id="futureVacancySlider"
+            data-target="futureVacancy" value="10" min="0" max="50" step="1" />
+          <input class="field-input" type="number" id="futureVacancy"
+            value="10" min="0" max="100" step="1" inputmode="numeric" />
+        </div>
+
+        <hr class="divider" />
+        <p class="group-label">ローン（任意）</p>
+
+        <!-- ローン -->
+        <div class="field-group">
+          <div class="field-label">
+            <label for="loanPayment">年間ローン返済額</label>
+            <span class="field-display"><span id="loanPaymentDisplay">0</span> 万円</span>
+          </div>
+          <input class="range-slider" type="range" id="loanPaymentSlider"
+            data-target="loanPayment" value="0" min="0" max="200" step="5" />
+          <input class="field-input" type="number" id="loanPayment"
+            value="0" min="0" max="9999" step="5" inputmode="numeric" />
+          <p class="field-hint">
+            0の場合はローンなしとして計算します。
+            <a href="/calculators/mortgage" class="inline-link">ローン返済シミュレーター</a>で試算できます。
+          </p>
+        </div>
+
+        <div id="errorMsg" class="error-msg" hidden></div>
+      </section>
+
+      <!-- ── Results ── -->
+      <section class="card results-card" aria-label="試算結果" aria-live="polite">
+        <h2 class="card-heading">シミュレーション結果</h2>
+
+        <div id="sampleBadge" class="sample-badge">
+          <span>📋</span> サンプル値による試算例 — 値を変更すると即時更新されます
+        </div>
+
+        <!-- Hero metrics (3-up) -->
+        <div class="hero-metrics-3">
+          <div class="metric-box primary-box">
+            <div class="metric-label">変動後 実質利回り</div>
+            <div class="metric-value" id="rFutureNetYield">—</div>
+          </div>
+          <div class="metric-box" id="yieldDiffBox">
+            <div class="metric-label">利回り変化幅</div>
+            <div class="metric-value sm" id="rYieldDiff">—</div>
+          </div>
+          <div class="metric-box" id="profitDiffBox">
+            <div class="metric-label">年間収益の変化</div>
+            <div class="metric-value sm" id="rProfitDiff">—</div>
+          </div>
+        </div>
+
+        <!-- Before / After comparison cards -->
+        <div class="ba-wrap">
+          <div class="ba-col">
+            <div class="ba-head current-head">📍 現在</div>
+            <div class="ba-row">
+              <span class="ba-label">年間家賃収入（満室）</span>
+              <span class="ba-val" id="rCurrentGross">—</span>
+            </div>
+            <div class="ba-row">
+              <span class="ba-label">空室考慮後収入</span>
+              <span class="ba-val" id="rCurrentNet">—</span>
+            </div>
+            <div class="ba-row">
+              <span class="ba-label">年間総費用</span>
+              <span class="ba-val cost-val" id="rExpenses">—</span>
+            </div>
+            <div class="ba-row ba-total">
+              <span class="ba-label">営業利益</span>
+              <span class="ba-val" id="rCurrentProfit">—</span>
+            </div>
+            <div class="ba-row" id="cfCurrentRow">
+              <span class="ba-label">手残り（ローン後）</span>
+              <span class="ba-val" id="rCurrentCF">—</span>
+            </div>
+            <div class="ba-divider"></div>
+            <div class="ba-row yield-row">
+              <span class="ba-label">表面利回り</span>
+              <span class="ba-val yield-val" id="rCurrentGrossYield">—</span>
+            </div>
+            <div class="ba-row yield-row ba-primary">
+              <span class="ba-label">実質利回り</span>
+              <span class="ba-val primary-val" id="rCurrentNetYield">—</span>
+            </div>
+          </div>
+
+          <div class="ba-arrow" aria-hidden="true">→</div>
+
+          <div class="ba-col future-col">
+            <div class="ba-head future-head">🎯 変動後</div>
+            <div class="ba-row">
+              <span class="ba-label">年間家賃収入（満室）</span>
+              <span class="ba-val" id="rFutureGross">—</span>
+            </div>
+            <div class="ba-row">
+              <span class="ba-label">空室考慮後収入</span>
+              <span class="ba-val" id="rFutureNet">—</span>
+            </div>
+            <div class="ba-row">
+              <span class="ba-label">年間総費用</span>
+              <span class="ba-val cost-val" id="rFutureExpenses">—</span>
+            </div>
+            <div class="ba-row ba-total">
+              <span class="ba-label">営業利益</span>
+              <span class="ba-val" id="rFutureProfit">—</span>
+            </div>
+            <div class="ba-row" id="cfFutureRow">
+              <span class="ba-label">手残り（ローン後）</span>
+              <span class="ba-val" id="rFutureCF">—</span>
+            </div>
+            <div class="ba-divider"></div>
+            <div class="ba-row yield-row">
+              <span class="ba-label">表面利回り</span>
+              <span class="ba-val yield-val" id="rFutureGrossYield">—</span>
+            </div>
+            <div class="ba-row yield-row ba-primary">
+              <span class="ba-label">実質利回り</span>
+              <span class="ba-val primary-val" id="rFutureNetYield2">—</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Visual bar chart -->
+        <div class="bar-section">
+          <div class="bar-title">年間収入の比較</div>
+          <div class="bar-row">
+            <span class="bar-name">現在収入</span>
+            <div class="bar-track">
+              <div class="bar-fill bar-current" id="barCurrent"></div>
+            </div>
+            <span class="bar-val-label" id="barCurrentLabel">—</span>
+          </div>
+          <div class="bar-row">
+            <span class="bar-name">変動後収入</span>
+            <div class="bar-track">
+              <div class="bar-fill bar-future" id="barFuture"></div>
+            </div>
+            <span class="bar-val-label" id="barFutureLabel">—</span>
+          </div>
+        </div>
+
+        <!-- Impact summary -->
+        <div class="impact-card" id="impactCard">
+          <div class="impact-title">📊 影響サマリー</div>
+          <p id="impactText" class="impact-text"></p>
+        </div>
+
+        <p class="result-disclaimer">
+          ※ 本試算は概算です。実際の収益は税制・管理状況・市場動向により異なります。
+          投資判断はご自身の責任において行ってください。
+        </p>
+      </section>
+    </div>
+
+    <!-- ── Sensitivity Matrix ── -->
+    <section class="matrix-section mt-48">
+      <h2 class="section-title">感度分析マトリクス</h2>
+      <p class="section-sub">家賃下落率 × 空室率の組み合わせによる実質利回りの変化。現在の入力値に近いセルを強調表示しています。</p>
+      <div class="matrix-legend">
+        <span class="legend-item"><span class="legend-dot good"></span> 4%以上（良好）</span>
+        <span class="legend-item"><span class="legend-dot ok"></span> 2〜4%（許容範囲）</span>
+        <span class="legend-item"><span class="legend-dot warn"></span> 0〜2%（要注意）</span>
+        <span class="legend-item"><span class="legend-dot bad"></span> 0%未満（赤字）</span>
+      </div>
+      <div class="matrix-wrap">
+        <table class="matrix-table" id="sensitivityMatrix" aria-label="感度分析マトリクス">
+          <thead>
+            <tr>
+              <th class="mx-corner">下落率↓ / 空室率→</th>
+              <th class="mx-head">空室 0%</th>
+              <th class="mx-head">空室 5%</th>
+              <th class="mx-head">空室 10%</th>
+              <th class="mx-head">空室 15%</th>
+              <th class="mx-head">空室 20%</th>
+            </tr>
+          </thead>
+          <tbody id="matrixBody">
+            <tr><td colspan="6" class="mx-loading">計算中...</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="matrix-note">※ 強調表示（太枠）は現在の変動条件に最も近いセルです。</p>
+    </section>
+
+    <!-- ── Related tools ── -->
+    <section class="related-section mt-48">
+      <h2 class="section-title">関連ツール</h2>
+      <p class="section-sub">リスクシナリオを確認したら、他のツールと組み合わせて総合的な投資判断を行いましょう。</p>
+      <div class="related-grid">
+        <a href="/calculators/yield" class="related-card">
+          <div class="related-icon">📊</div>
+          <div class="related-title">不動産利回り計算ツール</div>
+          <p class="related-desc">現在の表面・実質利回りを詳細に計算する</p>
+          <span class="related-arrow">使ってみる →</span>
+        </a>
+        <a href="/calculators/roi" class="related-card">
+          <div class="related-icon">💹</div>
+          <div class="related-title">不動産投資ROI計算ツール</div>
+          <p class="related-desc">自己資金ベースのROI・キャッシュフローを計算する</p>
+          <span class="related-arrow">使ってみる →</span>
+        </a>
+        <a href="/calculators/mortgage" class="related-card">
+          <div class="related-icon">🏦</div>
+          <div class="related-title">住宅ローン返済シミュレーター</div>
+          <p class="related-desc">ローン返済額を確認して手残り収益を試算する</p>
+          <span class="related-arrow">使ってみる →</span>
+        </a>
+        <a href="/calculators/fixed-asset-tax" class="related-card">
+          <div class="related-icon">🏛️</div>
+          <div class="related-title">固定資産税シミュレーター</div>
+          <p class="related-desc">年間費用の固定資産税を事前に試算する</p>
+          <span class="related-arrow">使ってみる →</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- ── Explanation ── -->
+    <section class="explain mt-48">
+      <h2 class="section-title">家賃下落・空室率リスクの基礎知識</h2>
+      <div class="explain-grid">
+
+        <div class="explain-card">
+          <h3>📉 家賃下落・空室率影響シミュレーターとは</h3>
+          <p>
+            現在の家賃・空室率・費用条件を入力することで、家賃下落や空室率の上昇が
+            年間収益・実質利回り・キャッシュフローにどう影響するかを確認できるツールです。
+            「利回りが良く見える物件でも、家賃下落が起きると収益がどう変わるか」を
+            投資判断前に体感するためのリスク感度分析ツールです。
+          </p>
+        </div>
+
+        <div class="explain-card">
+          <h3>📊 家賃下落が利回りに与える影響</h3>
+          <p>
+            家賃が下落すると年間収入が直接減少し、利回りも同じ割合で下がります。
+            例えば家賃10%下落は表面利回りが10%低下することを意味します。
+            しかし固定費は変わらないため、<strong>実質利回りへの影響はより大きく</strong>なります。
+            利回り3%の物件で家賃10%下落すると、実質利回りが0%近くまで下がることがあります。
+          </p>
+        </div>
+
+        <div class="explain-card">
+          <h3>🏚️ 空室率がキャッシュフローに与える影響</h3>
+          <p>
+            空室率が上がると実際の収入が減りますが、管理費・修繕費・固定資産税などの
+            固定費は変わりません。空室率15%では年間収入が15%減少し、
+            収益率は利回りの低下以上に悪化します。
+            特にローンがある場合、空室による収入減がローン返済を超えると
+            <strong>手出しが発生（キャッシュアウト）</strong>します。
+          </p>
+        </div>
+
+        <div class="explain-card">
+          <h3>🧮 表面利回りだけでは分からない理由</h3>
+          <p>
+            表面利回り（満室時年間家賃 ÷ 物件価格）は費用も空室も考慮していません。
+            実際の投資では管理費・修繕費・固定資産税・保険料などで
+            年間収入の20〜30%以上が費用になることがあります。
+            表面利回り5%の物件でも、実質利回りは2〜3%になるケースが多く、
+            そこから家賃下落・空室が加わるとさらに低下します。
+          </p>
+        </div>
+
+        <div class="explain-card">
+          <h3>⚠️ 不動産投資で想定すべきリスクの考え方</h3>
+          <ul>
+            <li><strong>家賃下落リスク</strong>：エリアの人口減少・築年数増加・競合物件増加</li>
+            <li><strong>空室リスク</strong>：入退居サイクル・賃貸需要の変化</li>
+            <li><strong>修繕リスク</strong>：設備劣化・大規模修繕の発生</li>
+            <li><strong>金利上昇リスク</strong>：変動金利の場合、ローン返済額が増加</li>
+            <li>複数のリスクが同時に発生することも想定する必要があります</li>
+          </ul>
+        </div>
+
+        <div class="explain-card">
+          <h3>📋 ベースケースとワーストケースを比較する重要性</h3>
+          <p>
+            投資判断では楽観シナリオだけでなく、<strong>ワーストケースでも収益が成立するか</strong>を
+            確認することが重要です。目安として：
+            ベースケース（家賃-5%・空室10%）で実質利回りがプラスか、
+            ワーストケース（家賃-15%・空室15%）でも手出しが許容範囲内か、
+            を確認することをおすすめします。
+          </p>
+        </div>
+
+        <div class="explain-card">
+          <h3>💡 シミュレーション結果をどう活用するか</h3>
+          <p>
+            本ツールの感度分析マトリクスで「どの家賃下落率・空室率の組み合わせが
+            損益分岐点になるか」を確認してください。
+            その分岐点より現実が悪化する可能性が低ければ投資候補として検討できます。
+            また、<a href="/calculators/roi" class="inline-link">ROI計算ツール</a>と組み合わせて
+            自己資金に対するリターンも確認することをおすすめします。
+          </p>
+        </div>
+
+        <div class="explain-card">
+          <h3>📈 感度分析マトリクスの読み方</h3>
+          <p>
+            マトリクスの各セルは「その家賃下落率・空室率の組み合わせでの実質利回り」を示します。
+            緑セルは収益良好、黄色は要注意、赤は赤字です。
+            現在の変動条件に近いセルが強調表示されます。
+            縦軸（家賃下落）と横軸（空室率）がどちらの方向に影響が大きいかも読み取れます。
+          </p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ── FAQ ── -->
+    <section class="faq-section mt-48" style="padding-bottom: 80px;">
+      <h2 class="section-title">よくある質問</h2>
+      <div class="faq-list">
+
+        <details class="faq-item">
+          <summary class="faq-q">家賃が下がると利回りはどれくらい下がりますか？</summary>
+          <div class="faq-a">
+            <p>
+              例えば月額10万円・物件価格3,000万円・年間費用25万円の物件で、
+              家賃が10%下落（10万→9万円）すると：
+              現在の実質利回り約2.97% → 変動後約2.41%（▼0.56ポイント）となります。
+              固定費が変わらないため、<strong>家賃下落率より実質利回りへの影響が大きく</strong>なります。
+              感度分析マトリクスで自分の物件の数値で確認してください。
+            </p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary class="faq-q">空室率が上がると年間収益はどう変わりますか？</summary>
+          <div class="faq-a">
+            <p>
+              空室率が5%→15%（10ポイント上昇）すると、年間収入は10%減少します。
+              月額10万円の物件では年間約12万円の収入減です。
+              固定費は空室に関係なく発生するため、<strong>収益への影響は収入減少よりさらに大きく</strong>なります。
+              空室率20%で赤字になる物件も多いため、ワーストケースの試算が重要です。
+            </p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary class="faq-q">表面利回りと実質利回りはなぜ違うのですか？</summary>
+          <div class="faq-a">
+            <p>
+              <strong>表面利回り</strong>は「満室の年間家賃 ÷ 物件価格 × 100」で、理想的な最大値です。
+              <strong>実質利回り</strong>は空室損失・管理費・修繕費・固定資産税などを差し引いた実態に近い値です。
+              一般的に表面利回りより2〜3ポイント低いことが多く、
+              「表面5%でも実質は2〜3%」というケースはよくあります。
+              投資判断では実質利回りで判断することが重要です。
+            </p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary class="faq-q">不動産投資ではどれくらいの空室率を見込むべきですか？</summary>
+          <div class="faq-a">
+            <p>
+              エリア・築年数・物件種別によりますが目安として：
+              <strong>都市部（駅近）</strong>：ベース5%、ワースト10%、
+              <strong>都市部（普通立地）</strong>：ベース10%、ワースト15%、
+              <strong>地方</strong>：ベース15〜20%、ワースト25%以上。
+              まずベースケースで投資判断し、ワーストケースでも許容できるか確認することが基本です。
+            </p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary class="faq-q">家賃下落と空室率ではどちらの影響が大きいですか？</summary>
+          <div class="faq-a">
+            <p>
+              短期的には空室率のほうが影響が出やすく（入退居の度に変動）、
+              長期的には家賃下落のほうが影響が大きくなる傾向があります。
+              理由は、<strong>空室は管理努力で改善できる可能性</strong>がありますが、
+              <strong>エリアの家賃相場の下落は構造的</strong>で回復しにくいためです。
+              本ツールのマトリクスで両軸のどちらが収益に効くかを確認してください。
+            </p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary class="faq-q">シミュレーション結果は実際の投資判断にどう使えばよいですか？</summary>
+          <div class="faq-a">
+            <p>
+              推奨する使い方：①ベースケース（家賃-5%・空室10%）で実質利回りを確認する、
+              ②ワーストケース（家賃-15%・空室20%）でも実質利回りがプラスかを確認する、
+              ③ローンありの場合は手残り（ローン後キャッシュフロー）がワーストケースでもプラスかを確認する。
+              <strong>ワーストケースでも赤字にならない物件</strong>を選ぶことが安全な投資の基本です。
+            </p>
+          </div>
+        </details>
+
+      </div>
+    </section>
+
+  </div>
+
+  <Footer slot="footer" />
+</BaseLayout>
+
+<style>
+/* ── Layout ── */
+.calc-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  align-items: start;
+}
+@media (max-width: 768px) {
+  .calc-layout { grid-template-columns: 1fr; }
+}
+
+/* ── Card ── */
+.card {
+  background: var(--c-bg-card);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  box-shadow: var(--shadow-sm);
+}
+.card-heading {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--c-primary);
+  margin-bottom: 20px;
+}
+
+/* ── Field group ── */
+.group-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--c-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 12px;
+}
+.field-group { margin-bottom: 16px; }
+.field-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 4px;
+}
+.field-label label { font-size: 0.875rem; font-weight: 600; color: var(--c-text); }
+.field-display { font-size: 0.875rem; font-weight: 700; color: var(--c-primary); white-space: nowrap; }
+.decline-display { color: var(--c-danger) !important; }
+.field-hint { font-size: 0.72rem; color: var(--c-text-muted); margin-top: 3px; line-height: 1.5; }
+.inline-link { color: var(--c-primary); text-decoration: underline; font-size: inherit; }
+.divider { border: none; border-top: 1px solid var(--c-border); margin: 18px 0 14px; }
+
+/* ── Range slider ── */
+.range-slider {
+  width: 100%;
+  height: 20px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: linear-gradient(to right, var(--c-primary) var(--pct, 0%), var(--c-border) var(--pct, 0%));
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+  padding: 0;
+  margin: 0 0 6px;
+  display: block;
+}
+.decline-slider {
+  background: linear-gradient(to right, var(--c-danger) var(--pct, 0%), var(--c-border) var(--pct, 0%)) !important;
+}
+.range-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: var(--c-primary);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+  transition: transform 0.1s;
+}
+.decline-slider::-webkit-slider-thumb { background: var(--c-danger); }
+.range-slider::-moz-range-thumb {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: var(--c-primary);
+  border: none;
+}
+
+/* ── Number input ── */
+.field-input {
+  width: 100%;
+  padding: 7px 10px;
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-sm);
+  font-size: 0.875rem;
+  font-family: var(--font);
+  color: var(--c-text);
+  background: var(--c-bg);
+  transition: border-color 0.15s;
+  -moz-appearance: textfield;
+}
+.field-input::-webkit-outer-spin-button,
+.field-input::-webkit-inner-spin-button { -webkit-appearance: none; }
+.field-input:focus {
+  outline: none;
+  border-color: var(--c-primary);
+  box-shadow: 0 0 0 2px rgba(26,74,58,0.1);
+}
+
+/* ── Sample badge ── */
+.sample-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(201,148,58,0.10);
+  border: 1px solid var(--c-accent);
+  color: var(--c-warning);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 7px 12px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 14px;
+}
+
+/* ── Error ── */
+.error-msg {
+  background: rgba(192,57,43,0.08);
+  border: 1px solid var(--c-danger);
+  border-radius: var(--radius-sm);
+  color: var(--c-danger);
+  font-size: 0.82rem;
+  padding: 10px 12px;
+  margin-top: 8px;
+}
+
+/* ── Hero metrics (3-up) ── */
+.hero-metrics-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 16px;
+}
+@media (max-width: 480px) { .hero-metrics-3 { grid-template-columns: 1fr; } }
+.metric-box {
+  border: 2px solid var(--c-border);
+  border-radius: var(--radius-md);
+  padding: 12px;
+  text-align: center;
+}
+.primary-box { border-color: var(--c-primary); background: rgba(26,74,58,0.04); }
+.metric-label { font-size: 0.65rem; font-weight: 700; color: var(--c-text-muted); margin-bottom: 5px; line-height: 1.3; }
+.metric-value { font-size: 1.35rem; font-weight: 700; color: var(--c-primary); line-height: 1; }
+.metric-value.sm { font-size: 1.05rem; }
+
+/* ── Before/After comparison ── */
+.ba-wrap {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 10px;
+  align-items: stretch;
+  margin-bottom: 14px;
+}
+@media (max-width: 500px) {
+  .ba-wrap { grid-template-columns: 1fr; }
+  .ba-arrow { text-align: center; font-size: 1.2rem; transform: rotate(90deg); }
+}
+.ba-col {
+  background: var(--c-bg);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-md);
+  padding: 12px;
+}
+.future-col {
+  background: rgba(201,148,58,0.04);
+  border-color: rgba(201,148,58,0.3);
+}
+.ba-head {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 4px 0 8px;
+  margin-bottom: 6px;
+  border-bottom: 2px solid var(--c-border);
+}
+.current-head { color: var(--c-primary); border-color: var(--c-primary); }
+.future-head  { color: var(--c-accent);  border-color: var(--c-accent); }
+.ba-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 0;
+  border-bottom: 1px solid var(--c-border);
+  font-size: 0.75rem;
+}
+.ba-row:last-child { border-bottom: none; }
+.ba-label { color: var(--c-text-muted); flex: 1; }
+.ba-val { font-weight: 700; color: var(--c-text); white-space: nowrap; margin-left: 4px; font-size: 0.78rem; }
+.cost-val { color: var(--c-danger); }
+.yield-val { color: var(--c-primary); }
+.primary-val { color: var(--c-primary); font-size: 0.88rem !important; }
+.ba-total .ba-label, .ba-total .ba-val { font-weight: 700; color: var(--c-primary); }
+.ba-divider { border-top: 1px dashed var(--c-border); margin: 6px 0; }
+.yield-row.ba-primary { background: rgba(26,74,58,0.04); border-radius: 4px; padding: 4px 6px; }
+.ba-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--c-text-muted);
+  font-size: 1.4rem;
+  font-weight: 300;
+  padding: 0 2px;
+}
+
+/* ── Bar chart ── */
+.bar-section {
+  margin-bottom: 12px;
+}
+.bar-title {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--c-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 8px;
+}
+.bar-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+  font-size: 0.75rem;
+}
+.bar-name { width: 60px; color: var(--c-text-muted); flex-shrink: 0; }
+.bar-track {
+  flex: 1;
+  height: 14px;
+  background: var(--c-bg);
+  border: 1px solid var(--c-border);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.4s ease;
+}
+.bar-current { background: var(--c-primary); }
+.bar-future  { background: var(--c-accent); }
+.bar-val-label { width: 62px; color: var(--c-text); font-weight: 700; text-align: right; font-size: 0.75rem; flex-shrink: 0; }
+
+/* ── Impact card ── */
+.impact-card {
+  background: rgba(26,74,58,0.04);
+  border: 1px solid rgba(26,74,58,0.12);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  margin-bottom: 12px;
+}
+.impact-card.impact-warn { background: rgba(184,118,15,0.06); border-color: rgba(184,118,15,0.25); }
+.impact-card.impact-danger { background: rgba(192,57,43,0.06); border-color: rgba(192,57,43,0.25); }
+.impact-title { font-size: 0.72rem; font-weight: 700; color: var(--c-primary); margin-bottom: 6px; }
+.impact-text { font-size: 0.78rem; color: var(--c-text-muted); line-height: 1.7; }
+
+/* ── Result disclaimer ── */
+.result-disclaimer { font-size: 0.72rem; color: var(--c-text-muted); line-height: 1.6; }
+
+/* ── Sensitivity matrix ── */
+.matrix-section { max-width: 860px; }
+.matrix-legend {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+  font-size: 0.75rem;
+  color: var(--c-text-muted);
+}
+.legend-item { display: flex; align-items: center; gap: 5px; }
+.legend-dot {
+  width: 12px; height: 12px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+.legend-dot.good { background: #d1fae5; border: 1px solid #6ee7b7; }
+.legend-dot.ok   { background: #d1fae5; border: 1px solid #34d399; opacity: 0.6; }
+.legend-dot.warn { background: #fef3c7; border: 1px solid #fcd34d; }
+.legend-dot.bad  { background: #fee2e2; border: 1px solid #fca5a5; }
+
+.matrix-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: var(--radius-md);
+}
+.matrix-table {
+  border-collapse: collapse;
+  width: 100%;
+  min-width: 480px;
+  font-size: 0.8rem;
+}
+.mx-corner {
+  background: var(--c-bg);
+  border: 1px solid var(--c-border);
+  padding: 8px 12px;
+  font-size: 0.68rem;
+  color: var(--c-text-muted);
+  font-weight: 600;
+  white-space: nowrap;
+}
+.mx-head {
+  background: var(--c-bg);
+  border: 1px solid var(--c-border);
+  padding: 8px 12px;
+  font-weight: 700;
+  color: var(--c-primary);
+  text-align: center;
+  white-space: nowrap;
+}
+.mx-row-head {
+  background: var(--c-bg);
+  border: 1px solid var(--c-border);
+  padding: 8px 12px;
+  font-weight: 700;
+  color: var(--c-primary);
+  white-space: nowrap;
+}
+.mx-loading { text-align: center; padding: 20px; color: var(--c-text-muted); font-size: 0.8rem; }
+.mx-cell {
+  border: 1px solid var(--c-border);
+  padding: 8px 12px;
+  text-align: center;
+  font-weight: 700;
+  transition: background 0.2s;
+}
+.mx-good { background: #d1fae5; color: #065f46; }
+.mx-ok   { background: #ecfdf5; color: #065f46; }
+.mx-warn { background: #fef3c7; color: #92400e; }
+.mx-bad  { background: #fee2e2; color: #991b1b; }
+.mx-current {
+  outline: 3px solid var(--c-primary);
+  outline-offset: -2px;
+  position: relative;
+  z-index: 1;
+}
+.mx-note { font-size: 0.72rem; color: var(--c-text-muted); margin-top: 8px; }
+
+/* ── Related ── */
+.related-section { max-width: 900px; }
+.related-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 14px;
+  margin-top: 16px;
+}
+.related-card {
+  display: block;
+  background: var(--c-bg-card);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-md);
+  padding: 18px;
+  text-decoration: none;
+  color: var(--c-text);
+  transition: box-shadow 0.2s, transform 0.2s, border-color 0.2s;
+  box-shadow: var(--shadow-sm);
+}
+.related-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+  border-color: var(--c-primary);
+  text-decoration: none;
+}
+.related-icon { font-size: 1.4rem; margin-bottom: 6px; }
+.related-title { font-size: 0.9rem; font-weight: 700; color: var(--c-primary); margin-bottom: 4px; }
+.related-desc { font-size: 0.78rem; color: var(--c-text-muted); line-height: 1.6; margin-bottom: 8px; }
+.related-arrow { font-size: 0.78rem; color: var(--c-primary); font-weight: 600; }
+
+/* ── Explanation ── */
+.explain-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+.explain-card {
+  background: var(--c-bg-card);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-md);
+  padding: 20px;
+}
+.explain-card h3 { font-size: 0.95rem; font-weight: 700; color: var(--c-primary); margin-bottom: 10px; }
+.explain-card p, .explain-card ul { font-size: 0.82rem; color: var(--c-text-muted); line-height: 1.8; }
+.explain-card ul { padding-left: 1.2em; }
+.explain-card li { margin-bottom: 4px; }
+.explain-card strong { color: var(--c-text); }
+
+/* ── FAQ ── */
+.faq-section { max-width: 760px; }
+.faq-list { margin-top: 16px; display: flex; flex-direction: column; gap: 8px; }
+.faq-item {
+  background: var(--c-bg-card);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+.faq-q {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 18px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--c-primary);
+  cursor: pointer;
+  list-style: none;
+  gap: 12px;
+}
+.faq-q::-webkit-details-marker { display: none; }
+.faq-q::after { content: '＋'; font-size: 1.1rem; color: var(--c-primary); flex-shrink: 0; transition: transform 0.2s; }
+.faq-item[open] .faq-q::after { transform: rotate(45deg); }
+.faq-a {
+  padding: 0 18px 16px;
+  font-size: 0.82rem;
+  color: var(--c-text-muted);
+  line-height: 1.8;
+}
+.faq-a p + p { margin-top: 8px; }
+</style>
+
+<script>
+/* ─── Helpers ─── */
+function fmt(v: number, d = 1): string {
+  return v.toLocaleString('ja-JP', { minimumFractionDigits: d, maximumFractionDigits: d });
+}
+function getNum(id: string, fb = 0): number {
+  const el = document.getElementById(id) as HTMLInputElement | null;
+  if (!el) return fb;
+  const v = parseFloat(el.value);
+  return isNaN(v) ? fb : v;
+}
+function setText(id: string, t: string) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = t;
+}
+function clamp(v: number, a: number, b: number): number {
+  return Math.max(a, Math.min(b, v));
+}
+function updateFill(s: HTMLInputElement) {
+  const mn = parseFloat(s.min) || 0, mx = parseFloat(s.max) || 100, v = parseFloat(s.value) || 0;
+  s.style.setProperty('--pct', `${clamp((v - mn) / (mx - mn) * 100, 0, 100)}%`);
+}
+function updateDisplay(id: string, raw: string) {
+  const el = document.getElementById(`${id}Display`);
+  if (el) el.textContent = Number(raw).toLocaleString('ja-JP');
+}
+function hideSampleBadge() {
+  const b = document.getElementById('sampleBadge');
+  if (b) b.hidden = true;
+}
+function setColor(id: string, val: number, positiveIsGood = true) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const good = positiveIsGood ? val >= 0 : val <= 0;
+  el.style.color = val === 0 ? '' : good ? 'var(--c-success)' : 'var(--c-danger)';
+}
+
+/* ─── Sensitivity matrix ─── */
+const RD_STEPS = [0, 5, 10, 15, 20];
+const V_STEPS  = [0, 5, 10, 15, 20];
+
+function buildMatrix(rent: number, expenses: number, price: number, activeRD: number, activeV: number) {
+  let html = '';
+  for (const rd of RD_STEPS) {
+    html += `<tr><th class="mx-row-head">下落 ${rd}%</th>`;
+    for (const v of V_STEPS) {
+      const fRent   = rent * (1 - rd / 100);
+      const netInc  = fRent * 12 * (1 - v / 100);
+      const profit  = netInc - expenses;
+      const ny      = price > 0 ? (profit / price) * 100 : 0;
+      // Find nearest step to active values
+      const nearRD  = RD_STEPS.reduce((a, b) => Math.abs(b - activeRD) < Math.abs(a - activeRD) ? b : a);
+      const nearV   = V_STEPS.reduce((a, b)  => Math.abs(b - activeV)  < Math.abs(a - activeV)  ? b : a);
+      const isCurrent = rd === nearRD && v === nearV;
+      let cls = 'mx-cell';
+      if (ny >= 4)      cls += ' mx-good';
+      else if (ny >= 2) cls += ' mx-ok';
+      else if (ny >= 0) cls += ' mx-warn';
+      else              cls += ' mx-bad';
+      if (isCurrent)    cls += ' mx-current';
+      html += `<td class="${cls}">${ny.toFixed(1)}%</td>`;
+    }
+    html += '</tr>';
+  }
+  const tbody = document.getElementById('matrixBody');
+  if (tbody) tbody.innerHTML = html;
+}
+
+/* ─── Main calculation ─── */
+function calculate() {
+  const propertyPrice  = getNum('propertyPrice', 3000);
+  const currentRent    = getNum('currentRent', 10);
+  const currentVacancy = getNum('currentVacancy', 5);
+  const expMgmt        = getNum('expMgmt', 6);
+  const expRepair      = getNum('expRepair', 6);
+  const expPropTax     = getNum('expPropTax', 10);
+  const expOther       = getNum('expOther', 3);
+  const rentDecline    = getNum('rentDecline', 10);
+  const futureVacancy  = getNum('futureVacancy', 10);
+  const loanPayment    = getNum('loanPayment', 0);
+
+  const errEl = document.getElementById('errorMsg');
+  if (propertyPrice <= 0 || currentRent <= 0) {
+    if (errEl) { errEl.textContent = '物件価格と月額家賃は1以上で入力してください。'; errEl.hidden = false; }
+    return;
+  }
+  if (errEl) errEl.hidden = true;
+
+  const totalExpenses = expMgmt + expRepair + expPropTax + expOther;
+
+  /* ── Current ── */
+  const currentGross    = currentRent * 12;
+  const currentNet      = currentGross * (1 - currentVacancy / 100);
+  const currentProfit   = currentNet - totalExpenses;
+  const currentCF       = currentProfit - loanPayment;
+  const currentGrossYld = propertyPrice > 0 ? (currentGross / propertyPrice) * 100 : 0;
+  const currentNetYld   = propertyPrice > 0 ? (currentProfit / propertyPrice) * 100 : 0;
+
+  /* ── Future ── */
+  const futureRent      = currentRent * (1 - rentDecline / 100);
+  const futureGross     = futureRent * 12;
+  const futureNet       = futureGross * (1 - futureVacancy / 100);
+  const futureProfit    = futureNet - totalExpenses;
+  const futureCF        = futureProfit - loanPayment;
+  const futureGrossYld  = propertyPrice > 0 ? (futureGross / propertyPrice) * 100 : 0;
+  const futureNetYld    = propertyPrice > 0 ? (futureProfit / propertyPrice) * 100 : 0;
+
+  /* ── Diffs ── */
+  const profitDiff = futureProfit - currentProfit;
+  const yieldDiff  = futureNetYld - currentNetYld;
+
+  /* ── Update future rent hint ── */
+  setText('futureRentCalc', `${fmt(futureRent, 1)} 万円/月`);
+
+  /* ── Hero metrics ── */
+  setText('rFutureNetYield', `${fmt(futureNetYld, 2)}%`);
+
+  const yieldDiffEl = document.getElementById('rYieldDiff');
+  if (yieldDiffEl) {
+    yieldDiffEl.textContent = `${yieldDiff >= 0 ? '▲' : '▼'} ${fmt(Math.abs(yieldDiff), 2)}pt`;
+    yieldDiffEl.style.color = yieldDiff >= 0 ? 'var(--c-success)' : 'var(--c-danger)';
+  }
+  const profitDiffEl = document.getElementById('rProfitDiff');
+  if (profitDiffEl) {
+    profitDiffEl.textContent = `${profitDiff >= 0 ? '▲' : '▼'} ${fmt(Math.abs(profitDiff), 1)}万円/年`;
+    profitDiffEl.style.color = profitDiff >= 0 ? 'var(--c-success)' : 'var(--c-danger)';
+  }
+
+  /* ── Before/After comparison ── */
+  setText('rCurrentGross',     `${fmt(currentGross, 1)} 万円`);
+  setText('rCurrentNet',       `${fmt(currentNet, 1)} 万円`);
+  setText('rExpenses',         `${fmt(totalExpenses, 0)} 万円/年`);
+  const currentProfitEl = document.getElementById('rCurrentProfit');
+  if (currentProfitEl) {
+    currentProfitEl.textContent = `${fmt(currentProfit, 1)} 万円`;
+    currentProfitEl.style.color = currentProfit >= 0 ? 'var(--c-primary)' : 'var(--c-danger)';
+  }
+  setText('rFutureGross',      `${fmt(futureGross, 1)} 万円`);
+  setText('rFutureNet',        `${fmt(futureNet, 1)} 万円`);
+  setText('rFutureExpenses',   `${fmt(totalExpenses, 0)} 万円/年`);
+  const futureProfitEl = document.getElementById('rFutureProfit');
+  if (futureProfitEl) {
+    futureProfitEl.textContent = `${fmt(futureProfit, 1)} 万円`;
+    futureProfitEl.style.color = futureProfit >= 0 ? 'var(--c-primary)' : 'var(--c-danger)';
+  }
+
+  // Loan CF rows
+  const hasLoan = loanPayment > 0;
+  const cfCurrentRow = document.getElementById('cfCurrentRow');
+  const cfFutureRow  = document.getElementById('cfFutureRow');
+  if (cfCurrentRow) cfCurrentRow.hidden = !hasLoan;
+  if (cfFutureRow)  cfFutureRow.hidden  = !hasLoan;
+  if (hasLoan) {
+    const cfCEl = document.getElementById('rCurrentCF');
+    if (cfCEl) { cfCEl.textContent = `${fmt(currentCF, 1)} 万円`; cfCEl.style.color = currentCF >= 0 ? 'var(--c-success)' : 'var(--c-danger)'; }
+    const cfFEl = document.getElementById('rFutureCF');
+    if (cfFEl) { cfFEl.textContent = `${fmt(futureCF, 1)} 万円`; cfFEl.style.color = futureCF >= 0 ? 'var(--c-success)' : 'var(--c-danger)'; }
+  }
+
+  // Yields
+  setText('rCurrentGrossYield', `${fmt(currentGrossYld, 2)}%`);
+  setText('rCurrentNetYield',   `${fmt(currentNetYld, 2)}%`);
+  setText('rFutureGrossYield',  `${fmt(futureGrossYld, 2)}%`);
+  setText('rFutureNetYield2',   `${fmt(futureNetYld, 2)}%`);
+
+  /* ── Bar chart ── */
+  const maxIncome = Math.max(currentNet, futureNet, 0.01);
+  const barCurrent = document.getElementById('barCurrent') as HTMLElement | null;
+  const barFuture  = document.getElementById('barFuture')  as HTMLElement | null;
+  if (barCurrent) barCurrent.style.width = `${(currentNet / maxIncome * 100).toFixed(1)}%`;
+  if (barFuture)  barFuture.style.width  = `${(futureNet  / maxIncome * 100).toFixed(1)}%`;
+  setText('barCurrentLabel', `${fmt(currentNet, 1)} 万円`);
+  setText('barFutureLabel',  `${fmt(futureNet, 1)} 万円`);
+
+  /* ── Impact summary ── */
+  const impactCard = document.getElementById('impactCard');
+  const impactText = document.getElementById('impactText');
+  if (impactText && impactCard) {
+    const absProfit = Math.abs(profitDiff);
+    const baseStr   = `家賃${rentDecline}%下落・空室率${futureVacancy}%の条件で、年間営業利益は ${fmt(absProfit, 1)} 万円 ${profitDiff >= 0 ? '増加' : '減少'} します（${fmt(currentProfit, 1)} 万円 → ${fmt(futureProfit, 1)} 万円）。実質利回りは ${fmt(currentNetYld, 2)}% → ${fmt(futureNetYld, 2)}%（${fmt(Math.abs(yieldDiff), 2)}ポイント${yieldDiff >= 0 ? '上昇' : '下落'}）です。`;
+    impactText.textContent = baseStr + (futureProfit < 0 ? '　⚠️ 変動後は赤字（年間費用を収入が下回る状態）です。損益分岐点を確認してください。' : '');
+    impactCard.className = 'impact-card' + (futureProfit < 0 ? ' impact-danger' : yieldDiff < -1 ? ' impact-warn' : '');
+    const titleEl = impactCard.querySelector('.impact-title') as HTMLElement | null;
+    if (titleEl) titleEl.textContent = futureProfit < 0 ? '⚠️ 影響サマリー（赤字転落）' : yieldDiff < -1 ? '⚠️ 影響サマリー（要注意）' : '📊 影響サマリー';
+  }
+
+  /* ── Sensitivity matrix ── */
+  buildMatrix(currentRent, totalExpenses, propertyPrice, rentDecline, futureVacancy);
+}
+
+/* ─── Slider sync ─── */
+function syncSliderToNum(slider: HTMLInputElement) {
+  const targetId = slider.dataset.target;
+  if (!targetId) return;
+  const numEl = document.getElementById(targetId) as HTMLInputElement | null;
+  if (!numEl) return;
+  numEl.value = slider.value;
+  updateFill(slider);
+  updateDisplay(targetId, slider.value);
+}
+function syncNumToSlider(numEl: HTMLInputElement) {
+  const slider = document.querySelector<HTMLInputElement>(`input.range-slider[data-target="${numEl.id}"]`);
+  if (!slider) return;
+  const mx = parseFloat(slider.max) || 100;
+  let v = parseFloat(numEl.value);
+  if (isNaN(v) || v < 0) v = 0;
+  slider.value = String(Math.min(v, mx));
+  updateFill(slider);
+  updateDisplay(numEl.id, numEl.value);
+}
+
+/* ─── Init ─── */
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll<HTMLInputElement>('input.range-slider').forEach(slider => {
+    updateFill(slider);
+    slider.addEventListener('input', () => {
+      syncSliderToNum(slider);
+      hideSampleBadge();
+      calculate();
+    });
+  });
+
+  document.querySelectorAll<HTMLInputElement>('input.field-input').forEach(numEl => {
+    numEl.addEventListener('keydown', (e: KeyboardEvent) => {
+      if (['-', 'e', 'E', '+'].includes(e.key)) e.preventDefault();
+    });
+    numEl.addEventListener('change', () => {
+      syncNumToSlider(numEl);
+      hideSampleBadge();
+      calculate();
+    });
+  });
+
+  calculate();
+});
+</script>
