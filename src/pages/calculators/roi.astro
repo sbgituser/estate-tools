@@ -3,16 +3,26 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 
-const jsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'WebApplication',
-  name: '不動産投資ROI計算ツール',
-  url: 'https://estate.kuras-plus.com/calculators/roi',
-  description: '頭金・諸費用・ローン返済を含めた実質ROI（投資収益率）を無料で即計算。自己資金に対する収益率を正確に把握できます。',
-  applicationCategory: 'FinanceApplication',
-  operatingSystem: 'All',
-  offers: { '@type': 'Offer', price: '0', priceCurrency: 'JPY' },
-};
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebApplication',
+    name: '不動産投資ROI計算ツール',
+    url: 'https://estate.kuras-plus.com/calculators/roi',
+    description: '頭金・諸費用・ローン返済を含めた実質ROI（投資収益率）を無料で即計算。自己資金に対する収益率を正確に把握できます。',
+    applicationCategory: 'FinanceApplication',
+    operatingSystem: 'All',
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'JPY' },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'ホーム', item: 'https://estate.kuras-plus.com' },
+      { '@type': 'ListItem', position: 2, name: '不動産投資ROI計算ツール', item: 'https://estate.kuras-plus.com/calculators/roi' },
+    ],
+  },
+];
 ---
 
 <BaseLayout

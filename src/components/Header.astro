@@ -6,13 +6,37 @@ export interface Props {
 const { currentPath = Astro.url.pathname } = Astro.props;
 
 const nav = [
-  { href: '/',                                           label: 'ホーム' },
-  { href: '/calculators/yield',                          label: '利回り計算' },
-  { href: '/calculators/roi',                            label: 'ROI計算' },
-  { href: '/calculators/mortgage',                       label: 'ローン計算' },
-  { href: '/calculators/fixed-asset-tax',                label: '固定資産税' },
-  { href: '/calculators/real-estate-acquisition-tax',    label: '取得税' },
-  { href: '/calculators/rent-vacancy-impact',            label: '下落・空室' },
+  { href: '/', label: 'ホーム' },
+  { href: '/calculators/yield', label: '利回り計算' },
+  { href: '/calculators/roi', label: 'ROI計算' },
+  { href: '/calculators/mortgage', label: 'ローン計算' },
+  { href: '/calculators/fixed-asset-tax', label: '固定資産税' },
+  { href: '/calculators/real-estate-acquisition-tax', label: '取得税' },
+  { href: '/calculators/rent-vacancy-impact', label: '下落・空室' },
+];
+
+const categories = [
+  {
+    label: '収益計算',
+    items: [
+      { href: '/calculators/yield', label: '不動産利回り計算ツール' },
+      { href: '/calculators/roi', label: '不動産投資ROI計算ツール' },
+      { href: '/calculators/rent-vacancy-impact', label: '家賃下落・空室率影響シミュレーター' },
+    ],
+  },
+  {
+    label: '資金計算',
+    items: [
+      { href: '/calculators/mortgage', label: '住宅ローン返済シミュレーター' },
+    ],
+  },
+  {
+    label: '税金計算',
+    items: [
+      { href: '/calculators/fixed-asset-tax', label: '固定資産税シミュレーター' },
+      { href: '/calculators/real-estate-acquisition-tax', label: '不動産取得税シミュレーター' },
+    ],
+  },
 ];
 ---
 
@@ -37,5 +61,210 @@ const nav = [
         </a>
       ))}
     </nav>
+
+    <button
+      class="hamburger"
+      id="hamburger-btn"
+      aria-label="メニューを開く"
+      aria-expanded="false"
+      aria-controls="mobile-menu"
+    >
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+    </button>
   </div>
 </header>
+
+<!-- Mobile overlay -->
+<div class="mobile-overlay" id="mobile-overlay" aria-hidden="true"></div>
+
+<!-- Mobile drawer -->
+<nav class="mobile-menu" id="mobile-menu" aria-label="モバイルナビゲーション" aria-hidden="true">
+  <div class="mobile-menu-header">
+    <span class="mobile-menu-title">🏠 不動産ツールズ</span>
+    <button class="mobile-close" id="mobile-close-btn" aria-label="メニューを閉じる">✕</button>
+  </div>
+
+  <a
+    href="/"
+    class={`mobile-home-link${currentPath === '/' ? ' active' : ''}`}
+    aria-current={currentPath === '/' ? 'page' : undefined}
+  >
+    ホーム
+  </a>
+
+  {categories.map((cat) => (
+    <div class="mobile-category">
+      <div class="mobile-category-label">{cat.label}</div>
+      {cat.items.map(({ href, label }) => (
+        <a
+          href={href}
+          class={`mobile-link${currentPath === href ? ' active' : ''}`}
+          aria-current={currentPath === href ? 'page' : undefined}
+        >
+          {label}
+        </a>
+      ))}
+    </div>
+  ))}
+</nav>
+
+<script>
+  const btn = document.getElementById('hamburger-btn');
+  const closeBtn = document.getElementById('mobile-close-btn');
+  const menu = document.getElementById('mobile-menu');
+  const overlay = document.getElementById('mobile-overlay');
+
+  function openMenu() {
+    menu?.classList.add('open');
+    overlay?.classList.add('open');
+    btn?.setAttribute('aria-expanded', 'true');
+    menu?.setAttribute('aria-hidden', 'false');
+    overlay?.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeMenu() {
+    menu?.classList.remove('open');
+    overlay?.classList.remove('open');
+    btn?.setAttribute('aria-expanded', 'false');
+    menu?.setAttribute('aria-hidden', 'true');
+    overlay?.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+
+  btn?.addEventListener('click', openMenu);
+  closeBtn?.addEventListener('click', closeMenu);
+  overlay?.addEventListener('click', closeMenu);
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeMenu();
+  });
+</script>
+
+<style>
+  /* Hamburger button — hidden on desktop */
+  .hamburger {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    width: 40px;
+    height: 40px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 4px;
+    transition: background 0.15s;
+  }
+  .hamburger:hover { background: rgba(255,255,255,0.12); }
+  .hamburger-line {
+    display: block;
+    width: 22px;
+    height: 2px;
+    background: #fff;
+    border-radius: 2px;
+    transition: transform 0.2s, opacity 0.2s;
+  }
+
+  /* Mobile overlay */
+  .mobile-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    z-index: 199;
+  }
+  .mobile-overlay.open { display: block; }
+
+  /* Mobile drawer */
+  .mobile-menu {
+    display: none;
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: min(320px, 88vw);
+    height: 100dvh;
+    background: #fff;
+    z-index: 200;
+    overflow-y: auto;
+    transform: translateX(100%);
+    transition: transform 0.25s ease;
+    flex-direction: column;
+  }
+  .mobile-menu.open { transform: translateX(0); }
+
+  .mobile-menu-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    background: var(--c-primary, #1a4a3a);
+    color: #fff;
+    font-weight: 700;
+    font-size: 1rem;
+    position: sticky;
+    top: 0;
+  }
+  .mobile-menu-title { font-size: 0.95rem; }
+  .mobile-close {
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-size: 1.1rem;
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: background 0.15s;
+  }
+  .mobile-close:hover { background: rgba(255,255,255,0.15); }
+
+  .mobile-home-link {
+    display: block;
+    padding: 14px 20px;
+    color: var(--c-text, #2c2c2c);
+    font-size: 0.95rem;
+    font-weight: 600;
+    border-bottom: 1px solid var(--c-border, #e2ddd6);
+    text-decoration: none;
+    transition: background 0.15s;
+  }
+  .mobile-home-link:hover { background: #f5f3ef; text-decoration: none; }
+  .mobile-home-link.active { color: var(--c-primary, #1a4a3a); background: #f0f7f4; }
+
+  .mobile-category { border-bottom: 1px solid var(--c-border, #e2ddd6); }
+  .mobile-category-label {
+    padding: 12px 20px 6px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--c-accent, #c9943a);
+  }
+  .mobile-link {
+    display: block;
+    padding: 11px 20px 11px 28px;
+    color: var(--c-text, #2c2c2c);
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: background 0.15s;
+    border-top: 1px solid rgba(0,0,0,0.04);
+  }
+  .mobile-link:hover { background: #f5f3ef; text-decoration: none; }
+  .mobile-link.active {
+    color: var(--c-primary, #1a4a3a);
+    background: #f0f7f4;
+    font-weight: 600;
+  }
+
+  @media (max-width: 640px) {
+    .hamburger { display: flex; }
+    .mobile-menu { display: flex; }
+  }
+</style>

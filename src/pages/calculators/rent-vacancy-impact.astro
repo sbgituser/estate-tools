@@ -3,16 +3,26 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 
-const jsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'WebApplication',
-  name: '家賃下落・空室率影響シミュレーター',
-  url: 'https://estate.kuras-plus.com/calculators/rent-vacancy-impact',
-  description: '家賃下落率・空室率の上昇が不動産投資の利回り・収益にどう影響するか即シミュレーション。感度分析マトリクスで2軸のリスクを視覚的に把握できる無料ツール。',
-  applicationCategory: 'FinanceApplication',
-  operatingSystem: 'All',
-  offers: { '@type': 'Offer', price: '0', priceCurrency: 'JPY' },
-};
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebApplication',
+    name: '家賃下落・空室率影響シミュレーター',
+    url: 'https://estate.kuras-plus.com/calculators/rent-vacancy-impact',
+    description: '家賃下落率・空室率の上昇が不動産投資の利回り・収益にどう影響するか即シミュレーション。感度分析マトリクスで2軸のリスクを視覚的に把握できる無料ツール。',
+    applicationCategory: 'FinanceApplication',
+    operatingSystem: 'All',
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'JPY' },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'ホーム', item: 'https://estate.kuras-plus.com' },
+      { '@type': 'ListItem', position: 2, name: '家賃下落・空室率影響シミュレーター', item: 'https://estate.kuras-plus.com/calculators/rent-vacancy-impact' },
+    ],
+  },
+];
 
 const faqSchema = {
   '@context': 'https://schema.org',

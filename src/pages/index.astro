@@ -55,18 +55,37 @@ const tools = [
   },
 ];
 
-const jsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'WebSite',
-  name: '不動産ツールズ',
-  url: 'https://estate.kuras-plus.com',
-  description: '不動産投資の意思決定をサポートする無料計算ツール集',
-};
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: '不動産ツールズ',
+    url: 'https://estate.kuras-plus.com',
+    description: '不動産投資の意思決定をサポートする無料計算ツール集',
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: 'https://estate.kuras-plus.com',
+    },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: '不動産投資無料ツール一覧',
+    url: 'https://estate.kuras-plus.com',
+    numberOfItems: 6,
+    itemListElement: tools.map((t, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: t.title,
+      url: `https://estate.kuras-plus.com${t.href}`,
+    })),
+  },
+];
 ---
 
 <BaseLayout
   title="不動産ツールズ | kuras-plus"
-  description="不動産投資の意思決定をサポートする無料ツール集。利回り計算・ROI計算など。"
+  description="不動産投資の意思決定をサポートする無料ツール集。表面・実質利回り計算、ROI計算、住宅ローンシミュレーター、固定資産税・不動産取得税の試算、家賃下落リスク分析まで、登録不要で今すぐ使えます。"
   jsonLd={jsonLd}
 >
   <Header slot="header" currentPath="/" />

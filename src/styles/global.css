@@ -244,6 +244,9 @@ a:hover { text-decoration: underline; }
 
 /* ─── Responsive ─────────────────────────────────────────── */
 @media (max-width: 640px) {
-  .site-nav { display: none; }
+  .site-nav { display: none; } /* hidden on mobile — hamburger menu used instead */
   .footer-inner { flex-direction: column; }
+  .footer-links { gap: 12px; }
+  .tool-grid { grid-template-columns: 1fr; }
+  .page-hero { padding: 32px 0 28px; }
 }

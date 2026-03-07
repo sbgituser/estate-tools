@@ -3,16 +3,26 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 
-const jsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'WebApplication',
-  name: '固定資産税シミュレーター',
-  url: 'https://estate.kuras-plus.com/calculators/fixed-asset-tax',
-  description: '土地・建物の固定資産税評価額を入力するだけで固定資産税・都市計画税の年間概算額を即計算。住宅用地の特例や新築軽減も考慮できる無料ツール。',
-  applicationCategory: 'FinanceApplication',
-  operatingSystem: 'All',
-  offers: { '@type': 'Offer', price: '0', priceCurrency: 'JPY' },
-};
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebApplication',
+    name: '固定資産税シミュレーター',
+    url: 'https://estate.kuras-plus.com/calculators/fixed-asset-tax',
+    description: '土地・建物の固定資産税評価額を入力するだけで固定資産税・都市計画税の年間概算額を即計算。住宅用地の特例や新築軽減も考慮できる無料ツール。',
+    applicationCategory: 'FinanceApplication',
+    operatingSystem: 'All',
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'JPY' },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'ホーム', item: 'https://estate.kuras-plus.com' },
+      { '@type': 'ListItem', position: 2, name: '固定資産税シミュレーター', item: 'https://estate.kuras-plus.com/calculators/fixed-asset-tax' },
+    ],
+  },
+];
 ---
 
 <BaseLayout
