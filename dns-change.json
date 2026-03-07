@@ -1,0 +1,11 @@
+{
+  "Changes": [{
+    "Action": "CREATE",
+    "ResourceRecordSet": {
+      "Name": "estate.kuras-plus.com",
+      "Type": "CNAME",
+      "TTL": 300,
+      "ResourceRecords": [{"Value": "estate-tools.pages.dev"}]
+    }
+  }]
+}

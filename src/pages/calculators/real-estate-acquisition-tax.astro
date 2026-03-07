@@ -1,0 +1,1402 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: '不動産取得税シミュレーター',
+  url: 'https://estate.kuras-plus.com/calculators/real-estate-acquisition-tax',
+  description: '新築・中古住宅・土地の不動産取得税を固定資産税評価額から無料でシミュレーション。宅地評価土地の1/2特例・住宅用軽減措置に対応した概算計算ツール。',
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'JPY' },
+};
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: '不動産取得税はどうやって計算しますか？',
+      acceptedAnswer: { '@type': 'Answer', text: '不動産取得税は「固定資産税評価額 × 税率（土地・住宅3%、非住宅4%）」が基本です。宅地評価土地は課税標準が評価額の1/2になります。新築住宅（50〜240㎡）は建物評価額から1,200万円を控除した金額に3%をかけます。' },
+    },
+    {
+      '@type': 'Question',
+      name: '不動産取得税は物件価格ではなく何を基準に計算しますか？',
+      acceptedAnswer: { '@type': 'Answer', text: '不動産取得税は「固定資産税評価額」を基準に計算します。売買価格や時価ではありません。土地は公示価格の約70%、建物は建設費の約50〜60%が評価額の目安です。' },
+    },
+    {
+      '@type': 'Question',
+      name: '新築住宅の不動産取得税は安くなりますか？',
+      acceptedAnswer: { '@type': 'Answer', text: '居住用の新築住宅（延床面積50〜240㎡）は建物評価額から1,200万円が控除されます。建物評価額が1,200万円以下の場合、建物分の取得税は0円になります。' },
+    },
+    {
+      '@type': 'Question',
+      name: '中古住宅の不動産取得税にも軽減はありますか？',
+      acceptedAnswer: { '@type': 'Answer', text: 'あります。新築年に応じた控除額が適用されます。1997年以降の物件は最大1,200万円控除。1981年以前は耐震基準適合証明書がないと控除が受けられない場合があります。' },
+    },
+    {
+      '@type': 'Question',
+      name: '土地だけ買った場合も不動産取得税はかかりますか？',
+      acceptedAnswer: { '@type': 'Answer', text: 'はい、土地のみの取得でも取得税（税率3%）がかかります。宅地評価土地なら課税標準が評価額の1/2になります。その後一定期間内に住宅を新築または取得した場合、土地分の軽減を還付申請できることがあります。' },
+    },
+    {
+      '@type': 'Question',
+      name: '不動産取得税の軽減を受けるには申告が必要ですか？',
+      acceptedAnswer: { '@type': 'Answer', text: '多くの場合、都道府県税事務所への申告が必要です。特に中古住宅控除や土地軽減の還付請求は自動適用されないため、取得後に期限内の申告が必要です。' },
+    },
+    {
+      '@type': 'Question',
+      name: '固定資産税評価額が分からない場合はどうすればよいですか？',
+      acceptedAnswer: { '@type': 'Answer', text: '購入前なら売主または不動産仲介業者に固定資産評価証明書の確認を依頼してください。土地は路線価の約70%、建物は建設費の約50〜60%が目安です。購入後は毎年届く納税通知書または市区町村窓口で確認できます。' },
+    },
+  ],
+};
+---
+
+<BaseLayout
+  title="不動産取得税シミュレーター | 新築・中古・土地の取得税を無料計算"
+  description="不動産取得税を固定資産税評価額から無料でシミュレーション。新築住宅の1,200万円控除・中古住宅の控除・宅地評価土地の1/2特例・土地軽減措置に対応した概算計算ツールです。"
+  jsonLd={jsonLd}
+>
+  <Header slot="header" currentPath="/calculators/real-estate-acquisition-tax" />
+
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+
+  <!-- Hero -->
+  <section class="page-hero">
+    <div class="container">
+      <nav class="breadcrumb" aria-label="パンくずリスト">
+        <a href="/">ホーム</a>
+        <span>›</span>
+        <span>不動産取得税シミュレーター</span>
+      </nav>
+      <p class="hero-eyebrow">Real Estate Acquisition Tax Simulator</p>
+      <h1 class="hero-title">不動産取得税シミュレーター</h1>
+      <p class="hero-desc">
+        新築・中古住宅・土地の取得税を評価額から即計算。<br />
+        軽減措置・宅地特例を考慮した購入時コストの目安を確認できます。
+      </p>
+    </div>
+  </section>
+
+  <!-- Calculator -->
+  <div class="container mt-48" style="padding-bottom: 80px;">
+    <div class="calc-layout">
+
+      <!-- ── Inputs ── -->
+      <section class="card" aria-label="入力フォーム">
+        <h2 class="card-heading">取得条件を入力</h2>
+
+        <p class="group-label">基本情報</p>
+
+        <!-- 取得する不動産の種類 -->
+        <div class="field-group">
+          <div class="field-label-text">取得する不動産の種類</div>
+          <div class="type-group-4">
+            <label class="type-opt">
+              <input type="radio" name="propType" value="new-house" checked />
+              <span>🏠 新築住宅</span>
+            </label>
+            <label class="type-opt">
+              <input type="radio" name="propType" value="used-house" />
+              <span>🏘️ 中古住宅</span>
+            </label>
+            <label class="type-opt">
+              <input type="radio" name="propType" value="land-only" />
+              <span>🌱 土地のみ</span>
+            </label>
+            <label class="type-opt">
+              <input type="radio" name="propType" value="non-housing" />
+              <span>🏢 住宅以外</span>
+            </label>
+          </div>
+          <p class="field-hint">「住宅以外」は店舗・事務所など非住宅用途の建物です。税率4%・軽減措置なし。</p>
+        </div>
+
+        <!-- 自己居住用か -->
+        <div class="field-group" id="selfOccupyGroup">
+          <div class="field-label-text">自己居住用ですか？</div>
+          <div class="toggle-group">
+            <label class="toggle-opt">
+              <input type="radio" name="isSelfOccupy" value="yes" checked />
+              <span>はい（居住用）</span>
+            </label>
+            <label class="toggle-opt">
+              <input type="radio" name="isSelfOccupy" value="no" />
+              <span>いいえ（投資用など）</span>
+            </label>
+          </div>
+          <p class="field-hint">居住用住宅は新築・中古ともに軽減措置の対象となる場合があります。賃貸投資用物件は条件が異なります。</p>
+        </div>
+
+        <hr class="divider" />
+        <p class="group-label">評価額</p>
+
+        <!-- 土地の評価額 -->
+        <div class="field-group" id="landAssessGroup">
+          <div class="field-label">
+            <label for="landAssess">土地の固定資産税評価額</label>
+            <span class="field-display"><span id="landAssessDisplay">1,500</span> 万円</span>
+          </div>
+          <input class="range-slider" type="range" id="landAssessSlider"
+            data-target="landAssess" value="1500" min="0" max="10000" step="100" />
+          <input class="field-input" type="number" id="landAssess"
+            value="1500" min="0" max="100000" step="100" inputmode="numeric" />
+          <details class="assess-helper">
+            <summary class="assess-helper-q">評価額の調べ方・目安を知りたい</summary>
+            <div class="assess-helper-body">
+              <p>固定資産税評価額は売買価格とは異なります。<strong>土地は路線価の約70%</strong>が目安です。</p>
+              <p>購入前は売主・仲介業者に確認。購入後は納税通知書または固定資産評価証明書（市区町村窓口）で確認できます。</p>
+            </div>
+          </details>
+        </div>
+
+        <!-- 宅地評価土地か -->
+        <div class="field-group" id="takuchiGroup">
+          <div class="field-label-text">宅地評価土地（一般的な住宅地）ですか？</div>
+          <div class="toggle-group">
+            <label class="toggle-opt">
+              <input type="radio" name="isTakuchi" value="yes" checked />
+              <span>はい（宅地評価）</span>
+            </label>
+            <label class="toggle-opt">
+              <input type="radio" name="isTakuchi" value="no" />
+              <span>いいえ（農地など）</span>
+            </label>
+          </div>
+          <p class="field-hint">一般的な住宅地・宅地は「宅地評価土地」に該当し、課税標準が評価額の<strong>1/2</strong>になります（2026年3月末まで）。</p>
+        </div>
+
+        <!-- 建物の評価額 -->
+        <div class="field-group" id="buildingAssessGroup">
+          <div class="field-label">
+            <label for="buildingAssess">建物の固定資産税評価額</label>
+            <span class="field-display"><span id="buildingAssessDisplay">800</span> 万円</span>
+          </div>
+          <input class="range-slider" type="range" id="buildingAssessSlider"
+            data-target="buildingAssess" value="800" min="0" max="5000" step="50" />
+          <input class="field-input" type="number" id="buildingAssess"
+            value="800" min="0" max="100000" step="50" inputmode="numeric" />
+          <details class="assess-helper">
+            <summary class="assess-helper-q">建物評価額の目安を知りたい</summary>
+            <div class="assess-helper-body">
+              <p>建物の評価額は建設費用の<strong>約50〜60%</strong>が目安（新築時）。</p>
+              <p>新築住宅なら1,200万円以下のことも多く、控除後の取得税が0円になるケースがあります。</p>
+            </div>
+          </details>
+        </div>
+
+        <!-- 住宅要件グループ -->
+        <div id="housingReqGroup">
+          <hr class="divider" />
+          <p class="group-label">住宅・土地の要件</p>
+
+          <!-- 延床面積 -->
+          <div class="field-group">
+            <div class="field-label">
+              <label for="floorArea">延床面積</label>
+              <span class="field-display"><span id="floorAreaDisplay">80</span> ㎡</span>
+            </div>
+            <input class="range-slider" type="range" id="floorAreaSlider"
+              data-target="floorArea" value="80" min="10" max="500" step="5" />
+            <input class="field-input" type="number" id="floorArea"
+              value="80" min="1" max="9999" step="1" inputmode="numeric" />
+            <p class="field-hint">新築住宅控除の要件は<strong>50〜240㎡</strong>です。この範囲外は控除が適用されません。</p>
+          </div>
+
+          <!-- 土地面積 -->
+          <div class="field-group">
+            <div class="field-label">
+              <label for="landArea">土地面積</label>
+              <span class="field-display"><span id="landAreaDisplay">100</span> ㎡</span>
+            </div>
+            <input class="range-slider" type="range" id="landAreaSlider"
+              data-target="landArea" value="100" min="10" max="1000" step="5" />
+            <input class="field-input" type="number" id="landArea"
+              value="100" min="1" max="99999" step="1" inputmode="numeric" />
+            <p class="field-hint">土地軽減額の計算に使用します（住宅用土地の軽減を適用する場合）。</p>
+          </div>
+
+          <!-- 住宅用土地の軽減 -->
+          <div class="field-group" id="landReductionGroup">
+            <div class="field-label-text">住宅用土地の軽減措置を適用しますか？</div>
+            <div class="toggle-group">
+              <label class="toggle-opt">
+                <input type="radio" name="applyLandReduction" value="yes" checked />
+                <span>適用する</span>
+              </label>
+              <label class="toggle-opt">
+                <input type="radio" name="applyLandReduction" value="no" />
+                <span>適用しない</span>
+              </label>
+            </div>
+            <p class="field-hint">住宅と同時または一定期間内に取得した住宅用土地は、一定額の軽減が適用されます（45,000円または計算式の大きい方）。</p>
+          </div>
+
+          <!-- 取得タイミング -->
+          <div class="field-group" id="landTimingGroup">
+            <div class="field-label-text">土地と住宅の取得タイミング</div>
+            <div class="type-group">
+              <label class="type-opt">
+                <input type="radio" name="landTiming" value="simultaneous" checked />
+                <span>同時</span>
+              </label>
+              <label class="type-opt">
+                <input type="radio" name="landTiming" value="land-first" />
+                <span>土地先行</span>
+              </label>
+              <label class="type-opt">
+                <input type="radio" name="landTiming" value="house-first" />
+                <span>住宅先行</span>
+              </label>
+            </div>
+            <p class="field-hint">土地先行の場合、住宅完成後に軽減分の還付申請が可能です（3年以内に新築が条件）。</p>
+          </div>
+        </div>
+
+        <!-- 新築住宅控除グループ -->
+        <div id="newHouseGroup">
+          <hr class="divider" />
+          <p class="group-label">新築住宅の控除</p>
+
+          <div class="field-group">
+            <div class="field-label-text">新築住宅の1,200万円控除を適用しますか？</div>
+            <div class="toggle-group">
+              <label class="toggle-opt">
+                <input type="radio" name="applyNewDeduction" value="yes" checked />
+                <span>適用する</span>
+              </label>
+              <label class="toggle-opt">
+                <input type="radio" name="applyNewDeduction" value="no" />
+                <span>適用しない</span>
+              </label>
+            </div>
+            <p class="field-hint">居住用新築住宅（延床50〜240㎡）は、建物評価額から<strong>1,200万円が控除</strong>されます。評価額が1,200万円以下なら建物の取得税は0円。</p>
+          </div>
+
+          <div id="floorWarning" class="warning-msg" hidden>
+            ⚠️ 延床面積が控除要件（50〜240㎡）の範囲外のため、1,200万円控除は適用できません。
+          </div>
+        </div>
+
+        <!-- 中古住宅控除グループ -->
+        <div id="usedHouseGroup" hidden>
+          <hr class="divider" />
+          <p class="group-label">中古住宅の控除</p>
+
+          <div class="field-group">
+            <div class="field-label-text">中古住宅の控除を適用しますか？</div>
+            <div class="toggle-group">
+              <label class="toggle-opt">
+                <input type="radio" name="applyUsedDeduction" value="yes" checked />
+                <span>適用を検討する</span>
+              </label>
+              <label class="toggle-opt">
+                <input type="radio" name="applyUsedDeduction" value="no" />
+                <span>適用しない</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- 新築年 -->
+          <div class="field-group" id="constructYearGroup">
+            <div class="field-label-text">建物の新築年（西暦）</div>
+            <select class="field-select" id="constructYear">
+              <option value="2020">2020年以降</option>
+              <option value="2010">2010〜2019年</option>
+              <option value="2000">2000〜2009年</option>
+              <option value="1997" selected>1997〜1999年</option>
+              <option value="1990">1989〜1996年</option>
+              <option value="1986">1985〜1988年</option>
+              <option value="1982">1981〜1984年（新耐震基準後）</option>
+              <option value="1977">1976〜1980年</option>
+              <option value="1974">1973〜1975年</option>
+              <option value="1965">1964〜1972年</option>
+              <option value="1960">1963年以前（控除なし）</option>
+            </select>
+            <p class="field-hint">新築年が新しいほど控除額が大きくなります。1997年以降は最大1,200万円控除。</p>
+          </div>
+
+          <!-- 耐震基準 -->
+          <div class="field-group">
+            <div class="field-label-text">耐震基準適合証明書はありますか？</div>
+            <div class="type-group">
+              <label class="type-opt">
+                <input type="radio" name="seismic" value="yes" />
+                <span>✅ 適合あり</span>
+              </label>
+              <label class="type-opt">
+                <input type="radio" name="seismic" value="no" />
+                <span>❌ なし</span>
+              </label>
+              <label class="type-opt">
+                <input type="radio" name="seismic" value="unknown" checked />
+                <span>❓ 不明</span>
+              </label>
+            </div>
+            <p class="field-hint">1981年以前の建物は耐震基準適合証明書がないと控除が受けられない場合があります。「不明」の場合は控除を適用しない計算をします。</p>
+          </div>
+        </div>
+
+        <div id="errorMsg" class="error-msg" hidden></div>
+      </section>
+
+      <!-- ── Results ── -->
+      <section class="card results-card" aria-label="試算結果" aria-live="polite">
+        <h2 class="card-heading">試算結果（概算）</h2>
+
+        <div id="sampleBadge" class="sample-badge">
+          <span>📋</span> サンプル値による試算例 — 値を変更すると即時更新されます
+        </div>
+
+        <!-- Hero metrics -->
+        <div class="hero-metrics">
+          <div class="metric-box primary-box">
+            <div class="metric-label">不動産取得税 合計（概算）</div>
+            <div class="metric-value" id="rTotal">—</div>
+          </div>
+          <div class="metric-box">
+            <div class="metric-label">軽減・控除による節税効果</div>
+            <div class="metric-value sm" id="rSaving" style="color: var(--c-success);">—</div>
+          </div>
+        </div>
+
+        <!-- Breakdown -->
+        <div class="breakdown">
+
+          <!-- Building -->
+          <div class="breakdown-section" id="buildingBreakdown">
+            <div class="breakdown-title" id="buildingBreakdownTitle">建物分（取得税 3%）</div>
+            <div class="breakdown-row">
+              <span class="breakdown-label">建物評価額</span>
+              <span class="breakdown-value" id="rBuildingAssess">—</span>
+            </div>
+            <div class="breakdown-row" id="deductionRow">
+              <span class="breakdown-label">控除額 <span class="label-note" id="rDeductionLabel"></span></span>
+              <span class="breakdown-value" style="color: var(--c-success);" id="rBuildingDeduction">—</span>
+            </div>
+            <div class="breakdown-row">
+              <span class="breakdown-label">課税標準（控除後）</span>
+              <span class="breakdown-value" id="rBuildingTaxBase">—</span>
+            </div>
+            <div class="breakdown-row subtotal">
+              <span class="breakdown-label">建物 取得税</span>
+              <span class="breakdown-value" id="rBuildingTax">—</span>
+            </div>
+          </div>
+
+          <!-- Land -->
+          <div class="breakdown-section">
+            <div class="breakdown-title">土地分（取得税 3%）</div>
+            <div class="breakdown-row">
+              <span class="breakdown-label">評価額</span>
+              <span class="breakdown-value" id="rLandAssess">—</span>
+            </div>
+            <div class="breakdown-row">
+              <span class="breakdown-label">課税標準 <span class="label-note" id="rLandBaseNote"></span></span>
+              <span class="breakdown-value" id="rLandTaxBase">—</span>
+            </div>
+            <div class="breakdown-row" id="landReductionRow">
+              <span class="breakdown-label">住宅用土地の軽減額</span>
+              <span class="breakdown-value" style="color: var(--c-success);" id="rLandReduction">—</span>
+            </div>
+            <div class="breakdown-row subtotal">
+              <span class="breakdown-label">土地 取得税</span>
+              <span class="breakdown-value" id="rLandTax">—</span>
+            </div>
+          </div>
+
+          <!-- Total comparison -->
+          <div class="breakdown-section total-section">
+            <div class="breakdown-row">
+              <span class="breakdown-label">軽減・控除なしの場合（参考）</span>
+              <span class="breakdown-value" style="color: var(--c-text-muted); font-size: 0.82rem;" id="rBeforeReduction">—</span>
+            </div>
+            <div class="breakdown-row subtotal">
+              <span class="breakdown-label">不動産取得税 合計（概算）</span>
+              <span class="breakdown-value" id="rTotalConfirm">—</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Applied measures -->
+        <div class="measures-card">
+          <div class="measures-title">✅ 適用した軽減・控除</div>
+          <div id="measuresList" class="measures-list"></div>
+        </div>
+
+        <!-- Purchase cost note -->
+        <div class="invest-note">
+          <div class="invest-title">💡 購入時コストとしての位置づけ</div>
+          <p id="rCostNote" class="invest-text"></p>
+        </div>
+
+        <p class="result-disclaimer">
+          ※ 本試算はあくまで概算です。不動産取得税は都道府県税であり、実際の税額は固定資産税評価額・申告内容・都道府県の判断により異なります。
+          軽減措置を受けるには申告が必要な場合があります。正確な税額は都道府県税事務所にお問い合わせください。
+        </p>
+      </section>
+    </div>
+
+    <!-- ── Related tools ── -->
+    <section class="related-section mt-48">
+      <h2 class="section-title">関連ツール</h2>
+      <p class="section-sub">不動産取得税は購入時の初期コストです。保有・収益コストは他のツールと組み合わせて試算しましょう。</p>
+      <div class="related-grid">
+        <a href="/calculators/mortgage" class="related-card">
+          <div class="related-icon">🏦</div>
+          <div class="related-title">住宅ローン返済シミュレーター</div>
+          <p class="related-desc">取得税を加えた初期費用の把握とローン返済計画を立てる</p>
+          <span class="related-arrow">使ってみる →</span>
+        </a>
+        <a href="/calculators/fixed-asset-tax" class="related-card">
+          <div class="related-icon">🏛️</div>
+          <div class="related-title">固定資産税シミュレーター</div>
+          <p class="related-desc">購入後に毎年かかる保有コストを事前に試算する</p>
+          <span class="related-arrow">使ってみる →</span>
+        </a>
+        <a href="/calculators/roi" class="related-card">
+          <div class="related-icon">💹</div>
+          <div class="related-title">不動産投資ROI計算ツール</div>
+          <p class="related-desc">取得税を初期費用に含めた実質ROIを計算する</p>
+          <span class="related-arrow">使ってみる →</span>
+        </a>
+        <a href="/calculators/yield" class="related-card">
+          <div class="related-icon">📊</div>
+          <div class="related-title">不動産利回り計算ツール</div>
+          <p class="related-desc">諸費用込みの実質利回りを計算する</p>
+          <span class="related-arrow">使ってみる →</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- ── Explanation ── -->
+    <section class="explain mt-48">
+      <h2 class="section-title">不動産取得税の基礎知識</h2>
+      <div class="explain-grid">
+
+        <div class="explain-card">
+          <h3>🏠 不動産取得税シミュレーターとは</h3>
+          <p>
+            住宅や土地の取得条件を入力することで、不動産取得税の概算額を確認できるツールです。
+            新築・中古住宅の控除や宅地評価土地の1/2特例などの軽減措置を考慮し、
+            購入時に発生する税コストの目安を把握するために活用できます。
+            本ツールはあくまで概算であり、実際の税額は都道府県税事務所でご確認ください。
+          </p>
+        </div>
+
+        <div class="explain-card">
+          <h3>⚖️ 不動産取得税とは何か</h3>
+          <p>
+            不動産取得税は、土地や建物を取得（購入・贈与・新築など）したときに
+            一度だけかかる<strong>都道府県税</strong>です。毎年かかる固定資産税とは異なり、
+            取得時に1回だけ納税します。取得後6ヶ月〜1年半程度で納税通知書が届きます。
+            相続による取得や法人合併は非課税です。
+          </p>
+        </div>
+
+        <div class="explain-card">
+          <h3>📐 不動産取得税は何を基準に決まるか</h3>
+          <p>
+            不動産取得税 ＝ <strong>固定資産税評価額 × 税率</strong> が基本です。
+            売買価格や市場価格ではなく、市区町村が定めた固定資産税評価額が基準です。
+            税率は土地・住宅が<strong>3%</strong>、住宅以外の建物が<strong>4%</strong>です。
+            実際には各種軽減措置により税額が下がることがほとんどです。
+          </p>
+        </div>
+
+        <div class="explain-card">
+          <h3>💰 固定資産税評価額で計算する理由</h3>
+          <p>
+            不動産の税計算は売買価格ではなく固定資産税評価額が基準です。
+            一般的に土地は市場価格の約70%、建物は建設費の約50〜60%程度になります。
+            このため不動産取得税は売買価格から単純に計算できず、
+            評価額を事前に確認することが重要です。
+          </p>
+        </div>
+
+        <div class="explain-card">
+          <h3>🏗️ 新築・中古・土地で何が違うか</h3>
+          <ul>
+            <li><strong>新築住宅</strong>：建物評価額から1,200万円控除（床面積50〜240㎡が要件）</li>
+            <li><strong>中古住宅</strong>：新築年に応じた控除（1997年以降なら最大1,200万円）</li>
+            <li><strong>土地のみ</strong>：税率3%。宅地評価土地は課税標準1/2。住宅を後から建てると軽減あり</li>
+            <li><strong>住宅以外の建物</strong>：税率4%。軽減措置の対象外</li>
+          </ul>
+        </div>
+
+        <div class="explain-card">
+          <h3>🌳 住宅用の軽減措置とは</h3>
+          <p>
+            住宅用途の土地・建物には複数の軽減措置があります。
+            <strong>建物</strong>：新築住宅は1,200万円控除（評価額1,200万円以下なら取得税0円）。
+            中古住宅は新築年に応じた控除（最大1,200万円）。
+            <strong>土地</strong>：住宅と同時または一定期間内の取得なら、
+            「45,000円または計算式で求めた額」の軽減が適用されます。
+          </p>
+        </div>
+
+        <div class="explain-card">
+          <h3>📏 宅地評価土地の1/2特例とは</h3>
+          <p>
+            2026年3月31日までの特例措置として、宅地評価土地を取得した場合、
+            <strong>課税標準が固定資産税評価額の1/2</strong>になります。
+            農地・山林は対象外です。一般的な住宅の敷地はほぼ宅地評価のため、
+            通常はこの特例が適用されます。本特例は都度延長されていますが、
+            将来的な変更にご注意ください。
+          </p>
+        </div>
+
+        <div class="explain-card">
+          <h3>⚠️ 軽減措置を受けるときの注意点</h3>
+          <ul>
+            <li>軽減措置は自動適用でないことが多く、<strong>都道府県税事務所への申告が必要</strong></li>
+            <li>土地先行取得の場合、住宅完成後に軽減分を還付申請する手続きが必要</li>
+            <li>申告期限を過ぎると軽減が受けられなくなる場合がある</li>
+            <li>中古住宅の耐震基準適合証明書は事前取得が必要な場合あり</li>
+            <li>投資用・賃貸用物件は居住用軽減の対象外</li>
+          </ul>
+        </div>
+
+        <div class="explain-card">
+          <h3>🔍 概算と実際の税額が異なる理由</h3>
+          <ul>
+            <li>固定資産税評価額は物件ごとに異なり、事前の確認が必要</li>
+            <li>軽減措置の要件（床面積・耐震基準・居住要件等）は詳細な確認が必要</li>
+            <li>取得時期によって適用税率・控除額が変わる場合がある</li>
+            <li>都道府県によって条例で税率を変更している場合がある</li>
+            <li>本ツールは国の標準的な簡易モデルを用いた概算です</li>
+          </ul>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ── FAQ ── -->
+    <section class="faq-section mt-48">
+      <h2 class="section-title">よくある質問</h2>
+      <div class="faq-list">
+
+        <details class="faq-item">
+          <summary class="faq-q">不動産取得税はどうやって計算しますか？</summary>
+          <div class="faq-a">
+            <p>
+              基本式は <strong>固定資産税評価額 × 税率（土地・住宅3%、非住宅4%）</strong> です。
+              宅地評価土地は評価額の1/2を課税標準とします。
+              新築住宅（50〜240㎡）は建物評価額から1,200万円を控除した後の金額に3%をかけます。
+              例：建物評価額1,000万円の新築住宅 → (1,000万 − 1,200万 = 0万) × 3% = 0円。
+            </p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary class="faq-q">不動産取得税は物件価格ではなく何を基準に計算しますか？</summary>
+          <div class="faq-a">
+            <p>
+              不動産取得税は<strong>固定資産税評価額</strong>を基準に計算します。売買価格や時価ではありません。
+              土地は路線価の約70%、建物は建設費の約50〜60%が評価額の目安です。
+              正確な値は納税通知書または固定資産評価証明書（市区町村窓口）で確認できます。
+            </p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary class="faq-q">新築住宅の不動産取得税は安くなりますか？</summary>
+          <div class="faq-a">
+            <p>
+              居住用の新築住宅（延床面積50〜240㎡）は建物評価額から<strong>1,200万円が控除</strong>されます。
+              建物の固定資産税評価額が1,200万円以下であれば建物分の取得税は0円になります。
+              一般的な住宅の評価額は800万〜1,200万円程度のことが多いため、
+              控除後に税額がゼロまたは少額になるケースが多いです。
+            </p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary class="faq-q">中古住宅の不動産取得税にも軽減はありますか？</summary>
+          <div class="faq-a">
+            <p>
+              あります。新築年に応じた控除額が適用されます。
+              <strong>1997年以降</strong>建築：1,200万円控除、<strong>1989〜1996年</strong>：1,000万円控除、
+              <strong>1985〜1988年</strong>：450万円控除、<strong>1981〜1984年（新耐震後）</strong>：420万円控除。
+              1981年以前の物件は耐震基準適合証明書がない場合、控除が受けられないことがあります。
+            </p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary class="faq-q">土地だけ買った場合も不動産取得税はかかりますか？</summary>
+          <div class="faq-a">
+            <p>
+              はい、土地のみの取得でも取得税（税率3%）がかかります。
+              宅地評価土地であれば課税標準が評価額の1/2になります。
+              ただし、土地取得後<strong>3年以内に住宅を新築</strong>するか、
+              中古住宅と一緒に取得した場合は、後から住宅用土地の軽減措置を還付申請できます。
+            </p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary class="faq-q">不動産取得税の軽減を受けるには申告が必要ですか？</summary>
+          <div class="faq-a">
+            <p>
+              多くの場合、<strong>都道府県税事務所への申告が必要</strong>です。
+              特に中古住宅控除や土地軽減の還付請求は自動適用されないため、
+              取得後に期限内の申告が必要です。
+              納税通知書が届いたら、適用漏れがないか確認することをおすすめします。
+            </p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary class="faq-q">固定資産税評価額が分からない場合はどうすればよいですか？</summary>
+          <div class="faq-a">
+            <p>
+              購入前なら<strong>売主または不動産仲介業者</strong>に固定資産評価証明書の確認を依頼してください。
+              土地は路線価（国税庁ウェブサイト公開）の約70%、建物は建設費の約50〜60%が目安です。
+              購入後は毎年届く<strong>納税通知書</strong>、または市区町村窓口で発行できる固定資産評価証明書で確認できます。
+            </p>
+          </div>
+        </details>
+
+      </div>
+    </section>
+
+  </div>
+
+  <Footer slot="footer" />
+</BaseLayout>
+
+<style>
+/* ── Layout ── */
+.calc-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  align-items: start;
+}
+@media (max-width: 768px) {
+  .calc-layout { grid-template-columns: 1fr; }
+}
+
+/* ── Card ── */
+.card {
+  background: var(--c-bg-card);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  box-shadow: var(--shadow-sm);
+}
+.card-heading {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--c-primary);
+  margin-bottom: 20px;
+}
+
+/* ── Field group ── */
+.group-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--c-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 12px;
+}
+.field-group { margin-bottom: 16px; }
+.field-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 4px;
+}
+.field-label label { font-size: 0.875rem; font-weight: 600; color: var(--c-text); }
+.field-label-text { font-size: 0.875rem; font-weight: 600; color: var(--c-text); margin-bottom: 8px; }
+.field-display { font-size: 0.875rem; font-weight: 700; color: var(--c-primary); white-space: nowrap; }
+.field-hint { font-size: 0.72rem; color: var(--c-text-muted); margin-top: 3px; line-height: 1.5; }
+.divider { border: none; border-top: 1px solid var(--c-border); margin: 18px 0 14px; }
+
+/* ── Range slider ── */
+.range-slider {
+  width: 100%;
+  height: 20px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: linear-gradient(
+    to right,
+    var(--c-primary) var(--pct, 0%),
+    var(--c-border)  var(--pct, 0%)
+  );
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+  padding: 0;
+  margin: 0 0 6px;
+  display: block;
+}
+.range-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: var(--c-primary);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+  transition: transform 0.1s, background 0.1s;
+}
+.range-slider::-webkit-slider-thumb:hover,
+.range-slider:active::-webkit-slider-thumb { background: var(--c-primary-hover); transform: scale(1.15); }
+.range-slider::-moz-range-thumb {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: var(--c-primary);
+  border: none;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+}
+
+/* ── Number input ── */
+.field-input {
+  width: 100%;
+  padding: 7px 10px;
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-sm);
+  font-size: 0.875rem;
+  font-family: var(--font);
+  color: var(--c-text);
+  background: var(--c-bg);
+  transition: border-color 0.15s;
+  -moz-appearance: textfield;
+}
+.field-input::-webkit-outer-spin-button,
+.field-input::-webkit-inner-spin-button { -webkit-appearance: none; }
+.field-input:focus {
+  outline: none;
+  border-color: var(--c-primary);
+  box-shadow: 0 0 0 2px rgba(26,74,58,0.1);
+}
+
+/* ── Select ── */
+.field-select {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-sm);
+  font-size: 0.875rem;
+  font-family: var(--font);
+  color: var(--c-text);
+  background: var(--c-bg);
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+.field-select:focus {
+  outline: none;
+  border-color: var(--c-primary);
+  box-shadow: 0 0 0 2px rgba(26,74,58,0.1);
+}
+
+/* ── Toggle group (2 options) ── */
+.toggle-group { display: flex; gap: 8px; }
+.toggle-opt {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  padding: 8px 10px;
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--c-text-muted);
+  transition: border-color 0.15s, background 0.15s, color 0.15s;
+  flex: 1;
+  justify-content: center;
+}
+.toggle-opt:has(input:checked) {
+  border-color: var(--c-primary);
+  background: rgba(26,74,58,0.06);
+  color: var(--c-primary);
+}
+.toggle-opt input { display: none; }
+
+/* ── Type group (3 options) ── */
+.type-group { display: flex; gap: 8px; flex-wrap: wrap; }
+.type-opt {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  cursor: pointer;
+  padding: 8px 10px;
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--c-text-muted);
+  transition: border-color 0.15s, background 0.15s, color 0.15s;
+  flex: 1;
+  min-width: 72px;
+}
+.type-opt:has(input:checked) {
+  border-color: var(--c-primary);
+  background: rgba(26,74,58,0.06);
+  color: var(--c-primary);
+}
+.type-opt input { display: none; }
+
+/* ── Type group (4 options) ── */
+.type-group-4 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+/* ── Assess helper ── */
+.assess-helper { margin-top: 6px; }
+.assess-helper-q {
+  font-size: 0.72rem;
+  color: var(--c-primary);
+  cursor: pointer;
+  list-style: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.assess-helper-q::-webkit-details-marker { display: none; }
+.assess-helper-q::before { content: '▶'; font-size: 0.6rem; transition: transform 0.2s; }
+.assess-helper[open] .assess-helper-q::before { transform: rotate(90deg); }
+.assess-helper-body {
+  background: rgba(26,74,58,0.04);
+  border-left: 2px solid var(--c-primary);
+  padding: 8px 10px;
+  margin-top: 6px;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  font-size: 0.75rem;
+  color: var(--c-text-muted);
+  line-height: 1.7;
+}
+.assess-helper-body p + p { margin-top: 4px; }
+.assess-helper-body strong { color: var(--c-text); }
+
+/* ── Sample badge ── */
+.sample-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(201,148,58,0.10);
+  border: 1px solid var(--c-accent);
+  color: var(--c-warning);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 7px 12px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 14px;
+  line-height: 1.4;
+}
+
+/* ── Error / Warning ── */
+.error-msg {
+  background: rgba(192,57,43,0.08);
+  border: 1px solid var(--c-danger);
+  border-radius: var(--radius-sm);
+  color: var(--c-danger);
+  font-size: 0.82rem;
+  padding: 10px 12px;
+  margin-top: 8px;
+}
+.warning-msg {
+  background: rgba(184,118,15,0.08);
+  border: 1px solid var(--c-warning);
+  border-radius: var(--radius-sm);
+  color: var(--c-warning);
+  font-size: 0.78rem;
+  padding: 9px 12px;
+  margin-top: 8px;
+  line-height: 1.5;
+}
+
+/* ── Hero metrics ── */
+.hero-metrics {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+@media (max-width: 480px) { .hero-metrics { grid-template-columns: 1fr; } }
+.metric-box {
+  border: 2px solid var(--c-border);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  text-align: center;
+}
+.primary-box { border-color: var(--c-primary); background: rgba(26,74,58,0.04); }
+.metric-label { font-size: 0.7rem; font-weight: 700; color: var(--c-text-muted); margin-bottom: 6px; }
+.metric-value { font-size: 1.5rem; font-weight: 700; color: var(--c-primary); line-height: 1; }
+.metric-value.sm { font-size: 1.15rem; }
+
+/* ── Breakdown ── */
+.breakdown { display: flex; flex-direction: column; gap: 10px; margin-bottom: 12px; }
+.breakdown-section {
+  background: var(--c-bg);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+}
+.total-section { background: rgba(26,74,58,0.03); border-color: rgba(26,74,58,0.2); }
+.breakdown-title {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--c-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 8px;
+}
+.breakdown-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 0;
+  border-bottom: 1px solid var(--c-border);
+  font-size: 0.82rem;
+}
+.breakdown-row:last-child { border-bottom: none; }
+.breakdown-label { color: var(--c-text-muted); }
+.breakdown-value { font-weight: 700; color: var(--c-text); }
+.breakdown-row.subtotal { padding-top: 8px; margin-top: 2px; border-top: 1px solid var(--c-border); border-bottom: none; }
+.breakdown-row.subtotal .breakdown-label,
+.breakdown-row.subtotal .breakdown-value { font-weight: 700; color: var(--c-primary); }
+.label-note { font-size: 0.65rem; font-weight: 400; color: var(--c-text-muted); margin-left: 4px; }
+
+/* ── Measures card ── */
+.measures-card {
+  background: rgba(45,122,79,0.05);
+  border: 1px solid rgba(45,122,79,0.2);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  margin-bottom: 12px;
+}
+.measures-title { font-size: 0.72rem; font-weight: 700; color: var(--c-success); margin-bottom: 8px; }
+.measure-item { font-size: 0.78rem; color: var(--c-text); line-height: 1.8; }
+
+/* ── Invest/Cost note ── */
+.invest-note {
+  background: rgba(26,74,58,0.04);
+  border: 1px solid rgba(26,74,58,0.12);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  margin-bottom: 12px;
+}
+.invest-title { font-size: 0.72rem; font-weight: 700; color: var(--c-primary); margin-bottom: 6px; }
+.invest-text { font-size: 0.78rem; color: var(--c-text-muted); line-height: 1.7; }
+
+/* ── Result disclaimer ── */
+.result-disclaimer { font-size: 0.72rem; color: var(--c-text-muted); line-height: 1.6; }
+
+/* ── Related ── */
+.related-section { max-width: 900px; }
+.related-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 14px;
+  margin-top: 16px;
+}
+.related-card {
+  display: block;
+  background: var(--c-bg-card);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-md);
+  padding: 18px;
+  text-decoration: none;
+  color: var(--c-text);
+  transition: box-shadow 0.2s, transform 0.2s, border-color 0.2s;
+  box-shadow: var(--shadow-sm);
+}
+.related-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+  border-color: var(--c-primary);
+  text-decoration: none;
+}
+.related-icon { font-size: 1.4rem; margin-bottom: 6px; }
+.related-title { font-size: 0.9rem; font-weight: 700; color: var(--c-primary); margin-bottom: 4px; }
+.related-desc { font-size: 0.78rem; color: var(--c-text-muted); line-height: 1.6; margin-bottom: 8px; }
+.related-arrow { font-size: 0.78rem; color: var(--c-primary); font-weight: 600; }
+
+/* ── Explanation ── */
+.explain-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+.explain-card {
+  background: var(--c-bg-card);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-md);
+  padding: 20px;
+}
+.explain-card h3 { font-size: 0.95rem; font-weight: 700; color: var(--c-primary); margin-bottom: 10px; }
+.explain-card p, .explain-card ul { font-size: 0.82rem; color: var(--c-text-muted); line-height: 1.8; }
+.explain-card ul { padding-left: 1.2em; }
+.explain-card li { margin-bottom: 4px; }
+.explain-card strong { color: var(--c-text); }
+
+/* ── FAQ ── */
+.faq-section { max-width: 760px; }
+.faq-list { margin-top: 16px; display: flex; flex-direction: column; gap: 8px; }
+.faq-item {
+  background: var(--c-bg-card);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+.faq-q {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 18px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--c-primary);
+  cursor: pointer;
+  list-style: none;
+  gap: 12px;
+}
+.faq-q::-webkit-details-marker { display: none; }
+.faq-q::after { content: '＋'; font-size: 1.1rem; color: var(--c-primary); flex-shrink: 0; transition: transform 0.2s; }
+.faq-item[open] .faq-q::after { transform: rotate(45deg); }
+.faq-a {
+  padding: 0 18px 16px;
+  font-size: 0.82rem;
+  color: var(--c-text-muted);
+  line-height: 1.8;
+}
+.faq-a p + p { margin-top: 8px; }
+</style>
+
+<script>
+/* ─────────────────────────────────────────────────
+   TAX CONSTANTS — 税率・控除額の設定
+   制度変更時はここを修正してください
+───────────────────────────────────────────────── */
+const TAX = {
+  landRate:            0.03,   // 土地取得税率 3%
+  housingRate:         0.03,   // 住宅建物取得税率 3%
+  nonHousingRate:      0.04,   // 非住宅建物取得税率 4%
+  takuchiHalfRatio:    0.5,    // 宅地評価土地 課税標準軽減率
+  newDeductionMan:     1200,   // 新築住宅控除 万円
+  newFloorMin:         50,     // 新築控除 床面積下限 ㎡
+  newFloorMax:         240,    // 新築控除 床面積上限 ㎡
+  landMinReductionYen: 45000,  // 土地軽減 最低額 円
+  // 中古住宅控除テーブル（fromYear以降に建築 → deduction万円）
+  usedDeductions: [
+    { fromYear: 1997, deduction: 1200, label: '1997年以降' },
+    { fromYear: 1989, deduction: 1000, label: '1989〜1996年' },
+    { fromYear: 1985, deduction:  450, label: '1985〜1988年' },
+    { fromYear: 1981, deduction:  420, label: '1981〜1984年（新耐震後）' },
+    { fromYear: 1976, deduction:  350, label: '1976〜1980年' },
+    { fromYear: 1973, deduction:  230, label: '1973〜1975年' },
+    { fromYear: 1964, deduction:  150, label: '1964〜1972年' },
+    { fromYear:    0, deduction:    0, label: '1963年以前' },
+  ],
+};
+
+/* ─── Helpers ─── */
+function fmt(v: number, d = 1): string {
+  return v.toLocaleString('ja-JP', { minimumFractionDigits: d, maximumFractionDigits: d });
+}
+function getNum(id: string, fb = 0): number {
+  const el = document.getElementById(id) as HTMLInputElement | null;
+  if (!el) return fb;
+  const v = parseFloat(el.value);
+  return isNaN(v) ? fb : v;
+}
+function setText(id: string, t: string) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = t;
+}
+function setHtml(id: string, t: string) {
+  const el = document.getElementById(id);
+  if (el) el.innerHTML = t;
+}
+function clamp(v: number, a: number, b: number): number {
+  return Math.max(a, Math.min(b, v));
+}
+function getRadio(name: string, fb: string): string {
+  const el = document.querySelector<HTMLInputElement>(`input[name="${name}"]:checked`);
+  return el?.value ?? fb;
+}
+function getSelectVal(id: string): number {
+  const el = document.getElementById(id) as HTMLSelectElement | null;
+  return el ? parseInt(el.value, 10) : 0;
+}
+function updateFill(s: HTMLInputElement) {
+  const mn = parseFloat(s.min) || 0, mx = parseFloat(s.max) || 100, v = parseFloat(s.value) || 0;
+  s.style.setProperty('--pct', `${clamp((v - mn) / (mx - mn) * 100, 0, 100)}%`);
+}
+function updateDisplay(id: string, val: string) {
+  const el = document.getElementById(`${id}Display`);
+  if (el) el.textContent = Number(val).toLocaleString('ja-JP');
+}
+function hideSampleBadge() {
+  const b = document.getElementById('sampleBadge');
+  if (b) b.hidden = true;
+}
+function show(id: string, visible: boolean) {
+  const el = document.getElementById(id);
+  if (el) el.hidden = !visible;
+}
+
+/* ─── Get used housing deduction by construction year ─── */
+function getUsedDeduction(year: number): { deduction: number; label: string } {
+  for (const row of TAX.usedDeductions) {
+    if (year >= row.fromYear) return row;
+  }
+  return { deduction: 0, label: '1963年以前' };
+}
+
+/* ─── Visibility update ─── */
+function updateVisibility() {
+  const pt = getRadio('propType', 'new-house');
+  const isHousing    = pt === 'new-house' || pt === 'used-house';
+  const isLandOnly   = pt === 'land-only';
+  const isNonHousing = pt === 'non-housing';
+
+  show('selfOccupyGroup',    isHousing);
+  show('landAssessGroup',    true); // land always shown
+  show('takuchiGroup',       true); // always shown
+  show('buildingAssessGroup', !isLandOnly);
+  show('housingReqGroup',    isHousing || isLandOnly);
+  show('landReductionGroup', isHousing || isLandOnly);
+  show('landTimingGroup',    isHousing);
+  show('newHouseGroup',      pt === 'new-house');
+  show('usedHouseGroup',     pt === 'used-house');
+  show('buildingBreakdown',  !isLandOnly);
+
+  // Floor area warning for new house
+  if (pt === 'new-house') {
+    const floor = getNum('floorArea', 80);
+    const applyNew = getRadio('applyNewDeduction', 'yes') === 'yes';
+    const outOfRange = floor < TAX.newFloorMin || floor > TAX.newFloorMax;
+    show('floorWarning', applyNew && outOfRange);
+  }
+
+  // Used house: construct year group visibility
+  if (pt === 'used-house') {
+    const applyUsed = getRadio('applyUsedDeduction', 'yes') === 'yes';
+    show('constructYearGroup', applyUsed);
+  }
+}
+
+/* ─── Main calculation ─── */
+function calculate() {
+  const pt           = getRadio('propType', 'new-house');
+  const isHousing    = pt === 'new-house' || pt === 'used-house';
+  const isLandOnly   = pt === 'land-only';
+  const hasBuilding  = !isLandOnly;
+  const isSelfOccupy = isHousing && getRadio('isSelfOccupy', 'yes') === 'yes';
+  const isTakuchi    = getRadio('isTakuchi', 'yes') === 'yes';
+
+  const landAssess     = getNum('landAssess', 1500);
+  const buildingAssess = hasBuilding ? getNum('buildingAssess', 800) : 0;
+  const floorArea      = getNum('floorArea', 80);
+  const landArea       = getNum('landArea', 100);
+
+  // Validate
+  const errEl = document.getElementById('errorMsg');
+  if (landAssess < 0 || buildingAssess < 0) {
+    if (errEl) { errEl.textContent = '評価額は0以上で入力してください。'; errEl.hidden = false; }
+    return;
+  }
+  if (errEl) errEl.hidden = true;
+
+  /* ── LAND TAX ── */
+  // 課税標準: 宅地評価土地なら評価額×1/2
+  const landTaxBase     = isTakuchi ? landAssess * TAX.takuchiHalfRatio : landAssess;
+  const landBaseTaxMan  = landTaxBase * TAX.landRate;  // 軽減なし
+  let   landTaxMan      = landBaseTaxMan;
+  let   landReductionMan = 0;
+  let   applyLandRed    = false;
+
+  const doLandRed = getRadio('applyLandReduction', 'yes') === 'yes';
+  if (doLandRed && (isHousing || isLandOnly) && landArea > 0 && floorArea > 0 && landAssess > 0) {
+    // 軽減額 = max(45,000円, 土地1㎡単価 × 1/2 × min(床面積×2, 200) × 3%)
+    const unitPriceYen     = (landAssess * 10000) / landArea;
+    const effectiveFloor   = Math.min(floorArea * 2, 200);
+    const A_yen            = unitPriceYen * TAX.takuchiHalfRatio * effectiveFloor * TAX.landRate;
+    const reductionYen     = Math.max(TAX.landMinReductionYen, A_yen);
+    const baseTaxYen       = landBaseTaxMan * 10000;
+    const reducedYen       = Math.max(0, baseTaxYen - reductionYen);
+    landReductionMan       = Math.min(reductionYen / 10000, landBaseTaxMan);
+    landTaxMan             = reducedYen / 10000;
+    applyLandRed           = true;
+  }
+
+  /* ── BUILDING TAX ── */
+  const buildingRate     = (isHousing || isLandOnly) ? TAX.housingRate : TAX.nonHousingRate;
+  const buildingBaseTaxMan = buildingAssess * buildingRate;
+  let   buildingDeductionMan = 0;
+  let   buildingTaxMan   = buildingBaseTaxMan;
+  let   deductionLabel   = '';
+
+  if (hasBuilding && buildingAssess > 0) {
+    if (pt === 'new-house') {
+      const applyNew  = isSelfOccupy && getRadio('applyNewDeduction', 'yes') === 'yes';
+      const floorOk   = floorArea >= TAX.newFloorMin && floorArea <= TAX.newFloorMax;
+      if (applyNew && floorOk) {
+        buildingDeductionMan = TAX.newDeductionMan;
+        deductionLabel       = '新築住宅 1,200万円控除';
+      }
+    } else if (pt === 'used-house') {
+      const applyUsed  = getRadio('applyUsedDeduction', 'yes') === 'yes';
+      const seismic    = getRadio('seismic', 'unknown');
+      if (applyUsed) {
+        const yr    = getSelectVal('constructYear');
+        const row   = getUsedDeduction(yr);
+        // 1981年以前で耐震不明・なしの場合は控除なし
+        if (yr < 1981 && seismic !== 'yes') {
+          buildingDeductionMan = 0;
+          deductionLabel       = '耐震基準不適合のため控除なし（簡易判定）';
+        } else {
+          buildingDeductionMan = row.deduction;
+          deductionLabel       = `中古住宅控除（${row.label}）`;
+        }
+      }
+    }
+    const taxableBuilding = Math.max(0, buildingAssess - buildingDeductionMan);
+    buildingTaxMan        = taxableBuilding * buildingRate;
+  }
+
+  /* ── TOTALS ── */
+  const totalBeforeMan   = landBaseTaxMan + buildingBaseTaxMan;
+  const totalAfterMan    = landTaxMan + buildingTaxMan;
+  const totalReductionMan = totalBeforeMan - totalAfterMan;
+
+  /* ── DOM UPDATE ── */
+  // Hero
+  setText('rTotal',    fmt(totalAfterMan, 1) + ' 万円');
+  setText('rSaving',   totalReductionMan > 0.05
+    ? '▼ ' + fmt(totalReductionMan, 1) + ' 万円の節税'
+    : '軽減・控除 なし');
+
+  // Building breakdown
+  setText('rBuildingAssess',    fmt(buildingAssess, 0) + ' 万円');
+  setText('rBuildingDeduction', buildingDeductionMan > 0
+    ? '▼ ' + fmt(buildingDeductionMan, 0) + ' 万円'
+    : '0 万円（控除なし）');
+  setText('rDeductionLabel',    deductionLabel);
+  const taxBuilding = Math.max(0, buildingAssess - buildingDeductionMan);
+  setText('rBuildingTaxBase',   fmt(taxBuilding, 0) + ' 万円');
+  setText('rBuildingTax',       fmt(buildingTaxMan, 1) + ' 万円');
+  setText('rBuildingBreakdownTitle' as any,
+    `建物分（取得税 ${(buildingRate * 100).toFixed(0)}%）`);
+  const titleEl = document.getElementById('buildingBreakdownTitle');
+  if (titleEl) titleEl.textContent = `建物分（取得税 ${(buildingRate * 100).toFixed(0)}%）`;
+
+  // Show/hide deduction row
+  show('deductionRow', hasBuilding && isHousing);
+
+  // Land breakdown
+  setText('rLandAssess',   fmt(landAssess, 0) + ' 万円');
+  setText('rLandTaxBase',  fmt(landTaxBase, 0) + ' 万円');
+  setText('rLandBaseNote', isTakuchi ? '（宅地評価土地のため評価額×1/2）' : '');
+  show('landReductionRow', applyLandRed);
+  if (applyLandRed) {
+    setText('rLandReduction', '▼ ' + fmt(landReductionMan, 2) + ' 万円');
+  }
+  setText('rLandTax',  fmt(landTaxMan, 1) + ' 万円');
+
+  // Total
+  setText('rBeforeReduction', fmt(totalBeforeMan, 1) + ' 万円');
+  setText('rTotalConfirm',    fmt(totalAfterMan, 1) + ' 万円');
+
+  /* ── Measures list ── */
+  const measures: string[] = [];
+  if (isTakuchi) {
+    measures.push('宅地評価土地の1/2特例：土地の課税標準が評価額の1/2に軽減');
+  }
+  if (applyLandRed) {
+    const reductionYen = landReductionMan * 10000;
+    measures.push(`住宅用土地の軽減措置：${fmt(landReductionMan, 2)}万円 軽減（45,000円 or 計算式の大きい方）`);
+  }
+  if (buildingDeductionMan > 0) {
+    measures.push(`建物控除：${deductionLabel}（${fmt(buildingDeductionMan, 0)}万円）`);
+  }
+  if (measures.length === 0) {
+    measures.push('軽減・控除の適用なし（標準税率で計算）');
+  }
+  setHtml('measuresList', measures.map(m => `<div class="measure-item">✓ ${m}</div>`).join(''));
+
+  /* ── Cost note ── */
+  const costNote = `不動産取得税の概算は ${fmt(totalAfterMan, 1)} 万円（一度だけかかる購入時コスト）です。` +
+    `仲介手数料・登記費用等の他の諸費用と合わせて初期費用に含めてください。` +
+    `固定資産税シミュレーターで毎年の保有コストも試算し、住宅ローン返済シミュレーターと組み合わせることで総合的な購入計画が立てられます。`;
+  setText('rCostNote', costNote);
+}
+
+/* ─── Slider sync ─── */
+function syncSliderToNum(slider: HTMLInputElement) {
+  const targetId = slider.dataset.target;
+  if (!targetId) return;
+  const numEl = document.getElementById(targetId) as HTMLInputElement | null;
+  if (!numEl) return;
+  numEl.value = slider.value;
+  updateFill(slider);
+  updateDisplay(targetId, slider.value);
+}
+function syncNumToSlider(numEl: HTMLInputElement) {
+  const slider = document.querySelector<HTMLInputElement>(`input.range-slider[data-target="${numEl.id}"]`);
+  if (!slider) return;
+  const mn = parseFloat(slider.min) || 0, mx = parseFloat(slider.max) || 100, step = parseFloat(slider.step) || 1;
+  let v = parseFloat(numEl.value);
+  if (isNaN(v) || v < 0) v = 0;
+  slider.value = String(Math.min(v, mx));
+  updateFill(slider);
+  updateDisplay(numEl.id, numEl.value);
+}
+
+/* ─── Init ─── */
+document.addEventListener('DOMContentLoaded', () => {
+  // Sliders
+  document.querySelectorAll<HTMLInputElement>('input.range-slider').forEach(slider => {
+    updateFill(slider);
+    slider.addEventListener('input', () => {
+      syncSliderToNum(slider);
+      hideSampleBadge();
+      updateVisibility();
+      calculate();
+    });
+  });
+
+  // Number inputs
+  document.querySelectorAll<HTMLInputElement>('input.field-input').forEach(numEl => {
+    numEl.addEventListener('keydown', (e: KeyboardEvent) => {
+      if (['-', 'e', 'E', '+'].includes(e.key)) e.preventDefault();
+    });
+    numEl.addEventListener('change', () => {
+      syncNumToSlider(numEl);
+      hideSampleBadge();
+      updateVisibility();
+      calculate();
+    });
+  });
+
+  // Radio buttons
+  document.querySelectorAll<HTMLInputElement>('input[type="radio"]').forEach(radio => {
+    radio.addEventListener('change', () => {
+      hideSampleBadge();
+      updateVisibility();
+      calculate();
+    });
+  });
+
+  // Select
+  const constructYearEl = document.getElementById('constructYear');
+  if (constructYearEl) {
+    constructYearEl.addEventListener('change', () => {
+      hideSampleBadge();
+      calculate();
+    });
+  }
+
+  updateVisibility();
+  calculate();
+});
+</script>
