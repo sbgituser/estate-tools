@@ -1,0 +1,13 @@
+{
+  "name": "estate-tools",
+  "version": "1.0.0",
+  "description": "不動産ツールサイト - estate.kuras-plus.com",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "astro": "^4.16.0"
+  }
+}

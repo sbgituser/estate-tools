@@ -1,0 +1,23 @@
+---
+export interface Props {
+  href: string;
+  icon: string;
+  label: string;
+  title: string;
+  description: string;
+  badge?: string;
+}
+
+const { href, icon, label, title, description, badge } = Astro.props;
+---
+
+<a href={href} class="tool-card">
+  <div class="tool-card-icon">{icon}</div>
+  <div class="tool-card-label">{label}</div>
+  <div class="tool-card-title">
+    {title}
+    {badge && <span class="tool-card-badge">{badge}</span>}
+  </div>
+  <p class="tool-card-desc">{description}</p>
+  <div class="tool-card-arrow">使ってみる →</div>
+</a>

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://estate.kuras-plus.com/sitemap-index.xml

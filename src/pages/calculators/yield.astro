@@ -1,0 +1,476 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: '不動産利回り計算ツール',
+  url: 'https://estate.kuras-plus.com/calculators/yield',
+  description: '物件価格・家賃・空室率・管理費などを入力して、表面利回りと実質利回りを無料で即計算。',
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'JPY' },
+};
+---
+
+<BaseLayout
+  title="不動産利回り計算ツール"
+  description="物件価格・家賃・空室率・管理費などを入力して、表面利回りと実質利回りを無料で即計算。不動産投資の基礎分析に。"
+  jsonLd={jsonLd}
+>
+  <Header slot="header" currentPath="/calculators/yield" />
+
+  <!-- Hero -->
+  <section class="page-hero">
+    <div class="container">
+      <nav class="breadcrumb" aria-label="パンくずリスト">
+        <a href="/">ホーム</a>
+        <span>›</span>
+        <span>利回り計算ツール</span>
+      </nav>
+      <p class="hero-eyebrow">Yield Calculator</p>
+      <h1 class="hero-title">不動産利回り計算ツール</h1>
+      <p class="hero-desc">
+        物件価格・月額家賃・空室率・諸費用を入力するだけで、
+        表面利回りと実質利回りを即時算出します。
+      </p>
+    </div>
+  </section>
+
+  <!-- Calculator -->
+  <div class="container mt-48" style="padding-bottom: 80px;">
+    <div class="calc-layout">
+
+      <!-- ── Inputs ── -->
+      <section class="card" aria-label="入力フォーム">
+        <h2 class="card-heading">物件情報を入力</h2>
+
+        <div class="field-group">
+          <label class="field-label" for="price">
+            物件価格
+            <span class="field-unit">万円</span>
+          </label>
+          <input class="field-input" type="number" id="price"
+            placeholder="3000" min="1" step="1" inputmode="numeric" />
+        </div>
+
+        <div class="field-group">
+          <label class="field-label" for="rent">
+            月額家賃（満室想定）
+            <span class="field-unit">万円</span>
+          </label>
+          <input class="field-input" type="number" id="rent"
+            placeholder="12" min="0" step="0.1" inputmode="decimal" />
+        </div>
+
+        <hr class="divider" />
+        <p class="section-label">費用（年額・任意）</p>
+
+        <div class="field-group">
+          <label class="field-label" for="vacancy">
+            空室率
+            <span class="field-unit">%</span>
+          </label>
+          <input class="field-input" type="number" id="vacancy"
+            placeholder="10" min="0" max="100" step="1" inputmode="numeric" />
+          <p class="field-hint">年間を通じた平均空室率の目安。一般的な目安は 5〜15%。</p>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label" for="mgmt">
+            管理費率
+            <span class="field-unit">%</span>
+          </label>
+          <input class="field-input" type="number" id="mgmt"
+            placeholder="5" min="0" max="100" step="0.5" inputmode="decimal" />
+          <p class="field-hint">家賃収入に対する管理会社手数料。一般的な目安は 5〜10%。</p>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label" for="repair">
+            修繕費（年額）
+            <span class="field-unit">万円</span>
+          </label>
+          <input class="field-input" type="number" id="repair"
+            placeholder="6" min="0" step="1" inputmode="numeric" />
+        </div>
+
+        <div class="field-group">
+          <label class="field-label" for="other">
+            その他費用（年額）
+            <span class="field-unit">万円</span>
+          </label>
+          <input class="field-input" type="number" id="other"
+            placeholder="0" min="0" step="1" inputmode="numeric" />
+          <p class="field-hint">固定資産税・保険料・ローン利息などを合算してください。</p>
+        </div>
+
+        <button class="btn-calc" id="calcBtn" type="button">計算する</button>
+      </section>
+
+      <!-- ── Results ── -->
+      <section class="card results-card" id="resultsCard" aria-label="計算結果" aria-live="polite">
+        <h2 class="card-heading">計算結果</h2>
+
+        <div class="result-empty" id="resultEmpty">
+          <p>左のフォームに入力して<br />「計算する」を押してください</p>
+        </div>
+
+        <div id="resultContent" hidden>
+
+          <!-- Yield meters -->
+          <div class="yield-row">
+            <div class="yield-box" id="grossBox">
+              <div class="yield-label">表面利回り</div>
+              <div class="yield-value" id="grossYield">—</div>
+              <div class="yield-bar-wrap">
+                <div class="yield-bar" id="grossBar" style="width:0%"></div>
+              </div>
+              <div class="yield-note" id="grossNote"></div>
+            </div>
+            <div class="yield-box" id="netBox">
+              <div class="yield-label">実質利回り</div>
+              <div class="yield-value" id="netYield">—</div>
+              <div class="yield-bar-wrap">
+                <div class="yield-bar" id="netBar" style="width:0%"></div>
+              </div>
+              <div class="yield-note" id="netNote"></div>
+            </div>
+          </div>
+
+          <!-- Detail table -->
+          <table class="result-table">
+            <tbody>
+              <tr>
+                <th>年間家賃収入（満室）</th>
+                <td id="rAnnualRent">—</td>
+              </tr>
+              <tr>
+                <th>空室考慮後収入</th>
+                <td id="rEffectiveRent">—</td>
+              </tr>
+              <tr class="table-sep">
+                <th>管理費</th>
+                <td id="rMgmt">—</td>
+              </tr>
+              <tr>
+                <th>修繕費</th>
+                <td id="rRepair">—</td>
+              </tr>
+              <tr>
+                <th>その他費用</th>
+                <td id="rOther">—</td>
+              </tr>
+              <tr class="table-total">
+                <th>年間総費用</th>
+                <td id="rTotalCost">—</td>
+              </tr>
+              <tr class="table-net">
+                <th>年間純収益（NOI）</th>
+                <td id="rNOI">—</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <p class="result-disclaimer">
+            ※ 計算結果はあくまで参考値です。ローン返済・税金等は含まれていません。
+          </p>
+        </div>
+      </section>
+    </div>
+
+    <!-- How to use -->
+    <section class="howto mt-48">
+      <h2 class="section-title">利回りの見方</h2>
+      <div class="howto-grid">
+        <div class="howto-item">
+          <div class="howto-icon">📈</div>
+          <h3>表面利回り</h3>
+          <p>満室家賃収入 ÷ 物件価格 × 100。費用を考慮しないシンプルな指標。物件比較の第一歩。</p>
+        </div>
+        <div class="howto-item">
+          <div class="howto-icon">🧮</div>
+          <h3>実質利回り</h3>
+          <p>空室・管理費・修繕費等を差し引いた純収益 ÷ 物件価格 × 100。実態に近い収益力を示す。</p>
+        </div>
+        <div class="howto-item">
+          <div class="howto-icon">🎯</div>
+          <h3>目安の基準</h3>
+          <p>都市部：表面 4〜6%、実質 3〜4%。地方：表面 8〜12%、実質 6〜8%。エリアや物件種別で大きく異なる。</p>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <Footer slot="footer" />
+</BaseLayout>
+
+<style>
+/* ── Layout ── */
+.calc-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  align-items: start;
+}
+@media (max-width: 768px) {
+  .calc-layout { grid-template-columns: 1fr; }
+}
+
+/* ── Card ── */
+.card {
+  background: var(--c-bg-card);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  box-shadow: var(--shadow-sm);
+}
+.card-heading {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--c-primary);
+  margin-bottom: 20px;
+}
+
+/* ── Fields ── */
+.field-group { margin-bottom: 16px; }
+.field-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--c-text);
+  margin-bottom: 6px;
+}
+.field-unit { font-size: 0.75rem; color: var(--c-text-muted); font-weight: 400; }
+.field-input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-md);
+  font-size: 1rem;
+  font-family: var(--font);
+  color: var(--c-text);
+  background: var(--c-bg);
+  transition: border-color 0.15s, box-shadow 0.15s;
+  -moz-appearance: textfield;
+}
+.field-input::-webkit-outer-spin-button,
+.field-input::-webkit-inner-spin-button { -webkit-appearance: none; }
+.field-input:focus {
+  outline: none;
+  border-color: var(--c-primary);
+  box-shadow: 0 0 0 3px rgba(26,74,58,0.12);
+}
+.field-hint { font-size: 0.75rem; color: var(--c-text-muted); margin-top: 4px; line-height: 1.5; }
+
+.divider { border: none; border-top: 1px solid var(--c-border); margin: 20px 0 16px; }
+.section-label { font-size: 0.75rem; font-weight: 700; color: var(--c-text-muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 12px; }
+
+/* ── Button ── */
+.btn-calc {
+  width: 100%;
+  margin-top: 8px;
+  padding: 14px;
+  background: var(--c-primary);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 1rem;
+  font-weight: 700;
+  font-family: var(--font);
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+}
+.btn-calc:hover { background: var(--c-primary-hover); }
+.btn-calc:active { transform: scale(0.98); }
+
+/* ── Results empty ── */
+.result-empty {
+  text-align: center;
+  padding: 48px 0;
+  color: var(--c-text-muted);
+  font-size: 0.9rem;
+  line-height: 1.8;
+}
+
+/* ── Yield boxes ── */
+.yield-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.yield-box {
+  border: 2px solid var(--c-border);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  text-align: center;
+  transition: border-color 0.2s;
+}
+.yield-box.good  { border-color: var(--c-success); background: rgba(45,122,79,0.04); }
+.yield-box.ok    { border-color: var(--c-accent);  background: rgba(201,148,58,0.04); }
+.yield-box.low   { border-color: var(--c-danger);  background: rgba(192,57,43,0.04); }
+.yield-label { font-size: 0.75rem; font-weight: 700; color: var(--c-text-muted); margin-bottom: 6px; }
+.yield-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--c-primary);
+  line-height: 1;
+  margin-bottom: 10px;
+}
+.yield-box.good .yield-value { color: var(--c-success); }
+.yield-box.ok   .yield-value { color: var(--c-warning); }
+.yield-box.low  .yield-value { color: var(--c-danger); }
+.yield-bar-wrap {
+  height: 6px;
+  background: var(--c-border);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+.yield-bar {
+  height: 100%;
+  border-radius: 3px;
+  background: var(--c-primary);
+  transition: width 0.4s ease;
+}
+.yield-box.good .yield-bar { background: var(--c-success); }
+.yield-box.ok   .yield-bar { background: var(--c-accent); }
+.yield-box.low  .yield-bar { background: var(--c-danger); }
+.yield-note { font-size: 0.7rem; color: var(--c-text-muted); }
+
+/* ── Table ── */
+.result-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+  margin-bottom: 12px;
+}
+.result-table th, .result-table td {
+  padding: 8px 4px;
+  border-bottom: 1px solid var(--c-border);
+  text-align: left;
+}
+.result-table th { color: var(--c-text-muted); font-weight: 400; width: 60%; }
+.result-table td { text-align: right; font-weight: 600; color: var(--c-text); }
+.result-table .table-sep th { padding-top: 14px; }
+.result-table .table-total th,
+.result-table .table-total td { font-weight: 700; color: var(--c-text); border-top: 2px solid var(--c-border); border-bottom: none; }
+.result-table .table-net th,
+.result-table .table-net td { font-weight: 700; color: var(--c-primary); }
+.result-disclaimer { font-size: 0.72rem; color: var(--c-text-muted); line-height: 1.6; }
+
+/* ── How-to ── */
+.howto-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+.howto-item {
+  background: var(--c-bg-card);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-md);
+  padding: 20px;
+}
+.howto-icon { font-size: 1.5rem; margin-bottom: 8px; }
+.howto-item h3 { font-size: 0.95rem; font-weight: 700; color: var(--c-primary); margin-bottom: 8px; }
+.howto-item p { font-size: 0.82rem; color: var(--c-text-muted); line-height: 1.6; }
+</style>
+
+<script>
+function fmt(value: number, decimals = 0): string {
+  return value.toLocaleString('ja-JP', {
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals,
+  });
+}
+
+function getNum(id: string, fallback = 0): number {
+  const el = document.getElementById(id) as HTMLInputElement | null;
+  if (!el) return fallback;
+  const v = parseFloat(el.value);
+  return isNaN(v) ? fallback : v;
+}
+
+function setText(id: string, text: string) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = text;
+}
+
+function classify(pct: number): 'good' | 'ok' | 'low' {
+  if (pct >= 5) return 'good';
+  if (pct >= 3) return 'ok';
+  return 'low';
+}
+
+function noteText(pct: number): string {
+  if (pct >= 8) return '高利回り';
+  if (pct >= 5) return '良好';
+  if (pct >= 3) return '標準的';
+  return '低め';
+}
+
+function setYieldBox(boxId: string, valueId: string, barId: string, noteId: string, pct: number) {
+  const box  = document.getElementById(boxId);
+  const bar  = document.getElementById(barId) as HTMLElement | null;
+
+  setText(valueId, pct.toFixed(2) + '%');
+  setText(noteId, noteText(pct));
+
+  const cls = classify(pct);
+  if (box) {
+    box.classList.remove('good', 'ok', 'low');
+    box.classList.add(cls);
+  }
+  if (bar) {
+    // cap bar at 12% for visual max
+    bar.style.width = Math.min(pct / 12 * 100, 100) + '%';
+  }
+}
+
+document.getElementById('calcBtn')?.addEventListener('click', () => {
+  const price    = getNum('price');    // 万円
+  const rent     = getNum('rent');     // 万円/月
+  const vacancy  = getNum('vacancy',  10); // %
+  const mgmtRate = getNum('mgmt',      5); // %
+  const repair   = getNum('repair',    0); // 万円/年
+  const other    = getNum('other',     0); // 万円/年
+
+  if (price <= 0 || rent <= 0) {
+    alert('物件価格と月額家賃を入力してください。');
+    return;
+  }
+
+  const annualRent     = rent * 12;                              // 満室年収入
+  const effectiveRent  = annualRent * (1 - vacancy / 100);      // 空室考慮後
+  const mgmtCost       = effectiveRent * (mgmtRate / 100);      // 管理費
+  const totalCost      = mgmtCost + repair + other;             // 総費用
+  const noi            = effectiveRent - totalCost;             // NOI
+  const grossYield     = (annualRent / price) * 100;            // 表面利回り
+  const netYield       = (noi / price) * 100;                   // 実質利回り
+
+  // Show results section
+  const empty   = document.getElementById('resultEmpty');
+  const content = document.getElementById('resultContent');
+  if (empty)   empty.hidden = true;
+  if (content) content.hidden = false;
+
+  // Yield boxes
+  setYieldBox('grossBox', 'grossYield', 'grossBar', 'grossNote', grossYield);
+  setYieldBox('netBox',   'netYield',   'netBar',   'netNote',   Math.max(netYield, 0));
+
+  // Detail table
+  setText('rAnnualRent',   fmt(annualRent, 2)    + ' 万円');
+  setText('rEffectiveRent',fmt(effectiveRent, 2) + ' 万円');
+  setText('rMgmt',         fmt(mgmtCost, 2)      + ' 万円');
+  setText('rRepair',       fmt(repair, 2)         + ' 万円');
+  setText('rOther',        fmt(other, 2)          + ' 万円');
+  setText('rTotalCost',    fmt(totalCost, 2)      + ' 万円');
+  setText('rNOI',          fmt(noi, 2)            + ' 万円');
+});
+</script>

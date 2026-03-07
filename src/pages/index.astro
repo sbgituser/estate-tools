@@ -1,0 +1,67 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import ToolCard from '../components/ToolCard.astro';
+
+const tools = [
+  {
+    href: '/calculators/yield',
+    icon: '📊',
+    label: 'Calculator',
+    title: '不動産利回り計算ツール',
+    description: '物件価格・家賃・空室率・諸費用を入力するだけで、表面利回りと実質利回りを即時算出。投資判断の第一歩に。',
+    badge: '無料',
+  },
+];
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: '不動産ツールズ',
+  url: 'https://estate.kuras-plus.com',
+  description: '不動産投資の意思決定をサポートする無料計算ツール集',
+};
+---
+
+<BaseLayout
+  title="不動産ツールズ | kuras-plus"
+  description="不動産投資の意思決定をサポートする無料ツール集。利回り計算・税金シミュレーションなど。"
+  jsonLd={jsonLd}
+>
+  <Header slot="header" currentPath="/" />
+
+  <!-- Hero -->
+  <section class="page-hero">
+    <div class="container">
+      <p class="hero-eyebrow">Real Estate Tools</p>
+      <h1 class="hero-title">不動産投資を、<br />数字で考える。</h1>
+      <p class="hero-desc">
+        物件選びから収益シミュレーションまで、不動産投資の意思決定を支援する無料ツール集です。
+      </p>
+    </div>
+  </section>
+
+  <!-- Tools -->
+  <section class="container mt-48">
+    <h2 class="section-title">ツール一覧</h2>
+    <p class="section-sub">すべて無料・登録不要でご利用いただけます</p>
+    <div class="tool-grid">
+      {tools.map((tool) => (
+        <ToolCard {...tool} />
+      ))}
+    </div>
+  </section>
+
+  <!-- About -->
+  <section class="container mt-48" style="max-width: 680px; padding-bottom: 80px;">
+    <h2 class="section-title">このサイトについて</h2>
+    <p class="section-sub" style="margin-bottom: 0; line-height: 1.8;">
+      不動産ツールズは、個人投資家や不動産購入を検討している方向けに、
+      複雑な計算をシンプルに解決するウェブツールを提供しています。
+      登録・ログイン不要、すべてブラウザ上で完結します。
+    </p>
+  </section>
+
+  <Footer slot="footer" />
+</BaseLayout>

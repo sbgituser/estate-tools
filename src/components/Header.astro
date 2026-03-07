@@ -1,0 +1,36 @@
+---
+export interface Props {
+  currentPath?: string;
+}
+
+const { currentPath = Astro.url.pathname } = Astro.props;
+
+const nav = [
+  { href: '/',               label: 'ホーム' },
+  { href: '/calculators/yield', label: '利回り計算' },
+];
+---
+
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="site-logo">
+      <span class="logo-icon">🏠</span>
+      <span>
+        不動産ツールズ
+        <span class="logo-sub">kuras-plus</span>
+      </span>
+    </a>
+
+    <nav class="site-nav" aria-label="メインナビゲーション">
+      {nav.map(({ href, label }) => (
+        <a
+          href={href}
+          class={currentPath === href ? 'active' : ''}
+          aria-current={currentPath === href ? 'page' : undefined}
+        >
+          {label}
+        </a>
+      ))}
+    </nav>
+  </div>
+</header>
