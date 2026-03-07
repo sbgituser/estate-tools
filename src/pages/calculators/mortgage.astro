@@ -1,0 +1,1103 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: '住宅ローン返済シミュレーター',
+  url: 'https://estate.kuras-plus.com/calculators/mortgage',
+  description: '借入額・金利・返済年数を入力するだけで毎月返済額・総返済額・返済負担率を即計算。元利均等・元金均等の比較も可能な無料ツール。',
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'JPY' },
+};
+---
+
+<BaseLayout
+  title="住宅ローン返済シミュレーター | 毎月返済額・総返済額を無料計算"
+  description="借入額・金利・返済年数を入力するだけで毎月の返済額・総返済額・返済負担率を即計算。元利均等と元金均等の比較、返済スケジュール表示にも対応した無料住宅ローンシミュレーターです。"
+  jsonLd={jsonLd}
+>
+  <Header slot="header" currentPath="/calculators/mortgage" />
+
+  <!-- Hero -->
+  <section class="page-hero">
+    <div class="container">
+      <nav class="breadcrumb" aria-label="パンくずリスト">
+        <a href="/">ホーム</a>
+        <span>›</span>
+        <span>住宅ローン返済シミュレーター</span>
+      </nav>
+      <p class="hero-eyebrow">Mortgage Simulator</p>
+      <h1 class="hero-title">住宅ローン返済シミュレーター</h1>
+      <p class="hero-desc">
+        借入額・金利・返済年数を入力するだけで、<br />
+        毎月の返済額・総返済額・返済負担率を即時算出します。
+      </p>
+    </div>
+  </section>
+
+  <!-- Calculator -->
+  <div class="container mt-48" style="padding-bottom: 80px;">
+    <div class="calc-layout">
+
+      <!-- ── Inputs ── -->
+      <section class="card" aria-label="入力フォーム">
+        <h2 class="card-heading">ローン条件を入力</h2>
+
+        <p class="group-label">物件・借入情報</p>
+
+        <!-- 物件価格 -->
+        <div class="field-group">
+          <div class="field-label">
+            <label for="price">物件価格</label>
+            <span class="field-display"><span id="priceDisplay">4,000</span> 万円</span>
+          </div>
+          <input class="range-slider" type="range" id="priceSlider"
+            data-target="price" value="4000" min="100" max="20000" step="100" />
+          <input class="field-input" type="number" id="price"
+            value="4000" min="100" max="20000" step="100" inputmode="numeric" />
+        </div>
+
+        <!-- 頭金 -->
+        <div class="field-group">
+          <div class="field-label">
+            <label for="down">頭金</label>
+            <span class="field-display"><span id="downDisplay">800</span> 万円</span>
+          </div>
+          <input class="range-slider" type="range" id="downSlider"
+            data-target="down" value="800" min="0" max="4000" step="50" />
+          <input class="field-input" type="number" id="down"
+            value="800" min="0" max="4000" step="50" inputmode="numeric" />
+          <p class="field-hint">物件価格の10〜20%が一般的。0円の場合はフルローンとして計算します。</p>
+        </div>
+
+        <!-- 借入額（自動計算） -->
+        <div class="borrow-display">
+          <span class="borrow-label">借入額（自動計算）</span>
+          <span class="borrow-value" id="borrowDisplay">3,200 万円</span>
+        </div>
+
+        <hr class="divider" />
+        <p class="group-label">返済条件</p>
+
+        <!-- 年利 -->
+        <div class="field-group">
+          <div class="field-label">
+            <label for="rate">年利（金利）</label>
+            <span class="field-display"><span id="rateDisplay">1.5</span> %</span>
+          </div>
+          <input class="range-slider" type="range" id="rateSlider"
+            data-target="rate" value="1.5" min="0" max="10" step="0.05" />
+          <input class="field-input" type="number" id="rate"
+            value="1.5" min="0" max="10" step="0.05" inputmode="decimal" />
+          <p class="field-hint">変動金利：0.3〜1%台 / 固定10年：1〜2%台 / フラット35：1.8〜2.5%台（目安）</p>
+        </div>
+
+        <!-- 返済年数 -->
+        <div class="field-group">
+          <div class="field-label">
+            <label for="years">返済年数</label>
+            <span class="field-display"><span id="yearsDisplay">35</span> 年</span>
+          </div>
+          <input class="range-slider" type="range" id="yearsSlider"
+            data-target="years" value="35" min="1" max="50" step="1" />
+          <input class="field-input" type="number" id="years"
+            value="35" min="1" max="50" step="1" inputmode="numeric" />
+        </div>
+
+        <!-- 返済方式 -->
+        <div class="field-group">
+          <div class="field-label-text">返済方式</div>
+          <div class="repay-toggle">
+            <label class="repay-option">
+              <input type="radio" name="repayType" value="equal-payment" checked />
+              <span>元利均等返済</span>
+            </label>
+            <label class="repay-option">
+              <input type="radio" name="repayType" value="equal-principal" />
+              <span>元金均等返済</span>
+            </label>
+          </div>
+          <p class="field-hint">元利均等：毎月同額で返済。元金均等：当初高く徐々に減少。</p>
+        </div>
+
+        <hr class="divider" />
+        <p class="group-label">任意設定</p>
+
+        <!-- ボーナス返済 -->
+        <div class="field-group">
+          <div class="field-label">
+            <label for="bonus">ボーナス加算額（年2回）</label>
+            <span class="field-display"><span id="bonusDisplay">0</span> 万円/回</span>
+          </div>
+          <input class="range-slider" type="range" id="bonusSlider"
+            data-target="bonus" value="0" min="0" max="50" step="1" />
+          <input class="field-input" type="number" id="bonus"
+            value="0" min="0" max="50" step="1" inputmode="numeric" />
+          <p class="field-hint">ボーナス月に上乗せする金額。0の場合はボーナス返済なし。</p>
+        </div>
+
+        <!-- 管理費・修繕積立金 -->
+        <div class="field-group">
+          <div class="field-label">
+            <label for="fee">管理費・修繕積立金（月額）</label>
+            <span class="field-display"><span id="feeDisplay">2</span> 万円</span>
+          </div>
+          <input class="range-slider" type="range" id="feeSlider"
+            data-target="fee" value="2" min="0" max="20" step="0.5" />
+          <input class="field-input" type="number" id="fee"
+            value="2" min="0" max="20" step="0.5" inputmode="decimal" />
+          <p class="field-hint">マンション購入の場合に入力。戸建てなら0でもOK。</p>
+        </div>
+
+        <!-- 年収 -->
+        <div class="field-group">
+          <div class="field-label-text">年収（返済負担率の表示に使用・任意）</div>
+          <div class="income-row">
+            <input class="field-input income-input" type="number" id="income"
+              placeholder="例: 600" min="0" max="10000" step="50" inputmode="numeric" />
+            <span class="income-unit">万円</span>
+          </div>
+          <p class="field-hint">入力すると「年収に占めるローン返済の割合」を表示します。</p>
+        </div>
+      </section>
+
+      <!-- ── Results ── -->
+      <section class="card results-card" aria-label="計算結果" aria-live="polite">
+        <h2 class="card-heading">計算結果</h2>
+
+        <div id="sampleBadge" class="sample-badge">
+          <span>📋</span> サンプル値による計算例 — 値を変更すると即時更新されます
+        </div>
+
+        <div id="errorMsg" class="error-msg" hidden></div>
+
+        <!-- Hero metrics -->
+        <div class="hero-metrics">
+          <div class="metric-box primary-box">
+            <div class="metric-label">毎月返済額</div>
+            <div class="metric-value" id="rMonthly">—</div>
+          </div>
+          <div class="metric-box">
+            <div class="metric-label">総返済額</div>
+            <div class="metric-value sm" id="rTotal">—</div>
+          </div>
+        </div>
+
+        <!-- Sub metrics -->
+        <div class="sub-metrics">
+          <div class="sub-metric">
+            <div class="sub-label">総利息</div>
+            <div class="sub-value" id="rInterest">—</div>
+          </div>
+          <div class="sub-metric">
+            <div class="sub-label">年間返済額</div>
+            <div class="sub-value" id="rAnnual">—</div>
+          </div>
+          <div class="sub-metric">
+            <div class="sub-label">借入額</div>
+            <div class="sub-value" id="rBorrow">—</div>
+          </div>
+          <div class="sub-metric">
+            <div class="sub-label">管理費込み月支払</div>
+            <div class="sub-value" id="rWithFee">—</div>
+          </div>
+        </div>
+
+        <!-- Bonus row -->
+        <div id="bonusRow" class="info-row" hidden>
+          <span class="info-row-label">ボーナス月返済額</span>
+          <span class="info-row-value" id="rBonusMonthly">—</span>
+        </div>
+
+        <!-- Ratio row -->
+        <div id="ratioRow" hidden>
+          <div class="metric-box ratio-box" id="rRatioBox">
+            <div class="metric-label">返済負担率（年収比）</div>
+            <div class="metric-value sm" id="rRatio">—</div>
+            <div class="metric-note" id="rRatioNote"></div>
+          </div>
+        </div>
+
+        <!-- Comparison -->
+        <p class="section-label mt-16">返済方式の比較</p>
+        <table class="compare-table">
+          <thead>
+            <tr>
+              <th></th>
+              <th>元利均等</th>
+              <th>元金均等</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="row-head">毎月返済額</td>
+              <td id="cEPMonthly">—</td>
+              <td class="range-cell"><span id="cEPRFirst">—</span><br /><small>〜 <span id="cEPRLast">—</span></small></td>
+            </tr>
+            <tr>
+              <td class="row-head">総返済額</td>
+              <td id="cEPTotal">—</td>
+              <td id="cEPRTotal">—</td>
+            </tr>
+            <tr>
+              <td class="row-head">総利息</td>
+              <td id="cEPInterest">—</td>
+              <td id="cEPRInterest">—</td>
+            </tr>
+          </tbody>
+        </table>
+        <p class="compare-note" id="cDiff"></p>
+
+        <!-- Schedule -->
+        <p class="section-label mt-16">返済スケジュール（年次・単位：万円）</p>
+        <div class="schedule-wrap">
+          <table class="schedule-table">
+            <thead>
+              <tr>
+                <th>年</th>
+                <th>返済額</th>
+                <th>元金</th>
+                <th>利息</th>
+                <th>残高</th>
+              </tr>
+            </thead>
+            <tbody id="scheduleBody"></tbody>
+          </table>
+        </div>
+
+        <p class="result-disclaimer">
+          ※ 元利均等・元金均等ともに概算です。ボーナス返済は年2回の加算として計算。
+          団体信用生命保険料・税金・繰上返済は含まれていません。
+        </p>
+      </section>
+    </div>
+
+    <!-- ── Related tools ── -->
+    <section class="related-section mt-48">
+      <h2 class="section-title">関連ツール</h2>
+      <div class="related-grid">
+        <a href="/calculators/yield" class="related-card">
+          <div class="related-icon">📊</div>
+          <div class="related-title">不動産利回り計算ツール</div>
+          <p class="related-desc">表面・実質利回りで物件の収益力を確認</p>
+          <span class="related-arrow">使ってみる →</span>
+        </a>
+        <a href="/calculators/roi" class="related-card">
+          <div class="related-icon">💹</div>
+          <div class="related-title">不動産投資ROI計算ツール</div>
+          <p class="related-desc">頭金・ローン込みで自己資金ベースのROIを算出</p>
+          <span class="related-arrow">使ってみる →</span>
+        </a>
+        <div class="related-card coming-soon">
+          <div class="related-icon">🏛️</div>
+          <div class="related-title">固定資産税シミュレーター</div>
+          <p class="related-desc">評価額をもとに固定資産税・都市計画税の目安を計算</p>
+          <span class="related-arrow coming-label">準備中</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Explanation ── -->
+    <section class="explain mt-48">
+      <h2 class="section-title">住宅ローンの基礎知識</h2>
+      <div class="explain-grid">
+
+        <div class="explain-card">
+          <h3>🏠 住宅ローン返済シミュレーターとは</h3>
+          <p>
+            借入額・金利・返済年数を入力することで、毎月の返済額・総返済額・総利息を
+            自動計算するツールです。実際に銀行の窓口へ行く前に、
+            「無理なく返せる金額かどうか」を手軽に確認できます。
+            ボーナス返済や管理費も加味できるので、マンション購入の検討にも活用できます。
+          </p>
+        </div>
+
+        <div class="explain-card">
+          <h3>🔄 元利均等返済と元金均等返済の違い</h3>
+          <p>
+            <strong>元利均等返済</strong>は毎月の返済額が一定で家計管理しやすい反面、
+            返済初期は利息の割合が高く元金の減りが遅いです。<br />
+            <strong>元金均等返済</strong>は毎月の元金返済額が一定のため
+            残高が早く減り総利息は少なくなりますが、
+            返済初期の月々負担が大きくなります。
+            収入が安定していて当初の支出に余裕がある場合は元金均等も検討する価値があります。
+          </p>
+        </div>
+
+        <div class="explain-card">
+          <h3>⚠️ 毎月返済額を見るときの注意点</h3>
+          <ul>
+            <li>変動金利は将来的に返済額が増える可能性がある</li>
+            <li>管理費・修繕積立金・固定資産税は返済額に含まれない別途支出</li>
+            <li>火災保険料・団体信用生命保険料も継続的なコスト</li>
+            <li>返済額は税引後の手取り収入で判断することが重要</li>
+          </ul>
+        </div>
+
+        <div class="explain-card">
+          <h3>🏢 管理費・修繕積立金も含めて考える理由</h3>
+          <p>
+            マンション購入の場合、毎月の住宅ローン返済に加えて
+            管理費（共用部の維持管理）と修繕積立金（将来の大規模修繕費用）が
+            毎月かかります。一般的な相場は合計で月1〜3万円程度ですが、
+            築年数が経つにつれて修繕積立金が値上がりするケースも多くあります。
+            「月々の支払合計」をベースに資金計画を立てることが重要です。
+          </p>
+        </div>
+
+        <div class="explain-card">
+          <h3>📏 無理のない返済額の考え方</h3>
+          <p>
+            一般的に返済負担率（年収に占める年間返済額の割合）は
+            <strong>25%以下</strong>が安全水準とされています。
+            金融機関の審査基準は35〜40%程度まで認められる場合がありますが、
+            教育費・老後資金・緊急予備費なども考慮すると、
+            実際の生活ではより低い水準で計画することを推奨します。
+            「借りられる金額」ではなく「無理なく返せる金額」で計画しましょう。
+          </p>
+        </div>
+
+        <div class="explain-card">
+          <h3>💡 頭金を増やすと返済額はどう変わる？</h3>
+          <p>
+            頭金を増やすほど借入額が減り、毎月返済額と総利息の両方が下がります。
+            ただし頭金を入れすぎると手元の流動資金が減り、
+            急な修繕や生活費の変動に対応しづらくなるリスクもあります。
+            一般的には引渡し後に生活費の6ヶ月分程度の現金を手元に残すことが推奨されます。
+            このツールで頭金を変えた場合の差額も確認してみてください。
+          </p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ── FAQ ── -->
+    <section class="faq-section mt-48">
+      <h2 class="section-title">よくある質問</h2>
+      <div class="faq-list">
+
+        <details class="faq-item">
+          <summary class="faq-q">住宅ローンの毎月返済額はどうやって計算しますか？</summary>
+          <div class="faq-a">
+            <p>
+              元利均等返済の毎月返済額は
+              <strong>借入額 × 月利 × (1＋月利)^返済月数 ÷ ((1＋月利)^返済月数 − 1)</strong>
+              という計算式で求めます。月利は年利÷12で算出します。
+              本ツールはこの計算式に基づいてリアルタイムで計算しています。
+              元金均等返済の場合は毎月の元金返済額が一定で、
+              残高に応じた利息が上乗せされた金額が毎月の返済額になります。
+            </p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary class="faq-q">元利均等返済と元金均等返済はどちらがよいですか？</summary>
+          <div class="faq-a">
+            <p>
+              一般的な住宅購入者には<strong>元利均等返済</strong>が向いています。
+              毎月の返済額が一定で家計管理がしやすいためです。
+              元金均等返済は総利息が少なく済む一方、返済初期の月々負担が大きいため、
+              収入が安定していて当初の支出に余裕がある方向けです。
+              本ツールの「返済方式の比較」欄で、自分の条件での差額を確認してみてください。
+            </p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary class="faq-q">頭金を増やすと毎月返済額はどれくらい下がりますか？</summary>
+          <div class="faq-a">
+            <p>
+              頭金100万円を増やすと、金利1.5%・35年返済の場合、
+              毎月返済額はおよそ<strong>2,500〜3,000円</strong>程度下がります。
+              総利息ではおよそ20〜25万円の節約になります。
+              本ツールの頭金スライダーを動かして、
+              ご自身の条件での変化を確認してみてください。
+            </p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary class="faq-q">年収に対して住宅ローンはいくらまでが目安ですか？</summary>
+          <div class="faq-a">
+            <p>
+              返済負担率が<strong>年収の25%以内</strong>に収まることが、
+              生活に余裕を保てる安全水準とされています。
+              例えば年収600万円の場合、年間返済額150万円（月12.5万円）以内が目安です。
+              金融機関の審査では35〜40%まで認められる場合もありますが、
+              教育費や老後資金を考えると実際の生活では25%以下を目標にすることをおすすめします。
+              本ツールの「年収」欄に入力すると返済負担率が表示されます。
+            </p>
+          </div>
+        </details>
+
+      </div>
+    </section>
+
+  </div>
+
+  <Footer slot="footer" />
+</BaseLayout>
+
+<style>
+/* ── Layout ── */
+.calc-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  align-items: start;
+}
+@media (max-width: 768px) {
+  .calc-layout { grid-template-columns: 1fr; }
+}
+
+/* ── Card ── */
+.card {
+  background: var(--c-bg-card);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  box-shadow: var(--shadow-sm);
+}
+.card-heading {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--c-primary);
+  margin-bottom: 20px;
+}
+
+/* ── Field group ── */
+.group-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--c-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 12px;
+}
+.field-group { margin-bottom: 16px; }
+.field-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 4px;
+}
+.field-label label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--c-text);
+}
+.field-label-text {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--c-text);
+  margin-bottom: 8px;
+}
+.field-display {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--c-primary);
+  white-space: nowrap;
+}
+.field-hint { font-size: 0.72rem; color: var(--c-text-muted); margin-top: 3px; line-height: 1.5; }
+.divider { border: none; border-top: 1px solid var(--c-border); margin: 18px 0 14px; }
+
+/* ── Range slider ── */
+.range-slider {
+  width: 100%;
+  height: 20px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: linear-gradient(
+    to right,
+    var(--c-primary) var(--pct, 0%),
+    var(--c-border)  var(--pct, 0%)
+  );
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+  padding: 0;
+  margin: 0 0 6px;
+  display: block;
+}
+.range-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: var(--c-primary);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+  transition: transform 0.1s, background 0.1s;
+}
+.range-slider::-webkit-slider-thumb:hover,
+.range-slider:active::-webkit-slider-thumb { background: var(--c-primary-hover); transform: scale(1.15); }
+.range-slider::-moz-range-thumb {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: var(--c-primary);
+  border: none;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+}
+
+/* ── Number input ── */
+.field-input {
+  width: 100%;
+  padding: 7px 10px;
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-sm);
+  font-size: 0.875rem;
+  font-family: var(--font);
+  color: var(--c-text);
+  background: var(--c-bg);
+  transition: border-color 0.15s;
+  -moz-appearance: textfield;
+}
+.field-input::-webkit-outer-spin-button,
+.field-input::-webkit-inner-spin-button { -webkit-appearance: none; }
+.field-input:focus {
+  outline: none;
+  border-color: var(--c-primary);
+  box-shadow: 0 0 0 2px rgba(26,74,58,0.1);
+}
+
+/* ── Borrow display ── */
+.borrow-display {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(26,74,58,0.06);
+  border: 1px solid rgba(26,74,58,0.18);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  margin-bottom: 4px;
+}
+.borrow-label { font-size: 0.8rem; color: var(--c-text-muted); font-weight: 600; }
+.borrow-value { font-size: 1rem; font-weight: 700; color: var(--c-primary); }
+
+/* ── Repay toggle ── */
+.repay-toggle {
+  display: flex;
+  gap: 8px;
+}
+.repay-option {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  padding: 8px 14px;
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-sm);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--c-text-muted);
+  transition: border-color 0.15s, background 0.15s, color 0.15s;
+  flex: 1;
+  justify-content: center;
+}
+.repay-option:has(input:checked) {
+  border-color: var(--c-primary);
+  background: rgba(26,74,58,0.06);
+  color: var(--c-primary);
+}
+.repay-option input { display: none; }
+
+/* ── Income row ── */
+.income-row { display: flex; align-items: center; gap: 8px; }
+.income-input { flex: 1; }
+.income-unit { font-size: 0.82rem; color: var(--c-text-muted); white-space: nowrap; }
+
+/* ── Sample badge ── */
+.sample-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(201,148,58,0.10);
+  border: 1px solid var(--c-accent);
+  color: var(--c-warning);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 7px 12px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 14px;
+  line-height: 1.4;
+}
+
+/* ── Error ── */
+.error-msg {
+  background: rgba(192,57,43,0.08);
+  border: 1px solid var(--c-danger);
+  border-radius: var(--radius-sm);
+  color: var(--c-danger);
+  font-size: 0.82rem;
+  padding: 10px 12px;
+  margin-bottom: 12px;
+}
+
+/* ── Hero metrics ── */
+.hero-metrics {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+@media (max-width: 480px) { .hero-metrics { grid-template-columns: 1fr; } }
+.metric-box {
+  border: 2px solid var(--c-border);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  text-align: center;
+}
+.primary-box { border-color: var(--c-primary); background: rgba(26,74,58,0.04); }
+.metric-box.good  { border-color: var(--c-success); background: rgba(45,122,79,0.04); }
+.metric-box.ok    { border-color: var(--c-accent);  background: rgba(201,148,58,0.04); }
+.metric-box.low   { border-color: var(--c-danger);  background: rgba(192,57,43,0.04); }
+.metric-label { font-size: 0.7rem; font-weight: 700; color: var(--c-text-muted); margin-bottom: 6px; }
+.metric-value { font-size: 1.6rem; font-weight: 700; color: var(--c-primary); line-height: 1; margin-bottom: 4px; }
+.metric-value.sm { font-size: 1.2rem; }
+.metric-box.good .metric-value { color: var(--c-success); }
+.metric-box.ok   .metric-value { color: var(--c-warning); }
+.metric-box.low  .metric-value { color: var(--c-danger); }
+.metric-note { font-size: 0.7rem; color: var(--c-text-muted); }
+.ratio-box { margin-top: 12px; }
+
+/* ── Sub metrics ── */
+.sub-metrics {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.sub-metric {
+  background: var(--c-bg);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+}
+.sub-label { font-size: 0.68rem; color: var(--c-text-muted); font-weight: 600; margin-bottom: 2px; }
+.sub-value { font-size: 0.875rem; font-weight: 700; color: var(--c-text); }
+
+/* ── Info row ── */
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(201,148,58,0.06);
+  border: 1px solid rgba(201,148,58,0.25);
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+  margin-bottom: 10px;
+  font-size: 0.82rem;
+}
+.info-row-label { color: var(--c-text-muted); font-weight: 600; }
+.info-row-value { font-weight: 700; color: var(--c-text); }
+
+/* ── Section label ── */
+.section-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--c-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 8px;
+}
+.mt-16 { margin-top: 16px; }
+
+/* ── Compare table ── */
+.compare-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.78rem;
+  margin-bottom: 6px;
+}
+.compare-table th, .compare-table td {
+  padding: 6px 6px;
+  border-bottom: 1px solid var(--c-border);
+  text-align: right;
+}
+.compare-table th { font-weight: 700; color: var(--c-text-muted); font-size: 0.7rem; }
+.compare-table .row-head { text-align: left; color: var(--c-text-muted); font-weight: 400; width: 36%; }
+.compare-table td { font-weight: 600; color: var(--c-text); }
+.compare-table .range-cell small { color: var(--c-text-muted); font-size: 0.68rem; }
+.compare-note {
+  font-size: 0.75rem;
+  color: var(--c-success);
+  font-weight: 600;
+  margin-bottom: 12px;
+  min-height: 1.2em;
+}
+
+/* ── Schedule ── */
+.schedule-wrap {
+  max-height: 260px;
+  overflow-y: auto;
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-sm);
+  margin-bottom: 12px;
+}
+.schedule-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.75rem;
+}
+.schedule-table th, .schedule-table td {
+  padding: 5px 6px;
+  text-align: right;
+  border-bottom: 1px solid var(--c-border);
+}
+.schedule-table th {
+  position: sticky;
+  top: 0;
+  background: var(--c-bg);
+  font-weight: 700;
+  color: var(--c-text-muted);
+  font-size: 0.68rem;
+  z-index: 1;
+}
+.schedule-table td:first-child { text-align: center; font-weight: 600; color: var(--c-text-muted); }
+.schedule-table td { color: var(--c-text); }
+
+/* ── Result disclaimer ── */
+.result-disclaimer { font-size: 0.72rem; color: var(--c-text-muted); line-height: 1.6; }
+
+/* ── Related ── */
+.related-section { max-width: 860px; }
+.related-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 14px;
+  margin-top: 16px;
+}
+.related-card {
+  display: block;
+  background: var(--c-bg-card);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-md);
+  padding: 18px;
+  text-decoration: none;
+  color: var(--c-text);
+  transition: box-shadow 0.2s, transform 0.2s, border-color 0.2s;
+  box-shadow: var(--shadow-sm);
+}
+.related-card:hover:not(.coming-soon) {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+  border-color: var(--c-primary);
+  text-decoration: none;
+}
+.coming-soon { opacity: 0.6; cursor: default; }
+.related-icon { font-size: 1.4rem; margin-bottom: 6px; }
+.related-title { font-size: 0.9rem; font-weight: 700; color: var(--c-primary); margin-bottom: 4px; }
+.related-desc { font-size: 0.78rem; color: var(--c-text-muted); line-height: 1.6; margin-bottom: 8px; }
+.related-arrow { font-size: 0.78rem; color: var(--c-primary); font-weight: 600; }
+.coming-label { color: var(--c-text-muted); }
+
+/* ── Explanation ── */
+.explain-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+.explain-card {
+  background: var(--c-bg-card);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-md);
+  padding: 20px;
+}
+.explain-card h3 { font-size: 0.95rem; font-weight: 700; color: var(--c-primary); margin-bottom: 10px; }
+.explain-card p, .explain-card ul { font-size: 0.82rem; color: var(--c-text-muted); line-height: 1.8; }
+.explain-card ul { padding-left: 1.2em; }
+.explain-card li { margin-bottom: 4px; }
+.explain-card strong { color: var(--c-text); }
+
+/* ── FAQ ── */
+.faq-section { max-width: 760px; }
+.faq-list { margin-top: 16px; display: flex; flex-direction: column; gap: 8px; }
+.faq-item {
+  background: var(--c-bg-card);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+.faq-q {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 18px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--c-primary);
+  cursor: pointer;
+  list-style: none;
+  gap: 12px;
+}
+.faq-q::-webkit-details-marker { display: none; }
+.faq-q::after { content: '＋'; font-size: 1.1rem; color: var(--c-primary); flex-shrink: 0; transition: transform 0.2s; }
+.faq-item[open] .faq-q::after { transform: rotate(45deg); }
+.faq-a {
+  padding: 0 18px 16px;
+  font-size: 0.82rem;
+  color: var(--c-text-muted);
+  line-height: 1.8;
+}
+.faq-a p + p { margin-top: 8px; }
+</style>
+
+<script>
+/* ─── Defaults ─── */
+const D = { price: 4000, down: 800, rate: 1.5, years: 35, bonus: 0, fee: 2 };
+
+/* ─── Helpers ─── */
+function fmt(v: number, d = 0): string {
+  return v.toLocaleString('ja-JP', { minimumFractionDigits: d, maximumFractionDigits: d });
+}
+function getNum(id: string, fb = 0): number {
+  const el = document.getElementById(id) as HTMLInputElement | null;
+  if (!el) return fb;
+  const v = parseFloat(el.value);
+  return isNaN(v) ? fb : v;
+}
+function setText(id: string, t: string) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = t;
+}
+function clamp(v: number, a: number, b: number): number {
+  return Math.max(a, Math.min(b, v));
+}
+function updateFill(s: HTMLInputElement) {
+  const mn = parseFloat(s.min) || 0, mx = parseFloat(s.max) || 100, v = parseFloat(s.value) || 0;
+  s.style.setProperty('--pct', `${clamp((v - mn) / (mx - mn) * 100, 0, 100)}%`);
+}
+function updateDisplay(id: string, val: string) {
+  const el = document.getElementById(`${id}Display`);
+  if (el) el.textContent = val;
+}
+function hideSampleBadge() {
+  const b = document.getElementById('sampleBadge');
+  if (b) b.hidden = true;
+}
+
+/* ─── Loan Calc ─── */
+function pmt(P: number, ratePct: number, years: number): number {
+  if (P <= 0) return 0;
+  const n = years * 12;
+  if (ratePct === 0) return P / n;
+  const r = ratePct / 100 / 12;
+  const pw = Math.pow(1 + r, n);
+  return P * r * pw / (pw - 1);
+}
+
+function calcEP(P: number, ratePct: number, years: number) {
+  const m = pmt(P, ratePct, years);
+  const total = m * years * 12;
+  return { monthly: m, total, interest: Math.max(0, total - P) };
+}
+
+function calcEPR(P: number, ratePct: number, years: number) {
+  const n = years * 12, r = ratePct / 100 / 12;
+  const mp = P / n;
+  const first = mp + P * r;
+  const last  = mp + mp * r;
+  const interest = ratePct === 0 ? 0 : P * r * (n + 1) / 2;
+  return { firstMonthly: first, lastMonthly: last, total: P + interest, interest };
+}
+
+function buildSchedule(P: number, ratePct: number, years: number, type: string) {
+  if (P <= 0) return [];
+  const r = ratePct / 100 / 12, n = years * 12;
+  let rem = P;
+  const rows: { year: number; payment: number; principal: number; interest: number; remaining: number }[] = [];
+
+  if (type === 'equal-payment') {
+    const m = pmt(P, ratePct, years);
+    for (let y = 1; y <= years; y++) {
+      let yP = 0, yI = 0;
+      for (let i = 0; i < 12; i++) {
+        const interest = rem * r;
+        const prin = Math.min(m - interest, rem);
+        yI += interest; yP += prin; rem = Math.max(0, rem - prin);
+      }
+      rows.push({ year: y, payment: yP + yI, principal: yP, interest: yI, remaining: rem });
+    }
+  } else {
+    const mp = P / n;
+    for (let y = 1; y <= years; y++) {
+      let yP = 0, yI = 0, yPay = 0;
+      for (let i = 0; i < 12; i++) {
+        const interest = rem * r;
+        yI += interest; yP += mp; yPay += mp + interest;
+        rem = Math.max(0, rem - mp);
+      }
+      rows.push({ year: y, payment: yPay, principal: yP, interest: yI, remaining: Math.max(0, rem) });
+    }
+  }
+  return rows;
+}
+
+/* ─── Main Calculate ─── */
+function calculate() {
+  const price  = getNum('price',  D.price);
+  const down   = getNum('down',   D.down);
+  const borrow = Math.max(0, price - down);
+  const rate   = getNum('rate',   D.rate);
+  const years  = getNum('years',  D.years);
+  const type   = (document.querySelector('input[name="repayType"]:checked') as HTMLInputElement | null)?.value ?? 'equal-payment';
+  const bonus  = getNum('bonus',  D.bonus);
+  const fee    = getNum('fee',    D.fee);
+  const income = getNum('income', 0);
+
+  // Update borrow display
+  setText('borrowDisplay', fmt(borrow, 0) + ' 万円');
+
+  // Validate
+  const errEl = document.getElementById('errorMsg');
+  if (borrow <= 0 || rate < 0 || years < 1) {
+    if (errEl) { errEl.textContent = '借入額・年利・返済年数を正しく入力してください。'; errEl.hidden = false; }
+    return;
+  }
+  if (errEl) errEl.hidden = true;
+
+  const ep  = calcEP(borrow, rate, years);
+  const epr = calcEPR(borrow, rate, years);
+  const isEP = type === 'equal-payment';
+
+  const monthly    = isEP ? ep.monthly : epr.firstMonthly;
+  const annualPay  = monthly * 12 + bonus * 2;
+  const totalPay   = (isEP ? ep.total : epr.total) + bonus * 2 * years;
+  const totalInt   = isEP ? ep.interest : epr.interest;
+  const withFee    = monthly + fee;
+
+  // Hero
+  setText('rMonthly', fmt(monthly, 2) + ' 万円');
+  setText('rTotal',   fmt(totalPay, 1) + ' 万円');
+  setText('rInterest',fmt(totalInt, 1) + ' 万円');
+  setText('rAnnual',  fmt(annualPay, 2) + ' 万円');
+  setText('rBorrow',  fmt(borrow, 0) + ' 万円');
+  setText('rWithFee', fmt(withFee, 2) + ' 万円');
+
+  // Bonus row
+  const bonusRow = document.getElementById('bonusRow');
+  if (bonusRow) bonusRow.hidden = bonus <= 0;
+  setText('rBonusMonthly', fmt(monthly + bonus, 2) + ' 万円');
+
+  // Ratio
+  const ratioRow = document.getElementById('ratioRow');
+  if (income > 0) {
+    const ratioVal = (annualPay / income) * 100;
+    if (ratioRow) ratioRow.hidden = false;
+    const cls = ratioVal <= 25 ? 'good' : ratioVal <= 35 ? 'ok' : 'low';
+    const ratioBox = document.getElementById('rRatioBox');
+    if (ratioBox) { ratioBox.classList.remove('good', 'ok', 'low'); ratioBox.classList.add(cls); }
+    setText('rRatio', ratioVal.toFixed(1) + '%');
+    setText('rRatioNote', ratioVal <= 25 ? '返済に余裕あり' : ratioVal <= 35 ? '一般的な水準' : ratioVal <= 40 ? 'やや高め' : '要注意');
+  } else {
+    if (ratioRow) ratioRow.hidden = true;
+  }
+
+  // Comparison
+  setText('cEPMonthly',   fmt(ep.monthly, 2) + ' 万円');
+  setText('cEPTotal',     fmt(ep.total, 1) + ' 万円');
+  setText('cEPInterest',  fmt(ep.interest, 1) + ' 万円');
+  setText('cEPRFirst',    fmt(epr.firstMonthly, 2) + ' 万円');
+  setText('cEPRLast',     fmt(epr.lastMonthly, 2) + ' 万円');
+  setText('cEPRTotal',    fmt(epr.total, 1) + ' 万円');
+  setText('cEPRInterest', fmt(epr.interest, 1) + ' 万円');
+  const saving = ep.interest - epr.interest;
+  setText('cDiff', saving >= 0
+    ? `▶ 元金均等の方が利息を ${fmt(saving, 1)} 万円節約できます`
+    : `▶ 元利均等の方が利息を ${fmt(-saving, 1)} 万円節約できます`);
+
+  // Schedule
+  const rows  = buildSchedule(borrow, rate, years, type);
+  const tbody = document.getElementById('scheduleBody');
+  if (tbody) {
+    tbody.innerHTML = rows.map(r => `
+      <tr>
+        <td>${r.year}</td>
+        <td>${fmt(r.payment, 1)}</td>
+        <td>${fmt(r.principal, 1)}</td>
+        <td>${fmt(r.interest, 1)}</td>
+        <td>${fmt(Math.max(0, r.remaining), 0)}</td>
+      </tr>`).join('');
+  }
+}
+
+/* ─── Slider sync ─── */
+function syncSliderToNum(slider: HTMLInputElement) {
+  const targetId = slider.dataset.target;
+  if (!targetId) return;
+  const numEl = document.getElementById(targetId) as HTMLInputElement | null;
+  if (!numEl) return;
+  numEl.value = slider.value;
+  updateFill(slider);
+  updateDisplay(targetId, slider.value);
+}
+
+function syncNumToSlider(numEl: HTMLInputElement) {
+  const slider = document.querySelector<HTMLInputElement>(`input.range-slider[data-target="${numEl.id}"]`);
+  if (!slider) return;
+  const mn = parseFloat(slider.min) || 0, mx = parseFloat(slider.max) || 100, step = parseFloat(slider.step) || 1;
+  let v = parseFloat(numEl.value);
+  if (isNaN(v) || v < mn) v = mn;
+  if (v > mx) v = mx;
+  v = Math.round(v / step) * step;
+  numEl.value = String(v); slider.value = String(v);
+  updateFill(slider);
+  updateDisplay(numEl.id, numEl.value);
+}
+
+function updateDownMax() {
+  const price = getNum('price', D.price);
+  const downSlider = document.querySelector<HTMLInputElement>('input.range-slider[data-target="down"]');
+  const downNum    = document.getElementById('down') as HTMLInputElement | null;
+  if (!downSlider || !downNum) return;
+  downSlider.max = String(price); downNum.max = String(price);
+  const curDown = getNum('down', 0);
+  if (curDown > price) {
+    downSlider.value = String(price); downNum.value = String(price);
+    updateDisplay('down', String(price));
+  }
+  updateFill(downSlider);
+}
+
+/* ─── Init ─── */
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll<HTMLInputElement>('input.range-slider').forEach(slider => {
+    updateFill(slider);
+    slider.addEventListener('input', () => {
+      syncSliderToNum(slider);
+      if (slider.dataset.target === 'price') updateDownMax();
+      hideSampleBadge();
+      calculate();
+    });
+  });
+
+  document.querySelectorAll<HTMLInputElement>('input.field-input').forEach(numEl => {
+    numEl.addEventListener('keydown', (e: KeyboardEvent) => {
+      if (['-', 'e', 'E', '+'].includes(e.key)) e.preventDefault();
+    });
+    numEl.addEventListener('change', () => {
+      syncNumToSlider(numEl);
+      if (numEl.id === 'price') updateDownMax();
+      hideSampleBadge();
+      calculate();
+    });
+  });
+
+  document.querySelectorAll<HTMLInputElement>('input[name="repayType"]').forEach(radio => {
+    radio.addEventListener('change', () => { hideSampleBadge(); calculate(); });
+  });
+
+  const incomeEl = document.getElementById('income') as HTMLInputElement | null;
+  if (incomeEl) {
+    incomeEl.addEventListener('keydown', (e: KeyboardEvent) => {
+      if (['-', 'e', 'E', '+'].includes(e.key)) e.preventDefault();
+    });
+    incomeEl.addEventListener('change', () => { hideSampleBadge(); calculate(); });
+  }
+
+  calculate();
+});
+</script>

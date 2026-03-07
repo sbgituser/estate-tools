@@ -204,19 +204,31 @@ const jsonLd = {
     </section>
 
     <!-- Related tools -->
-    <section class="mt-48" style="max-width: 480px; padding-bottom: 80px;">
-      <h2 class="section-title">次のステップ</h2>
-      <p class="section-sub">利回りを確認したら、次はROIで投資効率を確認しましょう</p>
-      <a href="/calculators/roi" class="next-tool-card">
-        <div class="next-tool-inner">
-          <span class="next-tool-icon">💹</span>
-          <div>
-            <div class="next-tool-title">不動産投資ROI計算ツール</div>
-            <p class="next-tool-desc">頭金・ローン・諸費用まで含めた自己資金ベースのROIを計算</p>
+    <section class="mt-48" style="padding-bottom: 80px;">
+      <h2 class="section-title">関連ツール</h2>
+      <p class="section-sub">利回りを確認したら、次のツールで投資をさらに深掘りしましょう</p>
+      <div class="related-tools-grid">
+        <a href="/calculators/roi" class="next-tool-card">
+          <div class="next-tool-inner">
+            <span class="next-tool-icon">💹</span>
+            <div>
+              <div class="next-tool-title">不動産投資ROI計算ツール</div>
+              <p class="next-tool-desc">頭金・ローン・諸費用まで含めた自己資金ベースのROIを計算</p>
+            </div>
           </div>
-        </div>
-        <span class="next-tool-arrow">使ってみる →</span>
-      </a>
+          <span class="next-tool-arrow">使ってみる →</span>
+        </a>
+        <a href="/calculators/mortgage" class="next-tool-card">
+          <div class="next-tool-inner">
+            <span class="next-tool-icon">🏦</span>
+            <div>
+              <div class="next-tool-title">住宅ローン返済シミュレーター</div>
+              <p class="next-tool-desc">毎月返済額・総返済額・返済負担率を即計算</p>
+            </div>
+          </div>
+          <span class="next-tool-arrow">使ってみる →</span>
+        </a>
+      </div>
     </section>
   </div>
 
@@ -396,6 +408,13 @@ const jsonLd = {
 .howto-icon { font-size: 1.5rem; margin-bottom: 8px; }
 .howto-item h3 { font-size: 0.95rem; font-weight: 700; color: var(--c-primary); margin-bottom: 8px; }
 .howto-item p { font-size: 0.82rem; color: var(--c-text-muted); line-height: 1.6; }
+
+/* ── Related tools grid ── */
+.related-tools-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 12px;
+}
 
 /* ── Next tool card ── */
 .next-tool-card {
