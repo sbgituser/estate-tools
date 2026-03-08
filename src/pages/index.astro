@@ -77,6 +77,14 @@ const tools = [
     description: '物件タイプ・築年数・面積を入力して10〜30年の修繕費を自動推計。外壁・屋上・給排水・設備更新の修繕タイミングも一覧表示。長期CFを正確に把握できます。',
     badge: '無料',
   },
+  {
+    href: '/calculators/price-check',
+    icon: '🔍',
+    label: 'Checker',
+    title: '不動産価格妥当性チェッカー',
+    description: '物件価格・専有面積・地域を入力して、地域相場と比較。割安・相場通り・割高を即判定。㎡単価比較・価格差額・返済額への影響も表示。物件探しの入口に。',
+    badge: '無料',
+  },
 ];
 
 const jsonLd = [
@@ -96,7 +104,7 @@ const jsonLd = [
     '@type': 'ItemList',
     name: '不動産投資無料ツール一覧',
     url: 'https://estate.kuras-plus.com',
-    numberOfItems: 9,
+    numberOfItems: 10,
     itemListElement: tools.map((t, i) => ({
       '@type': 'ListItem',
       position: i + 1,

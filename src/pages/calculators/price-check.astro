@@ -1,0 +1,1070 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import citiesData from '../../data/cities.json';
+
+// Build a serializable subset for the client script
+const citiesForClient = citiesData.map((c) => ({
+  slug:          c.slug,
+  name:          c.name,
+  prefecture:    c.prefecture,
+  avg_price_man: (c as any).avg_price_man ?? null,
+  avg_sqm_price: (c as any).avg_sqm_price ?? null,
+  avg_area_m2:   (c as any).avg_area_m2  ?? null,
+}));
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebApplication',
+    name: '不動産価格妥当性チェッカー',
+    url: 'https://estate.kuras-plus.com/calculators/price-check',
+    description: '物件価格が地域相場に対して割安か割高かを即判定。中古マンションの㎡単価・価格差を分かりやすく表示。',
+    applicationCategory: 'FinanceApplication',
+    operatingSystem: 'All',
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'JPY' },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'ホーム',               item: 'https://estate.kuras-plus.com' },
+      { '@type': 'ListItem', position: 2, name: '不動産価格妥当性チェッカー', item: 'https://estate.kuras-plus.com/calculators/price-check' },
+    ],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      {
+        '@type': 'Question',
+        name: 'マンション価格が相場より高いかどうかはどう見ればよいですか？',
+        acceptedAnswer: { '@type': 'Answer', text: '㎡単価（物件価格÷専有面積）を地域平均の㎡単価と比較するのが基本です。総額だけでは面積差で判断が歪むため、㎡単価での比較が合理的です。このツールでは両方の観点から自動的に判定します。' },
+      },
+      {
+        '@type': 'Question',
+        name: '㎡単価で比較するのはなぜですか？',
+        acceptedAnswer: { '@type': 'Answer', text: '同じエリアでも専有面積が異なれば総額は大きく変わります。㎡単価に換算することで面積差を除外した「純粋な価格水準」を比較できます。特に広さが異なる物件を比較する際に有効です。' },
+      },
+      {
+        '@type': 'Question',
+        name: '市区町村平均だけで価格判断してよいですか？',
+        acceptedAnswer: { '@type': 'Answer', text: '市区町村平均はあくまで参考値です。同じ区内でも駅距離・路線・階数・方角・築年数・管理状態によって価格は大きく異なります。このツールの判定結果は「相場との大まかな比較」としてご利用ください。' },
+      },
+      {
+        '@type': 'Question',
+        name: '築年数が古い物件はどのくらい安くなるのですか？',
+        acceptedAnswer: { '@type': 'Answer', text: '一般的にRC造マンションは築年数が増えるにつれ価格が下落しますが、都心の人気エリアでは需要が高く下落幅が小さいこともあります。目安として築20年で新築比60〜70%、築30年以上で40〜60%程度とされますが、個別物件の状態や立地で大きく異なります。' },
+      },
+      {
+        '@type': 'Question',
+        name: '割安な物件なら必ず買ってよいのですか？',
+        acceptedAnswer: { '@type': 'Answer', text: '相場より安い物件には、管理状態の悪化・大規模修繕積立金の不足・建物の瑕疵・再建築不可・法的問題など、価格に反映されていないリスクが潜んでいる場合があります。必ずホームインスペクション（建物調査）や管理組合の財務状況確認を行ってください。' },
+      },
+      {
+        '@type': 'Question',
+        name: 'このツールの結果は査定額と同じですか？',
+        acceptedAnswer: { '@type': 'Answer', text: 'このツールの判定は、公的データを基にした地域平均との概算比較です。不動産会社による正式査定とは異なります。実際の購入・売却価格は、個別物件の状態・交渉・市場タイミングによって変わりますので、必ず専門家の査定も受けてください。' },
+      },
+    ],
+  },
+];
+---
+
+<BaseLayout
+  title="不動産価格妥当性チェッカー | マンション価格が相場より高いか安いか即判定"
+  description="物件価格と専有面積を入力するだけで、地域相場と比較して割安・相場通り・割高を即判定。㎡単価比較・価格差額・返済額への影響も表示。中古マンション購入の第一歩に。"
+  canonical="https://estate.kuras-plus.com/calculators/price-check"
+  jsonLd={jsonLd}
+>
+  <Header slot="header" currentPath="/calculators/price-check" />
+
+  <!-- Hero -->
+  <section class="page-hero">
+    <div class="container">
+      <nav class="breadcrumb" aria-label="パンくずリスト">
+        <a href="/">ホーム</a>
+        <span>›</span>
+        <span>不動産価格妥当性チェッカー</span>
+      </nav>
+      <p class="hero-eyebrow">Price Check</p>
+      <h1 class="hero-title">不動産価格妥当性チェッカー</h1>
+      <p class="hero-desc">
+        物件価格が地域相場に対して割安か割高かを即判定。<br />
+        ㎡単価・価格差・返済額への影響も分かりやすく表示します。
+      </p>
+    </div>
+  </section>
+
+  <!-- Calculator -->
+  <div class="container mt-48" style="padding-bottom: 80px;">
+    <div class="calc-layout">
+
+      <!-- ── Inputs ── -->
+      <section class="card" aria-label="入力フォーム">
+        <h2 class="card-heading">物件情報を入力</h2>
+
+        <!-- 物件種別 -->
+        <div class="field-group">
+          <label class="field-label" for="propertyType">物件種別</label>
+          <select class="field-select" id="propertyType">
+            <option value="mansion">中古マンション</option>
+            <option value="house" disabled>戸建て（近日対応予定）</option>
+            <option value="land"  disabled>土地（近日対応予定）</option>
+          </select>
+        </div>
+
+        <!-- 都道府県 -->
+        <div class="field-group">
+          <label class="field-label" for="prefecture">都道府県</label>
+          <select class="field-select" id="prefecture">
+            <option value="東京都">東京都</option>
+          </select>
+          <p class="field-hint">※ 現在は東京都内の主要区に対応。順次拡充予定。</p>
+        </div>
+
+        <!-- 市区町村 -->
+        <div class="field-group">
+          <label class="field-label" for="city">市区町村</label>
+          <select class="field-select" id="city">
+            <!-- JS で動的生成 -->
+          </select>
+        </div>
+
+        <hr class="divider" />
+
+        <!-- 物件価格 -->
+        <div class="field-group">
+          <label class="field-label" for="price">
+            入力価格
+            <span class="field-unit">万円</span>
+          </label>
+          <input class="field-input" type="number" id="price"
+            placeholder="4500" min="100" max="99999" step="50" inputmode="numeric" />
+        </div>
+
+        <!-- 専有面積 -->
+        <div class="field-group">
+          <label class="field-label" for="area">
+            専有面積
+            <span class="field-unit">㎡</span>
+          </label>
+          <input class="field-input" type="number" id="area"
+            placeholder="55" min="10" max="500" step="0.5" inputmode="decimal" />
+        </div>
+
+        <!-- 築年数 -->
+        <div class="field-group">
+          <label class="field-label" for="age">
+            築年数
+            <span class="field-unit">年</span>
+          </label>
+          <input class="field-input" type="number" id="age"
+            placeholder="15" min="0" max="60" step="1" inputmode="numeric" />
+          <p class="field-hint">築年数補正は参考表示として反映します。</p>
+        </div>
+
+        <hr class="divider" />
+
+        <!-- 任意項目 -->
+        <details class="optional-block">
+          <summary class="optional-summary">任意項目（駅距離・階数・方角）</summary>
+          <div class="optional-body">
+            <div class="field-group">
+              <label class="field-label" for="stationMin">
+                最寄駅徒歩
+                <span class="field-unit">分</span>
+              </label>
+              <input class="field-input" type="number" id="stationMin"
+                placeholder="7" min="1" max="60" step="1" inputmode="numeric" />
+            </div>
+            <div class="field-group">
+              <label class="field-label" for="floor">
+                階数
+                <span class="field-unit">階</span>
+              </label>
+              <input class="field-input" type="number" id="floor"
+                placeholder="5" min="1" max="60" step="1" inputmode="numeric" />
+            </div>
+            <div class="field-group">
+              <label class="field-label" for="direction">方角</label>
+              <select class="field-select" id="direction">
+                <option value="">選択なし</option>
+                <option value="南">南向き</option>
+                <option value="東南">東南向き</option>
+                <option value="東">東向き</option>
+                <option value="西南">西南向き</option>
+                <option value="西">西向き</option>
+                <option value="北東">北東向き</option>
+                <option value="北西">北西向き</option>
+                <option value="北">北向き</option>
+              </select>
+            </div>
+            <p class="optional-note">※ これらの情報は判定の参考コメントに反映されます（判定スコア自体は変わりません）。</p>
+          </div>
+        </details>
+
+        <!-- エラー表示 -->
+        <p class="error-msg" id="errorMsg" hidden></p>
+      </section>
+
+      <!-- ── Results ── -->
+      <section class="card result-section" id="resultSection" aria-label="判定結果" aria-live="polite">
+        <!-- 判定ラベル -->
+        <div class="verdict-banner" id="verdictBanner">
+          <span class="verdict-icon" id="verdictIcon">🔍</span>
+          <div>
+            <p class="verdict-label" id="verdictLabel">左の入力欄に情報を入力してください</p>
+            <p class="verdict-sub"  id="verdictSub">物件価格・面積・地域を入力すると結果が表示されます</p>
+          </div>
+        </div>
+
+        <!-- 比較バー -->
+        <div class="compare-bar-wrap" id="compareBarWrap" hidden>
+          <div class="compare-bar-label">
+            <span>割安</span><span>相場通り</span><span>割高</span>
+          </div>
+          <div class="compare-bar-track">
+            <div class="compare-bar-zones">
+              <div class="zone zone-bargain"  title="割安"></div>
+              <div class="zone zone-cheap"    title="やや割安"></div>
+              <div class="zone zone-fair"     title="相場通り"></div>
+              <div class="zone zone-pricey"   title="やや割高"></div>
+              <div class="zone zone-expensive"title="割高"></div>
+            </div>
+            <div class="compare-bar-needle" id="compareNeedle"></div>
+          </div>
+          <p class="compare-bar-pct" id="compareBarPct"></p>
+        </div>
+
+        <!-- 数値カード -->
+        <div class="result-grid" id="resultGrid" hidden>
+          <div class="result-card">
+            <p class="result-card-label">入力価格</p>
+            <p class="result-card-value primary" id="inputPriceDisp">—</p>
+          </div>
+          <div class="result-card">
+            <p class="result-card-label">地域平均価格</p>
+            <p class="result-card-value" id="avgPriceDisp">—</p>
+          </div>
+          <div class="result-card">
+            <p class="result-card-label">価格差額</p>
+            <p class="result-card-value" id="diffDisp">—</p>
+          </div>
+          <div class="result-card">
+            <p class="result-card-label">相場比</p>
+            <p class="result-card-value" id="ratioDisp">—</p>
+          </div>
+          <div class="result-card">
+            <p class="result-card-label">入力㎡単価</p>
+            <p class="result-card-value" id="sqmInputDisp">—</p>
+          </div>
+          <div class="result-card">
+            <p class="result-card-label">地域平均㎡単価</p>
+            <p class="result-card-value" id="sqmAvgDisp">—</p>
+          </div>
+        </div>
+
+        <!-- 築年数補正コメント -->
+        <div class="age-note" id="ageNote" hidden>
+          <span class="age-note-icon">📅</span>
+          <span id="ageNoteText"></span>
+        </div>
+
+        <!-- 返済額への影響 -->
+        <div class="payment-impact" id="paymentImpact" hidden>
+          <h3 class="impact-heading">💳 価格差が返済額に与える影響（参考）</h3>
+          <p class="impact-body" id="impactBody"></p>
+          <a class="impact-link" href="/calculators/mortgage">
+            住宅ローン返済シミュレーターで詳しく計算 →
+          </a>
+        </div>
+
+        <!-- 判定コメント -->
+        <div class="verdict-comment" id="verdictComment" hidden>
+          <h3 class="comment-heading">📋 判定コメント</h3>
+          <p id="commentBody"></p>
+          <ul class="comment-notes" id="commentNotes"></ul>
+        </div>
+
+        <!-- データなし -->
+        <div class="no-data-msg" id="noDataMsg" hidden>
+          <p>選択されたエリアの相場データがまだ登録されていません。</p>
+          <p class="no-data-sub">対応エリアは順次拡充予定です。現在は渋谷区・港区・世田谷区・目黒区・新宿区に対応しています。</p>
+        </div>
+      </section>
+    </div>
+
+    <!-- 関連ツール -->
+    <div class="related-tools" id="relatedTools">
+      <h3 class="related-heading">次のステップへ</h3>
+      <p class="related-sub">価格チェックの後は、購入可能性・収益性を確認しましょう</p>
+      <div class="related-grid">
+        <a class="related-card" href="/calculators/mortgage">
+          <span class="related-icon">🏦</span>
+          <span class="related-label">住宅ローン返済シミュレーター</span>
+          <span class="related-desc">毎月返済額・総返済額を計算</span>
+        </a>
+        <a class="related-card" href="/calculators/yield">
+          <span class="related-icon">📊</span>
+          <span class="related-label">不動産利回り計算ツール</span>
+          <span class="related-desc">表面・実質利回りを計算</span>
+        </a>
+        <a class="related-card" href="/calculators/cash-flow">
+          <span class="related-icon">💰</span>
+          <span class="related-label">CFシミュレーター</span>
+          <span class="related-desc">長期収支を予測</span>
+        </a>
+        <a class="related-card" href="/calculators/repair-cost">
+          <span class="related-icon">🔧</span>
+          <span class="related-label">修繕費シミュレーター</span>
+          <span class="related-desc">10〜30年の修繕費を推計</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 解説コンテンツ ── -->
+  <div class="article-wrap">
+    <div class="container article-container">
+
+      <h2 class="art-h2">不動産価格妥当性チェッカーとは</h2>
+      <p>このツールは、検討中の物件価格が地域相場に対して高いのか安いのかを、㎡単価と総額の両面から概算で判定します。「相場より高いのかな？」「この値段は妥当？」という疑問への第一歩として、シンプルに答えを出します。</p>
+      <p>不動産価格は、同じ市区町村内でも駅距離・路線・階数・方角・築年数・管理状態によって大きく変わります。このツールはあくまで「地域平均との比較」による簡易判定ですが、物件探しの入口として活用いただけます。</p>
+
+      <h2 class="art-h2">不動産価格の妥当性はどう判断するか</h2>
+      <p>不動産価格の妥当性を判断するには、主に次の観点が有効です。</p>
+      <ul class="art-list">
+        <li><strong>㎡単価での比較：</strong>同一エリアの成約事例を㎡単価に換算し比較する</li>
+        <li><strong>周辺成約事例の確認：</strong>不動産情報ライブラリ（国土交通省）で実際の成約価格を確認する</li>
+        <li><strong>複数社の査定取得：</strong>複数の不動産会社に査定を依頼し、価格の根拠を比較する</li>
+        <li><strong>築年数・管理状態の確認：</strong>修繕積立金残高・大規模修繕履歴・管理組合の財務状況を確認する</li>
+      </ul>
+
+      <h2 class="art-h2">㎡単価で比較する理由</h2>
+      <p>総額だけで物件を比較すると、「広い物件は高い・狭い物件は安い」というだけの比較になり、実際の価格水準が分かりません。㎡単価（物件価格÷専有面積）に換算することで、面積の違いを除いた純粋な価格水準を比較できます。</p>
+      <p>例えば、3,000万円の45㎡物件（㎡単価67万円）と4,500万円の70㎡物件（㎡単価64万円）では、総額は後者が高いですが㎡単価は前者の方が高くなります。</p>
+
+      <h2 class="art-h2">市区町村平均だけでは分からないこと</h2>
+      <p>市区町村平均は広いエリアの数値です。同一区内でも、次のような要因で価格は大きく変わります。</p>
+      <ul class="art-list">
+        <li>駅からの徒歩距離（5分圏内と15分超では数百万円の差が出ることも）</li>
+        <li>路線の利便性（急行停車駅か各停のみか）</li>
+        <li>階数（高層階は低層階比で5〜15%程度高い傾向）</li>
+        <li>方角（南向きは北向き比で3〜8%程度高い傾向）</li>
+        <li>建物の管理状態・修繕積立金の充足度</li>
+      </ul>
+
+      <h2 class="art-h2">築年数・駅距離・階数が価格に与える影響</h2>
+      <p>築年数は価格下落の主要因ですが、エリアによって下落率は大きく異なります。都心の人気エリアでは築30年超でも高値が維持されることがある一方、郊外では築15年を超えると急落するケースもあります。駅距離は「徒歩1分あたり約0.5〜1%の価格差」が一般的な目安です。</p>
+
+      <h2 class="art-h2">割安に見えても注意すべき点</h2>
+      <p>相場より安い物件には、何らかの理由がある場合がほとんどです。主なリスクとして次の点を確認してください。</p>
+      <ul class="art-list">
+        <li>修繕積立金が不足しており大規模修繕の費用徴収リスクがある</li>
+        <li>建物に瑕疵（雨漏り・耐震性の問題等）がある</li>
+        <li>管理組合が機能しておらず建物の維持管理が不十分</li>
+        <li>再建築不可・接道義務違反などの法的問題</li>
+        <li>事故物件・心理的瑕疵がある</li>
+      </ul>
+
+      <h2 class="art-h2">割高でも購入価値があるケース</h2>
+      <p>相場より高くても、次のような場合は購入を検討する価値があります。</p>
+      <ul class="art-list">
+        <li>希少性の高い物件（特定の路線・駅直結・眺望良好等）で流動性が高い</li>
+        <li>自己居住目的で、その物件に住み続けることで得られる価値が高い</li>
+        <li>リノベーション済みで、改修費用を上乗せした価格が相場より高くなっているが実質コストは適正</li>
+        <li>長期保有を前提として、エリアの将来性に確信がある</li>
+      </ul>
+
+      <h2 class="art-h2">住宅購入・投資判断で次に確認すべきこと</h2>
+      <p>価格の妥当性を確認した後は、次のステップに進みましょう。</p>
+      <ul class="art-list">
+        <li><a href="/calculators/mortgage">住宅ローン返済シミュレーター</a>で毎月の返済額を確認する</li>
+        <li><a href="/calculators/yield">利回り計算ツール</a>で投資収益性を検証する</li>
+        <li><a href="/calculators/cash-flow">CFシミュレーター</a>で長期的なキャッシュフローを試算する</li>
+        <li><a href="/calculators/fixed-asset-tax">固定資産税シミュレーター</a>で保有コストを把握する</li>
+        <li><a href="/calculators/repair-cost">修繕費シミュレーター</a>で将来の修繕費を推計する</li>
+      </ul>
+
+      <!-- FAQ -->
+      <h2 class="art-h2">よくある質問</h2>
+      <div class="faq-list">
+        <details class="faq-item">
+          <summary class="faq-q">マンション価格が相場より高いかどうかはどう見ればよいですか？</summary>
+          <p class="faq-a">㎡単価（物件価格÷専有面積）を地域平均の㎡単価と比較するのが基本です。このツールでは総額と㎡単価の両方を自動的に比較し、割安・相場通り・割高の目安を表示します。</p>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-q">㎡単価で比較するのはなぜですか？</summary>
+          <p class="faq-a">面積が異なる物件を総額だけで比較すると正確な価格水準が分かりません。㎡単価に換算することで面積差を排除した純粋な価格レベルを比較できます。</p>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-q">市区町村平均だけで価格判断してよいですか？</summary>
+          <p class="faq-a">市区町村平均はあくまで参考値です。同じ区内でも駅距離・路線・築年数・管理状態によって数百万〜数千万円の差が生じます。個別物件の判断には周辺成約事例の確認と専門家への相談が不可欠です。</p>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-q">築年数が古い物件はどのくらい安くなるのですか？</summary>
+          <p class="faq-a">エリアや物件によって大きく異なります。目安として築20年で新築比60〜70%、築30年以上で40〜60%とされますが、都心の人気エリアでは下落幅が小さいこともあります。</p>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-q">割安な物件なら必ず買ってよいのですか？</summary>
+          <p class="faq-a">割安な物件には修繕積立金不足・建物の瑕疵・法的問題などのリスクが潜んでいることがあります。相場より安い理由を必ず確認し、ホームインスペクションや管理組合の財務状況確認を行ってください。</p>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-q">このツールの結果は査定額と同じですか？</summary>
+          <p class="faq-a">異なります。このツールは地域平均との概算比較ツールです。実際の査定は個別物件の状態・市場動向・交渉など多くの要因を考慮して行われます。必ず専門家の査定も受けてください。</p>
+        </details>
+      </div>
+
+      <!-- 注意書き -->
+      <div class="disclaimer-box">
+        <p>※ このツールの判定は、公的データを基にした地域平均との概算比較です。実際の物件価値は、個別の状態・立地・管理状況・市場環境によって大きく異なります。購入・売却の判断は、必ず不動産会社の査定や専門家へのご相談のうえ、ご自身の責任で行ってください。</p>
+      </div>
+
+    </div>
+  </div>
+
+  <Footer slot="footer" />
+</BaseLayout>
+
+<script define:vars={{ citiesForClient }}>
+// ══════════════════════════════════════════════════════
+// 地域データ（cities.json から注入）+ フォールバック相場データ
+// ══════════════════════════════════════════════════════
+
+/** @type {Record<string, {avg_price_man: number, avg_sqm_price: number, avg_area_m2: number}>} */
+const MARKET_DATA = {
+  // フォールバック: cities.json に avg_price_man がない場合の参考値
+  // （国土交通省・不動産情報ライブラリ 2023年成約データ参考）
+  shibuya:  { avg_price_man: 7500,  avg_sqm_price: 130, avg_area_m2: 58 },
+  minato:   { avg_price_man: 9800,  avg_sqm_price: 155, avg_area_m2: 63 },
+  setagaya: { avg_price_man: 5200,  avg_sqm_price: 87,  avg_area_m2: 60 },
+  meguro:   { avg_price_man: 6800,  avg_sqm_price: 112, avg_area_m2: 61 },
+  shinjuku: { avg_price_man: 5800,  avg_sqm_price: 95,  avg_area_m2: 61 },
+};
+
+// cities.json から注入されたデータで上書き
+citiesForClient.forEach((c) => {
+  if (c.avg_price_man) {
+    MARKET_DATA[c.slug] = {
+      avg_price_man: c.avg_price_man,
+      avg_sqm_price: c.avg_sqm_price ?? Math.round(c.avg_price_man * 10000 / (c.avg_area_m2 ?? 60)),
+      avg_area_m2:   c.avg_area_m2  ?? 60,
+    };
+  }
+});
+
+// ══════════════════════════════════════════════════════
+// 判定閾値（定数化 — 調整はここだけ）
+// ══════════════════════════════════════════════════════
+const THRESHOLDS = {
+  BARGAIN:   -0.15,  // -15% 以下 → 割安
+  CHEAP:     -0.05,  // -15%超 〜 -5% 以下 → やや割安
+  FAIR_HIGH:  0.05,  // -5%超 〜 +5% 未満 → 相場通り
+  PRICEY:     0.15,  // +5%〜 +15% 未満 → やや割高
+  // +15% 以上 → 割高
+};
+
+const VERDICT_CONFIG = {
+  bargain:   { label: '割安',     icon: '🟢', color: '#2d7a4f', bg: '#edf7f1' },
+  cheap:     { label: 'やや割安', icon: '🔵', color: '#1a6a8a', bg: '#eaf4f8' },
+  fair:      { label: '相場通り', icon: '⚪', color: '#555',    bg: '#f5f5f5' },
+  pricey:    { label: 'やや割高', icon: '🟡', color: '#b8760f', bg: '#fdf6e3' },
+  expensive: { label: '割高',     icon: '🔴', color: '#c0392b', bg: '#fdecea' },
+};
+
+// 築年数補正係数（参考値 — RC造中古マンション想定）
+function ageAdjustCoef(age) {
+  if (age <= 5)  return 1.0;
+  if (age <= 10) return 0.95;
+  if (age <= 15) return 0.90;
+  if (age <= 20) return 0.83;
+  if (age <= 25) return 0.76;
+  if (age <= 30) return 0.68;
+  return 0.60;
+}
+
+// ══════════════════════════════════════════════════════
+// DOM 参照
+// ══════════════════════════════════════════════════════
+const citySelect      = document.getElementById('city');
+const priceInput      = document.getElementById('price');
+const areaInput       = document.getElementById('area');
+const ageInput        = document.getElementById('age');
+const stationInput    = document.getElementById('stationMin');
+const floorInput      = document.getElementById('floor');
+const directionInput  = document.getElementById('direction');
+const errorMsg        = document.getElementById('errorMsg');
+
+const verdictBanner   = document.getElementById('verdictBanner');
+const verdictIcon     = document.getElementById('verdictIcon');
+const verdictLabel    = document.getElementById('verdictLabel');
+const verdictSub      = document.getElementById('verdictSub');
+
+const compareBarWrap  = document.getElementById('compareBarWrap');
+const compareNeedle   = document.getElementById('compareNeedle');
+const compareBarPct   = document.getElementById('compareBarPct');
+
+const resultGrid      = document.getElementById('resultGrid');
+const inputPriceDisp  = document.getElementById('inputPriceDisp');
+const avgPriceDisp    = document.getElementById('avgPriceDisp');
+const diffDisp        = document.getElementById('diffDisp');
+const ratioDisp       = document.getElementById('ratioDisp');
+const sqmInputDisp    = document.getElementById('sqmInputDisp');
+const sqmAvgDisp      = document.getElementById('sqmAvgDisp');
+
+const ageNote         = document.getElementById('ageNote');
+const ageNoteText     = document.getElementById('ageNoteText');
+const paymentImpact   = document.getElementById('paymentImpact');
+const impactBody      = document.getElementById('impactBody');
+const verdictComment  = document.getElementById('verdictComment');
+const commentBody     = document.getElementById('commentBody');
+const commentNotes    = document.getElementById('commentNotes');
+const noDataMsg       = document.getElementById('noDataMsg');
+
+// ══════════════════════════════════════════════════════
+// 市区町村セレクトを初期化
+// ══════════════════════════════════════════════════════
+function initCitySelect() {
+  citiesForClient.forEach((c) => {
+    const opt = document.createElement('option');
+    opt.value = c.slug;
+    opt.textContent = `${c.name}（${c.prefecture}）`;
+    citySelect.appendChild(opt);
+  });
+}
+
+// ══════════════════════════════════════════════════════
+// フォーマットヘルパー
+// ══════════════════════════════════════════════════════
+function fmt(man) {
+  if (man >= 10000) return `${(man / 10000).toFixed(2)}億円`;
+  return `${man.toLocaleString('ja-JP')}万円`;
+}
+function fmtDiff(diff) {
+  const sign = diff >= 0 ? '+' : '';
+  return `${sign}${diff.toLocaleString('ja-JP')}万円`;
+}
+
+// ══════════════════════════════════════════════════════
+// 判定ロジック
+// ══════════════════════════════════════════════════════
+function getVerdictKey(ratio) {
+  if (ratio <= THRESHOLDS.BARGAIN)   return 'bargain';
+  if (ratio <= THRESHOLDS.CHEAP)     return 'cheap';
+  if (ratio <  THRESHOLDS.FAIR_HIGH) return 'fair';
+  if (ratio <  THRESHOLDS.PRICEY)    return 'pricey';
+  return 'expensive';
+}
+
+// ㎡単価と総額の比率を加重平均（面積が小さいほど㎡単価を重視）
+function blendRatio(totalRatio, sqmRatio, area) {
+  const sqmWeight = area < 40 ? 0.7 : area < 70 ? 0.5 : 0.4;
+  return sqmRatio * sqmWeight + totalRatio * (1 - sqmWeight);
+}
+
+// 返済額への影響（元利均等・金利1.5%・35年想定）
+function monthlyPayment(priceMan) {
+  const principal = priceMan * 10000 * 0.9; // 頭金10%想定
+  const rate = 0.015 / 12;
+  const n = 35 * 12;
+  return Math.round(principal * rate * Math.pow(1 + rate, n) / (Math.pow(1 + rate, n) - 1));
+}
+
+// ══════════════════════════════════════════════════════
+// コメント生成
+// ══════════════════════════════════════════════════════
+function buildComment(verdictKey, ratio, diff, area, age, station, floor, direction, cityName) {
+  const pct = Math.abs(Math.round(ratio * 100));
+  const sign = ratio >= 0 ? '高め' : '低め';
+
+  const main = {
+    bargain:   `${cityName}の地域平均より約${pct}%割安な水準です。価格が安い理由を必ず確認してください。`,
+    cheap:     `${cityName}の地域平均よりやや割安な水準です。掘り出し物の可能性がある一方、個別リスクも確認を。`,
+    fair:      `${cityName}の地域平均とほぼ同水準です。相場通りの適正価格と考えられます。`,
+    pricey:    `${cityName}の地域平均よりやや割高な水準です。価格に見合う理由（立地・状態・設備等）を確認しましょう。`,
+    expensive: `${cityName}の地域平均より約${pct}%割高な水準です。購入する場合は価格上乗せの理由を十分確認してください。`,
+  }[verdictKey];
+
+  const notes = [];
+  if (station) {
+    if (station <= 5)       notes.push(`駅徒歩${station}分は好立地。価格に立地プレミアムが上乗せされている可能性があります。`);
+    else if (station >= 15) notes.push(`駅徒歩${station}分は遠め。流動性（売りやすさ）に注意が必要です。`);
+  }
+  if (floor) {
+    if (floor >= 10) notes.push(`${floor}階以上の高層は眺望・日照が良好で、低層比で5〜15%程度高い傾向があります。`);
+    else if (floor <= 2) notes.push(`低層階は価格が低い傾向がありますが、日照・防犯の観点も確認してください。`);
+  }
+  if (direction) {
+    if (direction === '南' || direction === '東南') notes.push(`${direction}向きは日当たりが良く人気があり、価格に反映されやすい方角です。`);
+    else if (direction === '北') notes.push(`北向きは日当たりが少ないため価格が低め。冬の結露・採光に注意。`);
+  }
+  if (age >= 25) notes.push(`築${age}年超の物件は大規模修繕の時期・修繕積立金の充足状況を必ず確認してください。`);
+  else if (age >= 15) notes.push(`築${age}年の物件は、今後の大規模修繕計画を確認することをおすすめします。`);
+
+  notes.push('このツールは地域平均との概算比較です。実際の価格は個別状態・管理状況・成約事例で異なります。');
+
+  return { main, notes };
+}
+
+// ══════════════════════════════════════════════════════
+// UI 更新
+// ══════════════════════════════════════════════════════
+function showError(msg) {
+  errorMsg.textContent = msg;
+  errorMsg.hidden = false;
+}
+function clearError() {
+  errorMsg.textContent = '';
+  errorMsg.hidden = true;
+}
+
+function resetResult() {
+  compareBarWrap.hidden = true;
+  resultGrid.hidden     = true;
+  ageNote.hidden        = true;
+  paymentImpact.hidden  = true;
+  verdictComment.hidden = true;
+  noDataMsg.hidden      = true;
+  verdictBanner.style.background   = '';
+  verdictBanner.style.borderColor  = '';
+  verdictIcon.textContent  = '🔍';
+  verdictLabel.textContent = '左の入力欄に情報を入力してください';
+  verdictSub.textContent   = '物件価格・面積・地域を入力すると結果が表示されます';
+  verdictLabel.style.color = '';
+}
+
+function updateNeedle(ratio) {
+  // 比較バー: -30%〜+30% を 0〜100% にマッピング
+  const clamp = Math.max(-0.30, Math.min(0.30, ratio));
+  const pct   = ((clamp + 0.30) / 0.60) * 100;
+  compareNeedle.style.left = `${pct}%`;
+  const sign = ratio >= 0 ? '+' : '';
+  compareBarPct.textContent = `相場比 ${sign}${Math.round(ratio * 100)}%`;
+  compareBarWrap.hidden = false;
+}
+
+function calculate() {
+  clearError();
+  resetResult();
+
+  const slug    = citySelect.value;
+  const price   = parseFloat(priceInput.value);
+  const area    = parseFloat(areaInput.value);
+  const age     = parseFloat(ageInput.value) || 0;
+  const station = parseFloat(stationInput.value) || null;
+  const floor   = parseFloat(floorInput.value) || null;
+  const dir     = directionInput.value || null;
+
+  // バリデーション
+  if (!price || price <= 0) { showError('入力価格を入力してください。'); return; }
+  if (!area  || area  <= 0) { showError('専有面積を入力してください。'); return; }
+  if (price < 100)          { showError('物件価格が小さすぎます。万円単位で入力してください。'); return; }
+  if (area  < 10)           { showError('面積が小さすぎます。㎡単位で入力してください。'); return; }
+
+  const market = MARKET_DATA[slug];
+  if (!market) {
+    noDataMsg.hidden = false;
+    return;
+  }
+
+  const cityName   = citiesForClient.find(c => c.slug === slug)?.name ?? slug;
+  const avgPrice   = market.avg_price_man;    // 万円
+  const avgSqm     = market.avg_sqm_price;    // 万円/㎡
+  const inputSqm   = price / area;            // 万円/㎡
+
+  // 比率計算
+  const totalRatio = (price - avgPrice) / avgPrice;
+  const sqmRatio   = (inputSqm - avgSqm)   / avgSqm;
+  const blended    = blendRatio(totalRatio, sqmRatio, area);
+
+  const verdictKey = getVerdictKey(blended);
+  const cfg        = VERDICT_CONFIG[verdictKey];
+
+  // ── 判定バナー
+  verdictBanner.style.background  = cfg.bg;
+  verdictBanner.style.borderColor = cfg.color;
+  verdictIcon.textContent  = cfg.icon;
+  verdictLabel.textContent = cfg.label;
+  verdictLabel.style.color = cfg.color;
+  verdictSub.textContent   = `地域平均（${cityName}）との比較結果`;
+
+  // ── 比較バー
+  updateNeedle(blended);
+
+  // ── 数値カード
+  const diff = Math.round(price - avgPrice);
+  inputPriceDisp.textContent = fmt(price);
+  avgPriceDisp.textContent   = fmt(avgPrice);
+  diffDisp.textContent       = fmtDiff(diff);
+  diffDisp.style.color       = diff > 0 ? '#c0392b' : diff < 0 ? '#2d7a4f' : '#555';
+  ratioDisp.textContent      = `${blended >= 0 ? '+' : ''}${Math.round(blended * 100)}%`;
+  ratioDisp.style.color      = cfg.color;
+  sqmInputDisp.textContent   = `${inputSqm.toFixed(1)}万円/㎡`;
+  sqmAvgDisp.textContent     = `${avgSqm.toFixed(1)}万円/㎡`;
+  resultGrid.hidden = false;
+
+  // ── 築年数補正コメント
+  if (age > 0) {
+    const coef = ageAdjustCoef(age);
+    const adjustedPrice = Math.round(avgPrice * coef);
+    const adjustedRatio = (price - adjustedPrice) / adjustedPrice;
+    const adjSign = adjustedRatio >= 0 ? '+' : '';
+    ageNoteText.textContent =
+      `築${age}年補正後の概算相場は約${fmt(adjustedPrice)}（補正係数×${coef}）。補正後比較では${adjSign}${Math.round(adjustedRatio * 100)}%です（参考値）。`;
+    ageNote.hidden = false;
+  }
+
+  // ── 返済額への影響
+  if (Math.abs(diff) >= 100) {
+    const myPayment  = monthlyPayment(price);
+    const avgPayment = monthlyPayment(avgPrice);
+    const payDiff    = myPayment - avgPayment;
+    const sign       = payDiff >= 0 ? '+' : '';
+    impactBody.textContent =
+      `入力価格でローンを組む場合、地域平均価格と比べて月々の返済額が約${sign}${Math.abs(payDiff).toLocaleString()}円異なります（金利1.5%・35年・頭金10%の場合）。`;
+    paymentImpact.hidden = false;
+  }
+
+  // ── 判定コメント
+  const { main, notes } = buildComment(verdictKey, blended, diff, area, age, station, floor, dir, cityName);
+  commentBody.textContent = main;
+  commentNotes.innerHTML  = notes.map(n => `<li>${n}</li>`).join('');
+  verdictComment.hidden   = false;
+}
+
+// ══════════════════════════════════════════════════════
+// イベントリスナー
+// ══════════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+  initCitySelect();
+
+  // 初期値セット
+  priceInput.value = '4500';
+  areaInput.value  = '55';
+  ageInput.value   = '15';
+
+  // 初回計算
+  calculate();
+
+  // リアルタイム再計算
+  [citySelect, priceInput, areaInput, ageInput, stationInput, floorInput, directionInput].forEach((el) => {
+    el?.addEventListener('input',  calculate);
+    el?.addEventListener('change', calculate);
+  });
+});
+</script>
+
+<style>
+/* ── calc layout ── */
+.calc-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+/* ── card ── */
+.card {
+  background: #fff;
+  border: 1px solid var(--c-border, #e2ddd6);
+  border-radius: 16px;
+  padding: 28px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+.card-heading {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--c-primary, #1a4a3a);
+  margin-bottom: 20px;
+}
+
+/* ── fields ── */
+.field-group { margin-bottom: 16px; }
+.field-label {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--c-text, #2c2c2c);
+  margin-bottom: 6px;
+}
+.field-unit { font-size: 0.75rem; color: var(--c-text-muted, #6b6b6b); font-weight: 400; }
+.field-input,
+.field-select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--c-border, #e2ddd6);
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-family: var(--font);
+  background: #fff;
+  color: var(--c-text, #2c2c2c);
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.field-input:focus,
+.field-select:focus {
+  outline: none;
+  border-color: var(--c-primary, #1a4a3a);
+  box-shadow: 0 0 0 3px rgba(26,74,58,0.10);
+}
+.field-hint {
+  font-size: 0.75rem;
+  color: var(--c-text-muted, #6b6b6b);
+  margin-top: 4px;
+}
+
+.divider { border: none; border-top: 1px solid var(--c-border, #e2ddd6); margin: 18px 0; }
+
+/* ── optional block ── */
+.optional-block { margin-top: 8px; }
+.optional-summary {
+  font-size: 0.85rem;
+  color: var(--c-primary, #1a4a3a);
+  cursor: pointer;
+  font-weight: 600;
+  padding: 6px 0;
+  list-style: none;
+}
+.optional-summary::before { content: '▸ '; }
+details[open] .optional-summary::before { content: '▾ '; }
+.optional-body { padding-top: 12px; }
+.optional-note { font-size: 0.75rem; color: var(--c-text-muted, #6b6b6b); margin-top: 8px; }
+
+/* ── error ── */
+.error-msg {
+  margin-top: 12px;
+  padding: 10px 14px;
+  background: #fdecea;
+  border: 1px solid #f5c6c6;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  color: #c0392b;
+}
+
+/* ── verdict banner ── */
+.verdict-banner {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 18px;
+  border: 2px solid var(--c-border, #e2ddd6);
+  border-radius: 12px;
+  margin-bottom: 20px;
+  transition: background 0.2s, border-color 0.2s;
+}
+.verdict-icon { font-size: 2rem; flex-shrink: 0; }
+.verdict-label { font-size: 1.3rem; font-weight: 800; }
+.verdict-sub   { font-size: 0.8rem; color: var(--c-text-muted, #6b6b6b); margin-top: 2px; }
+
+/* ── compare bar ── */
+.compare-bar-wrap { margin-bottom: 20px; }
+.compare-bar-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.72rem;
+  color: var(--c-text-muted, #6b6b6b);
+  margin-bottom: 4px;
+}
+.compare-bar-track {
+  position: relative;
+  height: 16px;
+  border-radius: 8px;
+  overflow: visible;
+}
+.compare-bar-zones {
+  display: flex;
+  height: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+}
+.zone { flex: 1; }
+.zone-bargain   { background: #2d7a4f; }
+.zone-cheap     { background: #7bbf9a; }
+.zone-fair      { background: #c8c8c8; }
+.zone-pricey    { background: #e8a94a; }
+.zone-expensive { background: #c0392b; }
+
+.compare-bar-needle {
+  position: absolute;
+  top: -4px;
+  width: 4px;
+  height: 24px;
+  background: #1a1a2e;
+  border-radius: 2px;
+  transform: translateX(-50%);
+  transition: left 0.3s ease;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+}
+.compare-bar-pct {
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--c-text-muted, #6b6b6b);
+  margin-top: 6px;
+  font-weight: 600;
+}
+
+/* ── result grid ── */
+.result-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.result-card {
+  background: var(--c-bg, #f5f3ef);
+  border-radius: 10px;
+  padding: 12px 14px;
+}
+.result-card-label { font-size: 0.72rem; color: var(--c-text-muted, #6b6b6b); margin-bottom: 4px; }
+.result-card-value { font-size: 1.0rem; font-weight: 700; color: var(--c-text, #2c2c2c); }
+.result-card-value.primary { color: var(--c-primary, #1a4a3a); }
+
+/* ── age note ── */
+.age-note {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  background: #fff8e1;
+  border: 1px solid #ffe082;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 0.82rem;
+  color: #7a5800;
+  margin-bottom: 14px;
+}
+.age-note-icon { flex-shrink: 0; }
+
+/* ── payment impact ── */
+.payment-impact {
+  background: #f0f7f4;
+  border: 1px solid #b8dac9;
+  border-radius: 10px;
+  padding: 16px 18px;
+  margin-bottom: 14px;
+}
+.impact-heading { font-size: 0.9rem; font-weight: 700; margin-bottom: 8px; color: var(--c-primary, #1a4a3a); }
+.impact-body    { font-size: 0.85rem; margin-bottom: 10px; }
+.impact-link    { font-size: 0.82rem; color: var(--c-primary, #1a4a3a); font-weight: 600; text-decoration: underline; }
+
+/* ── verdict comment ── */
+.verdict-comment {
+  border-top: 1px solid var(--c-border, #e2ddd6);
+  padding-top: 14px;
+}
+.comment-heading { font-size: 0.9rem; font-weight: 700; margin-bottom: 8px; color: var(--c-primary, #1a4a3a); }
+.verdict-comment p { font-size: 0.875rem; margin-bottom: 10px; }
+.comment-notes { padding-left: 18px; }
+.comment-notes li { font-size: 0.8rem; color: var(--c-text-muted, #6b6b6b); margin-bottom: 4px; line-height: 1.6; }
+
+/* ── no data ── */
+.no-data-msg {
+  padding: 20px;
+  text-align: center;
+  color: var(--c-text-muted, #6b6b6b);
+  font-size: 0.875rem;
+}
+.no-data-sub { margin-top: 8px; font-size: 0.8rem; }
+
+/* ── related tools ── */
+.related-tools {
+  margin-top: 40px;
+  padding: 28px;
+  background: #fff;
+  border: 1px solid var(--c-border, #e2ddd6);
+  border-radius: 16px;
+}
+.related-heading { font-size: 1.05rem; font-weight: 700; color: var(--c-primary, #1a4a3a); margin-bottom: 4px; }
+.related-sub     { font-size: 0.85rem; color: var(--c-text-muted, #6b6b6b); margin-bottom: 16px; }
+.related-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+}
+.related-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px 16px;
+  border: 1px solid var(--c-border, #e2ddd6);
+  border-radius: 10px;
+  text-decoration: none;
+  transition: border-color 0.15s, background 0.15s;
+}
+.related-card:hover { border-color: var(--c-primary, #1a4a3a); background: #f0f7f4; text-decoration: none; }
+.related-icon  { font-size: 1.3rem; }
+.related-label { font-size: 0.85rem; font-weight: 700; color: var(--c-primary, #1a4a3a); }
+.related-desc  { font-size: 0.75rem; color: var(--c-text-muted, #6b6b6b); }
+
+/* ── article ── */
+.article-wrap {
+  background: #fff;
+  border-top: 1px solid var(--c-border, #e2ddd6);
+  padding: 64px 0;
+  margin-top: 64px;
+}
+.article-container { max-width: 740px; }
+.art-h2 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--c-primary, #1a4a3a);
+  margin: 36px 0 12px;
+  padding-left: 12px;
+  border-left: 4px solid var(--c-accent, #c9943a);
+}
+.art-h2:first-child { margin-top: 0; }
+.article-container p { font-size: 0.925rem; line-height: 1.85; margin-bottom: 12px; color: var(--c-text, #2c2c2c); }
+.art-list { padding-left: 20px; margin-bottom: 12px; }
+.art-list li { font-size: 0.9rem; line-height: 1.8; color: var(--c-text, #2c2c2c); margin-bottom: 4px; }
+.art-list a  { color: var(--c-primary, #1a4a3a); text-decoration: underline; }
+
+/* ── FAQ ── */
+.faq-list { margin: 16px 0 32px; }
+.faq-item {
+  border: 1px solid var(--c-border, #e2ddd6);
+  border-radius: 10px;
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+.faq-q {
+  padding: 14px 18px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  list-style: none;
+  background: #fafaf8;
+  color: var(--c-text, #2c2c2c);
+}
+.faq-q::before { content: 'Q. '; color: var(--c-accent, #c9943a); font-weight: 700; }
+details[open] .faq-q { background: #f0f7f4; }
+.faq-a {
+  padding: 14px 18px;
+  font-size: 0.875rem;
+  line-height: 1.8;
+  border-top: 1px solid var(--c-border, #e2ddd6);
+  margin: 0;
+  color: var(--c-text, #2c2c2c);
+}
+
+/* ── disclaimer ── */
+.disclaimer-box {
+  background: #f9f8f6;
+  border: 1px solid var(--c-border, #e2ddd6);
+  border-radius: 8px;
+  padding: 16px 18px;
+  margin-top: 32px;
+}
+.disclaimer-box p { font-size: 0.8rem; color: var(--c-text-muted, #6b6b6b); line-height: 1.7; margin: 0; }
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .calc-layout { grid-template-columns: 1fr; }
+  .result-grid  { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 480px) {
+  .result-grid { grid-template-columns: 1fr; }
+  .related-grid { grid-template-columns: 1fr 1fr; }
+}
+</style>
