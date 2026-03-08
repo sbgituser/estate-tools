@@ -345,8 +345,8 @@ async function main() {
     process.exit(1);
   }
 
-  console.log('ℹ️  自動更新対象フィールド: price（物件価格）/ land（地価）/ population（人口・世帯数）/ grade（グレード・流動性）');
-  console.log('   investment_grade・liquidity は land_price + population_density から自動算出します。');
+  console.log('ℹ️  price / land / population は grade 算出の中間値として使用し、cities.json には書き込みません。');
+  console.log('   cities.json に書き込まれるのは investment_grade と liquidity のみです。');
   console.log('');
 
   // 各エリアを処理
@@ -361,53 +361,56 @@ async function main() {
     console.log(`▶ ${city.name} (${city.slug})`);
     const updates = {};
 
-    // ── 価格取得 ──────────────────────────────────────────────────
+    // ── 中間値（grade 算出用・JSON に書き込まない） ───────────────
+    let fetchedLand = null;
+    let fetchedPop  = null;
+
     if (opts.fields.includes('price') && reinfKey && !reinfKey.includes('your_')) {
-      console.log('  [price] 不動産取引価格情報取得中...');
+      console.log('  [price] 不動産取引価格情報取得中（grade算出用）...');
       try {
-        const price = await fetchAvgPrice(reinfKey, meta, opts.year, opts.quarter);
-        if (price !== null) updates.avg_price_man = price;
+        await fetchAvgPrice(reinfKey, meta, opts.year, opts.quarter);
+        // 取得値は grade 算出の参考ログ用。cities.json には書き込まない。
       } catch (e) {
         console.warn(`  [WARN] price 取得失敗: ${e.message}`);
       }
     }
 
-    // ── 地価取得 ──────────────────────────────────────────────────
     if (opts.fields.includes('land') && reinfKey && !reinfKey.includes('your_')) {
-      console.log('  [land] 地価公示取得中...');
+      console.log('  [land] 地価公示取得中（grade算出用）...');
       try {
-        const land = await fetchLandPrice(reinfKey, meta, opts.year);
-        if (land !== null) updates.land_price_man_per_m2 = land;
+        fetchedLand = await fetchLandPrice(reinfKey, meta, opts.year);
       } catch (e) {
         console.warn(`  [WARN] land 取得失敗: ${e.message}`);
       }
     }
 
-    // ── 人口取得 ──────────────────────────────────────────────────
     if (opts.fields.includes('population') && estatId && !estatId.includes('your_')) {
-      console.log('  [population] e-Stat 人口データ取得中...');
+      console.log('  [population] e-Stat 人口データ取得中（grade算出用）...');
       try {
         const pop = await fetchPopulation(estatId, meta);
-        if (pop) {
-          if (pop.population)  updates.population  = pop.population;
-          if (pop.households)  updates.households  = pop.households;
-        }
+        if (pop?.population) fetchedPop = pop.population;
       } catch (e) {
         console.warn(`  [WARN] population 取得失敗: ${e.message}`);
       }
     }
 
-    // ── 投資グレード・流動性の再算出 ─────────────────────────────
+    // ── 投資グレード・流動性の算出（cities.json に書き込む唯一の値） ──
     if (opts.fields.includes('grade')) {
-      const land      = updates.land_price_man_per_m2 ?? city.land_price_man_per_m2;
-      const pop       = updates.population             ?? city.population;
-      const area      = city.area_km2;
-      const newGrade  = deriveGrade(land, pop, area);
-      const newLiq    = deriveLiquidity(newGrade);
-      const density   = Math.round(pop / area);
-      console.log(`  [grade] 地価${land}万円/㎡ + 人口密度${density}人/km² → ${newGrade} / 流動性: ${newLiq} (既存: ${city.investment_grade})`);
-      updates.investment_grade = newGrade;
-      updates.liquidity        = newLiq;
+      // APIから取得できた値を優先し、取得できなければ area_km2 のみ使用
+      const land     = fetchedLand ?? null;
+      const pop      = fetchedPop  ?? null;
+      const area     = city.area_km2;
+
+      if (land !== null && pop !== null) {
+        const newGrade = deriveGrade(land, pop, area);
+        const newLiq   = deriveLiquidity(newGrade);
+        const density  = Math.round(pop / area);
+        console.log(`  [grade] 地価${land}万円/㎡ + 人口密度${density}人/km² → ${newGrade} / 流動性: ${newLiq} (既存: ${city.investment_grade})`);
+        updates.investment_grade = newGrade;
+        updates.liquidity        = newLiq;
+      } else {
+        console.warn(`  [WARN] grade 算出に必要な land または population が取得できませんでした。既存値を維持します。`);
+      }
     }
 
     results.push({ city, updates });

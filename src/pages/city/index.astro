@@ -71,21 +71,8 @@ const jsonLd = {
               {city.investment_grade}
             </span>
           </div>
-          <div class="city-card-stats">
-            <div class="city-stat">
-              <div class="city-stat-label">平均価格</div>
-              <div class="city-stat-val">{city.avg_price_man.toLocaleString('ja-JP')}万</div>
-            </div>
-            <div class="city-stat">
-              <div class="city-stat-label">地価/㎡</div>
-              <div class="city-stat-val">{city.land_price_man_per_m2}万</div>
-            </div>
-            <div class="city-stat">
-              <div class="city-stat-label">流動性</div>
-              <div class="city-stat-val">{city.liquidity}</div>
-            </div>
-          </div>
-          <div class="city-card-link">詳細データを見る →</div>
+          <div class="city-card-liquidity">流動性: {city.liquidity}</div>
+          <div class="city-card-link">詳細を見る →</div>
         </a>
       ))}
     </div>
@@ -111,10 +98,7 @@ const jsonLd = {
 .city-card-pref { font-size: 0.72rem; color: var(--c-text-muted, #6b7280); margin-top: 2px; }
 .city-card-grade { font-size: 0.72rem; font-weight: 800; color: #fff; padding: 3px 8px; border-radius: 20px; white-space: nowrap; align-self: flex-start; }
 
-.city-card-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px; }
-.city-stat { text-align: center; }
-.city-stat-label { font-size: 0.65rem; color: var(--c-text-muted, #6b7280); font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 3px; }
-.city-stat-val { font-size: 0.95rem; font-weight: 800; color: var(--c-text, #1a1a2e); }
+.city-card-liquidity { font-size: 0.78rem; color: var(--c-text-muted, #6b7280); margin-bottom: 10px; }
 
 .city-card-link { font-size: 0.78rem; color: var(--c-primary, #1a4a3a); font-weight: 600; margin-top: auto; padding-top: 8px; border-top: 1px solid var(--c-border, #e5e7eb); }
 
