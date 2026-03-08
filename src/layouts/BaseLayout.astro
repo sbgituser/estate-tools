@@ -58,6 +58,68 @@ const fullTitle = title === siteName ? title : `${title} | 不動産ツールズ
   <link rel="preconnect" href="https://www.googletagmanager.com" />
   <link rel="preconnect" href="https://www.google-analytics.com" />
 
+  <!-- Shared input persistence (cross-tool localStorage sync) -->
+  <script>
+  (function () {
+    var KEYS = [
+      'shared-property-price',
+      'shared-down-payment',
+      'shared-monthly-rent',
+      'shared-vacancy-rate',
+      'shared-loan-rate',
+      'shared-loan-years',
+    ];
+
+    function sliderFill(slider, val) {
+      var min = parseFloat(slider.min) || 0;
+      var max = parseFloat(slider.max) || 100;
+      var v   = parseFloat(val)        || 0;
+      var pct = Math.max(0, Math.min(100, (v - min) / (max - min) * 100));
+      slider.style.setProperty('--pct', pct + '%');
+    }
+
+    function restoreAll() {
+      KEYS.forEach(function (key) {
+        var stored = localStorage.getItem(key);
+        if (stored == null) return;
+        document.querySelectorAll('[data-shared="' + key + '"]').forEach(function (el) {
+          if (!(el instanceof HTMLInputElement)) return;
+          el.value = stored;
+          // display span (${id}Display パターン)
+          var disp = document.getElementById(el.id + 'Display');
+          if (disp) disp.textContent = Number(stored).toLocaleString('ja-JP');
+          // 連動スライダー
+          var slider = document.querySelector('input.range-slider[data-target="' + el.id + '"]');
+          if (slider instanceof HTMLInputElement) {
+            slider.value = stored;
+            sliderFill(slider, stored);
+          }
+        });
+      });
+    }
+
+    function saveValue(el) {
+      var key = el.getAttribute('data-shared');
+      if (key) { localStorage.setItem(key, el.value); return; }
+      // スライダーの場合：リンク先 number input の data-shared を参照
+      var targetId = el.getAttribute('data-target');
+      if (targetId) {
+        var numEl = document.getElementById(targetId);
+        if (numEl instanceof HTMLInputElement) {
+          var numKey = numEl.getAttribute('data-shared');
+          if (numKey) localStorage.setItem(numKey, el.value);
+        }
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      restoreAll();
+      document.addEventListener('input',  function (e) { if (e.target instanceof HTMLInputElement) saveValue(e.target); });
+      document.addEventListener('change', function (e) { if (e.target instanceof HTMLInputElement) saveValue(e.target); });
+    });
+  })();
+  </script>
+
   <!-- Google Analytics 4 -->
   <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-3W9VPGHS10"></script>
   <script is:inline>

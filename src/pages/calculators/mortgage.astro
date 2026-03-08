@@ -68,7 +68,8 @@ const jsonLd = [
           <input class="range-slider" type="range" id="priceSlider"
             data-target="price" value="4000" min="100" max="20000" step="100" />
           <input class="field-input" type="number" id="price"
-            value="4000" min="100" max="20000" step="100" inputmode="numeric" />
+            value="4000" min="100" max="20000" step="100" inputmode="numeric"
+            data-shared="shared-property-price" />
         </div>
 
         <!-- 頭金 -->
@@ -80,7 +81,8 @@ const jsonLd = [
           <input class="range-slider" type="range" id="downSlider"
             data-target="down" value="800" min="0" max="4000" step="50" />
           <input class="field-input" type="number" id="down"
-            value="800" min="0" max="4000" step="50" inputmode="numeric" />
+            value="800" min="0" max="4000" step="50" inputmode="numeric"
+            data-shared="shared-down-payment" />
           <p class="field-hint">物件価格の10〜20%が一般的。0円の場合はフルローンとして計算します。</p>
         </div>
 
@@ -102,7 +104,8 @@ const jsonLd = [
           <input class="range-slider" type="range" id="rateSlider"
             data-target="rate" value="1.5" min="0" max="10" step="0.05" />
           <input class="field-input" type="number" id="rate"
-            value="1.5" min="0" max="10" step="0.05" inputmode="decimal" />
+            value="1.5" min="0" max="10" step="0.05" inputmode="decimal"
+            data-shared="shared-loan-rate" />
           <p class="field-hint">変動金利：0.3〜1%台 / 固定10年：1〜2%台 / フラット35：1.8〜2.5%台（目安）</p>
         </div>
 
@@ -115,7 +118,8 @@ const jsonLd = [
           <input class="range-slider" type="range" id="yearsSlider"
             data-target="years" value="35" min="1" max="50" step="1" />
           <input class="field-input" type="number" id="years"
-            value="35" min="1" max="50" step="1" inputmode="numeric" />
+            value="35" min="1" max="50" step="1" inputmode="numeric"
+            data-shared="shared-loan-years" />
         </div>
 
         <!-- 返済方式 -->

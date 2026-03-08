@@ -63,7 +63,8 @@ const jsonLd = [
             <span class="field-unit">万円</span>
           </label>
           <input class="field-input" type="number" id="price"
-            placeholder="3000" min="1" step="1" inputmode="numeric" />
+            placeholder="3000" min="1" step="1" inputmode="numeric"
+            data-shared="shared-property-price" />
         </div>
 
         <div class="field-group">
@@ -72,7 +73,8 @@ const jsonLd = [
             <span class="field-unit">万円</span>
           </label>
           <input class="field-input" type="number" id="rent"
-            placeholder="12" min="0" step="0.1" inputmode="decimal" />
+            placeholder="12" min="0" step="0.1" inputmode="decimal"
+            data-shared="shared-monthly-rent" />
         </div>
 
         <hr class="divider" />
@@ -84,7 +86,8 @@ const jsonLd = [
             <span class="field-unit">%</span>
           </label>
           <input class="field-input" type="number" id="vacancy"
-            placeholder="10" min="0" max="100" step="1" inputmode="numeric" />
+            placeholder="10" min="0" max="100" step="1" inputmode="numeric"
+            data-shared="shared-vacancy-rate" />
           <p class="field-hint">年間を通じた平均空室率の目安。一般的な目安は 5〜15%。</p>
         </div>
 

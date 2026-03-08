@@ -68,7 +68,8 @@ const jsonLd = [
           <input class="range-slider" type="range" id="priceSlider"
             data-target="price" value="3000" min="100" max="20000" step="100" />
           <input class="field-input" type="number" id="price"
-            value="3000" min="100" max="20000" step="100" inputmode="numeric" />
+            value="3000" min="100" max="20000" step="100" inputmode="numeric"
+            data-shared="shared-property-price" />
         </div>
 
         <!-- 頭金 -->
@@ -80,7 +81,8 @@ const jsonLd = [
           <input class="range-slider" type="range" id="downSlider"
             data-target="down" value="600" min="0" max="3000" step="50" />
           <input class="field-input" type="number" id="down"
-            value="600" min="0" max="3000" step="50" inputmode="numeric" />
+            value="600" min="0" max="3000" step="50" inputmode="numeric"
+            data-shared="shared-down-payment" />
           <p class="field-hint">物件価格の20〜30%が一般的な目安。0の場合はフルローン。</p>
         </div>
 
@@ -109,7 +111,8 @@ const jsonLd = [
           <input class="range-slider" type="range" id="rentSlider"
             data-target="rent" value="12" min="1" max="100" step="0.5" />
           <input class="field-input" type="number" id="rent"
-            value="12" min="1" max="100" step="0.5" inputmode="decimal" />
+            value="12" min="1" max="100" step="0.5" inputmode="decimal"
+            data-shared="shared-monthly-rent" />
         </div>
 
         <!-- 空室率 -->
@@ -121,7 +124,8 @@ const jsonLd = [
           <input class="range-slider" type="range" id="vacancySlider"
             data-target="vacancy" value="10" min="0" max="50" step="1" />
           <input class="field-input" type="number" id="vacancy"
-            value="10" min="0" max="50" step="1" inputmode="numeric" />
+            value="10" min="0" max="50" step="1" inputmode="numeric"
+            data-shared="shared-vacancy-rate" />
         </div>
 
         <!-- 年間固定費 -->
@@ -186,7 +190,8 @@ const jsonLd = [
           <input class="range-slider" type="range" id="loanRateSlider"
             data-target="loanRate" value="1.5" min="0" max="10" step="0.1" />
           <input class="field-input" type="number" id="loanRate"
-            value="1.5" min="0" max="10" step="0.1" inputmode="decimal" />
+            value="1.5" min="0" max="10" step="0.1" inputmode="decimal"
+            data-shared="shared-loan-rate" />
           <p class="field-hint">変動金利は0.5〜1%台、固定金利は1〜2%台が現在の目安。</p>
         </div>
 
@@ -199,7 +204,8 @@ const jsonLd = [
           <input class="range-slider" type="range" id="loanYearsSlider"
             data-target="loanYears" value="35" min="1" max="50" step="1" />
           <input class="field-input" type="number" id="loanYears"
-            value="35" min="1" max="50" step="1" inputmode="numeric" />
+            value="35" min="1" max="50" step="1" inputmode="numeric"
+            data-shared="shared-loan-years" />
         </div>
 
         <div id="errorMsg" class="error-msg" hidden></div>
