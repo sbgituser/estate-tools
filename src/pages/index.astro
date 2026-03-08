@@ -53,6 +53,14 @@ const tools = [
     description: '家賃下落率・空室率の上昇が実質利回りとキャッシュフローにどう影響するかをリアルタイム試算。感度分析マトリクスでリスクを2軸で把握。',
     badge: '無料',
   },
+  {
+    href: '/calculators/cash-flow',
+    icon: '💰',
+    label: 'Simulator',
+    title: '不動産投資キャッシュフローシミュレーター',
+    description: '年次CF推移・黒字転換年・自己資金回収年をまとめて試算。元利均等・元金均等の比較やベース/悲観シナリオのグラフ表示にも対応した長期収支予測ツール。',
+    badge: '無料',
+  },
 ];
 
 const jsonLd = [
@@ -72,7 +80,7 @@ const jsonLd = [
     '@type': 'ItemList',
     name: '不動産投資無料ツール一覧',
     url: 'https://estate.kuras-plus.com',
-    numberOfItems: 6,
+    numberOfItems: 7,
     itemListElement: tools.map((t, i) => ({
       '@type': 'ListItem',
       position: i + 1,
