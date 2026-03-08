@@ -1,0 +1,1197 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebApplication',
+    name: '修繕費シミュレーター',
+    url: 'https://estate.kuras-plus.com/calculators/repair-cost',
+    description: '物件の種類・築年数・面積を入力するだけで10年・20年・30年の修繕費を自動推計。外壁・屋上・給排水・設備更新の修繕タイミングも一覧表示。',
+    applicationCategory: 'FinanceApplication',
+    operatingSystem: 'All',
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'JPY' },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'ホーム', item: 'https://estate.kuras-plus.com' },
+      { '@type': 'ListItem', position: 2, name: '修繕費シミュレーター', item: 'https://estate.kuras-plus.com/calculators/repair-cost' },
+    ],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      { '@type': 'Question', name: '修繕費はいくら見込むべきですか？', acceptedAnswer: { '@type': 'Answer', text: '区分マンションは月1〜2万円程度の修繕積立金＋専有部設備更新費、一棟物件は家賃収入の5〜15%程度が目安です。本ツールで物件条件を入力して試算してみてください。' } },
+      { '@type': 'Question', name: '築古物件の修繕費は高くなりますか？', acceptedAnswer: { '@type': 'Answer', text: '築年数が増えるほど修繕が重なるタイミングが多くなり、総修繕費は増加する傾向があります。特に築20〜25年前後は外壁・給排水・設備更新が集中しやすい時期です。' } },
+      { '@type': 'Question', name: '修繕積立金だけで修繕費は賄えますか？', acceptedAnswer: { '@type': 'Answer', text: '区分マンションの場合、管理組合の修繕積立金で大規模修繕（外壁・屋上等）は賄われますが、専有部（給湯器・エアコン・内装等）は自己負担です。積立金が不足する場合は自己資金の用意が必要です。' } },
+      { '@type': 'Question', name: '一棟物件と区分物件で修繕費の考え方は違いますか？', acceptedAnswer: { '@type': 'Answer', text: '大きく異なります。区分マンションは外壁・屋上等の共有部修繕を管理組合が負担しますが、一棟物件はすべての修繕費を所有者が全額負担します。' } },
+    ],
+  },
+];
+---
+
+<BaseLayout
+  title="修繕費シミュレーター｜不動産投資"
+  description="物件の種類・築年数・面積を入力して10年・20年・30年の修繕費を自動推計。外壁・屋上・給排水・設備更新の修繕タイミングも一覧表示。不動産投資の長期キャッシュフローを正確に把握できます。"
+  canonical="https://estate.kuras-plus.com/calculators/repair-cost"
+  jsonLd={jsonLd}
+>
+  <Header slot="header" currentPath="/calculators/repair-cost" />
+
+  <!-- Hero -->
+  <section class="page-hero">
+    <div class="container">
+      <nav class="breadcrumb" aria-label="パンくずリスト">
+        <a href="/">ホーム</a>
+        <span>›</span>
+        <span>修繕費シミュレーター</span>
+      </nav>
+      <p class="hero-eyebrow">Repair Cost Simulator</p>
+      <h1 class="hero-title">修繕費シミュレーター</h1>
+      <p class="hero-desc">
+        物件タイプ・築年数・面積を入力するだけで、10〜30年の修繕費を自動推計。
+        外壁・屋上・給排水・設備更新の修繕タイミングも一覧表示します。
+      </p>
+    </div>
+  </section>
+
+  <!-- Calculator -->
+  <div class="container mt-48">
+    <div class="calc-layout">
+
+      <!-- ── Inputs ── -->
+      <div class="inputs-col">
+        <section class="card" aria-label="物件情報入力">
+          <h2 class="card-heading">物件情報を入力</h2>
+
+          <div class="field-group">
+            <label class="field-label" for="propertyType">物件タイプ</label>
+            <select class="field-select" id="propertyType">
+              <option value="区分マンション">区分マンション</option>
+              <option value="一棟マンション">一棟マンション</option>
+              <option value="アパート">アパート</option>
+              <option value="戸建">戸建</option>
+            </select>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label" for="age">
+              築年数 <span class="field-unit">年</span>
+            </label>
+            <input class="field-input" type="number" id="age"
+              value="15" min="0" max="60" step="1" inputmode="numeric" />
+          </div>
+
+          <div class="field-group">
+            <label class="field-label" for="floorArea">
+              延床面積 <span class="field-unit">㎡</span>
+            </label>
+            <input class="field-input" type="number" id="floorArea"
+              value="60" min="10" step="1" inputmode="numeric" />
+            <p class="field-hint" id="floorAreaHint">区分は専有面積、一棟・戸建は建物全体の延床面積を入力してください。</p>
+          </div>
+
+          <div class="field-group" id="unitsGroup" hidden>
+            <label class="field-label" for="units">
+              戸数 <span class="field-unit">戸</span>
+            </label>
+            <input class="field-input" type="number" id="units"
+              value="8" min="1" max="200" step="1" inputmode="numeric" />
+          </div>
+
+          <div class="field-group">
+            <label class="field-label" for="structure">構造</label>
+            <select class="field-select" id="structure">
+              <option value="RC">RC（鉄筋コンクリート）</option>
+              <option value="SRC">SRC（鉄骨鉄筋コンクリート）</option>
+              <option value="S造">S造（鉄骨）</option>
+              <option value="木造">木造</option>
+            </select>
+          </div>
+
+          <hr class="divider" />
+          <p class="section-label">費用（任意）</p>
+
+          <div class="field-group">
+            <label class="field-label" for="monthlyRepairFund">
+              修繕積立金（月） <span class="field-unit">万円</span>
+            </label>
+            <input class="field-input" type="number" id="monthlyRepairFund"
+              value="1" min="0" step="0.1" inputmode="decimal" />
+            <p class="field-hint">入力すると積立合計と修繕費の充足度を比較表示します。</p>
+          </div>
+
+          <div class="field-group" id="elevatorGroup" hidden>
+            <label class="field-check">
+              <input type="checkbox" id="hasElevator" checked />
+              エレベーターあり（更新費 約500万円/25年を含む）
+            </label>
+          </div>
+
+          <button class="btn-calc" id="calcBtn" type="button">修繕費を試算する</button>
+        </section>
+
+        <!-- 詳細設定 -->
+        <details class="card details-card">
+          <summary class="details-summary">
+            <span>詳細設定（修繕周期の変更）</span>
+            <span class="details-arrow">▼</span>
+          </summary>
+          <div class="details-body">
+            <p class="field-hint">入力しない場合は標準値を使用します。</p>
+
+            <div class="field-group">
+              <label class="field-label" for="wallPeriod">
+                外壁修繕周期 <span class="field-unit">年（標準: 13）</span>
+              </label>
+              <input class="field-input" type="number" id="wallPeriod"
+                placeholder="13" min="8" max="25" step="1" inputmode="numeric" />
+            </div>
+
+            <div class="field-group">
+              <label class="field-label" for="roofPeriod" id="roofPeriodLabel">
+                屋上防水・屋根周期 <span class="field-unit">年（標準: 12）</span>
+              </label>
+              <input class="field-input" type="number" id="roofPeriod"
+                placeholder="12" min="8" max="25" step="1" inputmode="numeric" />
+            </div>
+
+            <div class="field-group">
+              <label class="field-label" for="equipPeriod">
+                設備更新周期 <span class="field-unit">年（標準: 12）</span>
+              </label>
+              <input class="field-input" type="number" id="equipPeriod"
+                placeholder="12" min="8" max="20" step="1" inputmode="numeric" />
+            </div>
+
+            <div class="field-group" id="elevPeriodGroup" hidden>
+              <label class="field-label" for="elevPeriod">
+                EV更新周期 <span class="field-unit">年（標準: 25）</span>
+              </label>
+              <input class="field-input" type="number" id="elevPeriod"
+                placeholder="25" min="20" max="35" step="1" inputmode="numeric" />
+            </div>
+          </div>
+        </details>
+      </div>
+
+      <!-- ── Results ── -->
+      <div class="results-col">
+        <section class="card results-sticky" id="resultCard" aria-label="計算結果" aria-live="polite">
+          <h2 class="card-heading">修繕費の目安</h2>
+
+          <div id="resultEmpty" class="result-empty">
+            <p>物件情報を入力して<br />「修繕費を試算する」を押してください</p>
+          </div>
+
+          <div id="resultContent" hidden>
+            <!-- 期間別合計 -->
+            <div class="result-periods">
+              <div class="period-card period-10">
+                <div class="period-label">10年間</div>
+                <div class="period-value" id="total10">—</div>
+                <div class="period-unit">万円</div>
+              </div>
+              <div class="period-card period-20">
+                <div class="period-label">20年間</div>
+                <div class="period-value" id="total20">—</div>
+                <div class="period-unit">万円</div>
+              </div>
+              <div class="period-card period-30">
+                <div class="period-label">30年間</div>
+                <div class="period-value" id="total30">—</div>
+                <div class="period-unit">万円</div>
+              </div>
+            </div>
+
+            <hr class="divider" />
+
+            <div class="result-rows">
+              <div class="result-row">
+                <span class="result-label">年間平均修繕費</span>
+                <span class="result-value" id="avgAnnual">—</span>
+              </div>
+              <div class="result-row">
+                <span class="result-label">月額換算</span>
+                <span class="result-value" id="avgMonthly">—</span>
+              </div>
+              <div class="result-row">
+                <span class="result-label">1戸あたり（30年）</span>
+                <span class="result-value" id="perUnit">—</span>
+              </div>
+              <div class="result-row">
+                <span class="result-label">㎡あたり（30年）</span>
+                <span class="result-value" id="perSqm">—</span>
+              </div>
+            </div>
+
+            <!-- 修繕積立金比較 -->
+            <div id="fundSection">
+              <hr class="divider" />
+              <p class="section-label">修繕積立金の充足度</p>
+              <div class="fund-rows">
+                <div class="fund-row">
+                  <span>10年</span>
+                  <span>積立 <strong id="fund10Acc">—</strong> / 修繕費 <strong id="total10sub">—</strong></span>
+                </div>
+                <div class="fund-row">
+                  <span>20年</span>
+                  <span>積立 <strong id="fund20Acc">—</strong> / 修繕費 <strong id="total20sub">—</strong></span>
+                </div>
+                <div class="fund-row">
+                  <span>30年</span>
+                  <span>積立 <strong id="fund30Acc">—</strong> / 修繕費 <strong id="total30sub">—</strong></span>
+                </div>
+              </div>
+              <div class="fund-verdict" id="fundVerdict"></div>
+            </div>
+
+            <p class="result-note">
+              ※ 本試算は概算モデルです。実際の修繕費は物件の状態・地域・施工会社によって異なります。
+            </p>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <!-- ── 修繕タイミング表 ── -->
+    <section class="card mt-32" id="timelineSection" hidden>
+      <h2 class="card-heading">修繕タイミング（30年間）</h2>
+      <p class="section-sub-sm">修繕が発生する年と推定費用の一覧です</p>
+      <div class="table-wrap">
+        <table class="event-table">
+          <thead>
+            <tr>
+              <th>経過年</th>
+              <th>築年</th>
+              <th>修繕内容</th>
+              <th class="text-right">推定費用</th>
+            </tr>
+          </thead>
+          <tbody id="eventTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ── グラフ ── -->
+    <section class="card mt-32" id="chartSection" hidden>
+      <h2 class="card-heading">修繕費グラフ</h2>
+      <div class="charts-wrap">
+        <div class="chart-block">
+          <p class="chart-title">年次修繕費（万円）</p>
+          <canvas id="barChart" class="chart-canvas" aria-label="年次修繕費グラフ"></canvas>
+        </div>
+        <div class="chart-block">
+          <p class="chart-title">累計修繕費（万円）</p>
+          <canvas id="lineChart" class="chart-canvas" aria-label="累計修繕費グラフ"></canvas>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ── 記事コンテンツ ── -->
+  <div class="container article-wrap">
+    <article class="article">
+      <section class="article-section">
+        <h2>修繕費とは</h2>
+        <p>修繕費とは、建物・設備の機能を維持・回復するために必要な費用です。不動産投資において修繕費は「見えないコスト」の代表格であり、見積もりが甘いと長期キャッシュフローが大きく狂います。</p>
+        <ul>
+          <li><strong>外壁修繕</strong>：塗装・タイル補修・防水処理など（約12〜15年周期）</li>
+          <li><strong>屋上防水</strong>：防水シートの張り替えや防水工事（約10〜15年周期）</li>
+          <li><strong>給排水更新</strong>：水道・排水管の更新（約20〜30年周期）</li>
+          <li><strong>エレベーター更新</strong>：制御盤・ワイヤー等の更新（約25年周期）</li>
+          <li><strong>設備更新</strong>：給湯器・エアコン・換気扇等の交換（約10〜15年周期）</li>
+        </ul>
+      </section>
+
+      <section class="article-section">
+        <h2>なぜ修繕費が重要か</h2>
+        <p>表面利回りや実質利回りは「現時点のコスト」を基準に計算されますが、修繕費は将来にわたって断続的に発生します。特に築10年・20年・30年の節目では複数の修繕が重なりやすく、単年で数百万〜数千万円の支出が発生することもあります。</p>
+        <p>修繕費を見込まずにキャッシュフローを計算すると、実際の手残りを大幅に過大評価することになります。本ツールで修繕費を試算したうえで、キャッシュフローシミュレーターに組み込むことを推奨します。</p>
+      </section>
+
+      <section class="article-section">
+        <h2>修繕費の目安（物件タイプ別）</h2>
+        <div class="type-table-wrap">
+          <table class="type-table">
+            <thead>
+              <tr><th>物件タイプ</th><th>年間修繕費目安</th><th>主な修繕内容</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>区分マンション</td><td>10〜20万円/年</td><td>設備更新・専有部給排水</td></tr>
+              <tr><td>一棟マンション</td><td>家賃収入の8〜15%</td><td>外壁・屋上・給排水・EV更新</td></tr>
+              <tr><td>アパート</td><td>家賃収入の6〜12%</td><td>外壁・屋根・設備更新</td></tr>
+              <tr><td>戸建</td><td>年間15〜30万円</td><td>外壁塗装・屋根修繕・設備更新</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="article-section">
+        <h2>修繕費を甘く見ると起きること</h2>
+        <p>修繕費の引当不足は不動産投資失敗の主要因のひとつです。典型的な失敗パターンとして以下が挙げられます。</p>
+        <ul>
+          <li>築10〜15年で外壁修繕・屋上防水が重なり、数百万円の一時支出が発生して資金ショート</li>
+          <li>設備の故障が連発して入居者クレームが増加し、空室率が上昇</li>
+          <li>修繕資金の不足により売却を急いで、希望価格を下回る価格で処分せざるを得なくなる</li>
+        </ul>
+        <p>修繕費は「発生したときに考える」ではなく、購入時点から計画的に積立・見込むことが重要です。</p>
+      </section>
+    </article>
+  </div>
+
+  <!-- ── FAQ ── -->
+  <div class="container faq-wrap">
+    <h2 class="section-title">よくある質問</h2>
+    <div class="faq-list">
+      <details class="faq-item">
+        <summary class="faq-q">修繕費はいくら見込むべきですか？</summary>
+        <p class="faq-a">物件の種類・規模・築年数によって異なります。区分マンションは月1〜2万円程度の修繕積立金＋専有部設備更新費、一棟物件は家賃収入の5〜15%程度を修繕費として計上するケースが多いです。</p>
+      </details>
+      <details class="faq-item">
+        <summary class="faq-q">築古物件の修繕費は高くなりますか？</summary>
+        <p class="faq-a">一般的に築年数が増えるほど修繕が重なるタイミングが多くなり、総修繕費は増加する傾向があります。特に築20〜25年前後は外壁・給排水・設備更新が集中しやすい時期です。</p>
+      </details>
+      <details class="faq-item">
+        <summary class="faq-q">修繕積立金だけで修繕費は賄えますか？</summary>
+        <p class="faq-a">区分マンションの場合、管理組合の修繕積立金で大規模修繕（外壁・屋上等）は賄われますが、専有部（給湯器・エアコン・内装等）は自己負担です。本ツールでは積立金と修繕費の充足度を比較表示します。</p>
+      </details>
+      <details class="faq-item">
+        <summary class="faq-q">一棟物件と区分物件で修繕費の考え方は違いますか？</summary>
+        <p class="faq-a">大きく異なります。区分マンションは外壁・屋上等の共有部修繕を管理組合が負担しますが、一棟物件はすべての修繕費を所有者が全額負担します。そのため一棟物件では計画的な修繕積立が不可欠です。</p>
+      </details>
+    </div>
+  </div>
+
+  <!-- ── 関連ツール ── -->
+  <div class="container cta-wrap" style="padding-bottom: 80px;">
+    <h2 class="section-title">関連ツール</h2>
+    <p class="section-sub">修繕費試算の結果を各ツールに組み込んで、より精度の高い投資分析を行いましょう。</p>
+    <div class="related-grid">
+      <a class="related-card" href="/calculators/cash-flow">
+        <span class="related-icon">💰</span>
+        <span class="related-label">CFシミュレーター</span>
+        <span class="related-desc">修繕費を組み込んだ長期キャッシュフロー予測</span>
+      </a>
+      <a class="related-card" href="/calculators/yield">
+        <span class="related-icon">📊</span>
+        <span class="related-label">利回り計算</span>
+        <span class="related-desc">修繕費を含めた実質利回りを算出</span>
+      </a>
+      <a class="related-card" href="/calculators/roi">
+        <span class="related-icon">💹</span>
+        <span class="related-label">ROI計算</span>
+        <span class="related-desc">自己資金ベースの投資収益率を計算</span>
+      </a>
+      <a class="related-card" href="/calculators/sale-profit">
+        <span class="related-icon">🏷️</span>
+        <span class="related-label">売却益試算</span>
+        <span class="related-desc">修繕費を考慮した出口戦略の検討</span>
+      </a>
+    </div>
+  </div>
+
+  <Footer slot="footer" />
+</BaseLayout>
+
+<script>
+// ══════════════════════════════════════════════════════════════════
+// 修繕費モデル定義
+// ══════════════════════════════════════════════════════════════════
+
+interface RepairDef {
+  id: string;
+  name: string;
+  icon: string;
+  applies: string[];
+  cost: (floorArea: number, units: number, coef: number, pt: string) => number;
+  defaultPeriod: number;
+  periodKey: string | null;
+}
+
+const REPAIR_DEFS: RepairDef[] = [
+  {
+    id: 'wall',
+    name: '外壁修繕',
+    icon: '🏗️',
+    applies: ['一棟マンション', 'アパート', '戸建'],
+    cost: (f, _u, coef, pt) => f * (pt === '戸建' ? 4000 : 5500) * coef,
+    defaultPeriod: 13,
+    periodKey: 'wallPeriod',
+  },
+  {
+    id: 'roof',
+    name: '屋上防水',
+    icon: '🛖',
+    applies: ['一棟マンション', 'アパート'],
+    cost: (f, _u, coef) => f * 4000 * coef,
+    defaultPeriod: 12,
+    periodKey: 'roofPeriod',
+  },
+  {
+    id: 'roofTile',
+    name: '屋根修繕',
+    icon: '🏠',
+    applies: ['戸建'],
+    cost: (f, _u, coef) => f * 2500 * coef,
+    defaultPeriod: 15,
+    periodKey: 'roofPeriod',
+  },
+  {
+    id: 'plumbing',
+    name: '給排水更新',
+    icon: '🔧',
+    applies: ['一棟マンション', 'アパート', '区分マンション', '戸建'],
+    cost: (_f, u, coef, pt) =>
+      (pt === '区分マンション' || pt === '戸建') ? u * 200000 : u * 400000 * coef,
+    defaultPeriod: 25,
+    periodKey: null,
+  },
+  {
+    id: 'elevator',
+    name: 'エレベーター更新',
+    icon: '🛗',
+    applies: ['一棟マンション'],
+    cost: () => 5000000,
+    defaultPeriod: 25,
+    periodKey: 'elevPeriod',
+  },
+  {
+    id: 'interior',
+    name: '共用部リフォーム',
+    icon: '🎨',
+    applies: ['一棟マンション', 'アパート'],
+    cost: (_f, u) => u * 60000,
+    defaultPeriod: 10,
+    periodKey: null,
+  },
+  {
+    id: 'equipment',
+    name: '設備更新',
+    icon: '⚙️',
+    applies: ['一棟マンション', 'アパート', '区分マンション', '戸建'],
+    cost: (_f, u, coef) => u * 80000 * coef,
+    defaultPeriod: 12,
+    periodKey: 'equipPeriod',
+  },
+];
+
+const STRUCT_COEF: Record<string, number> = { RC: 1.0, SRC: 1.0, 'S造': 0.85, '木造': 0.75 };
+
+// ══════════════════════════════════════════════════════════════════
+// 入力取得
+// ══════════════════════════════════════════════════════════════════
+
+interface Inputs {
+  propertyType: string;
+  age: number;
+  floorArea: number;
+  units: number;
+  structure: string;
+  monthlyRepairFund: number;
+  hasElevator: boolean;
+  wallPeriod: number;
+  roofPeriod: number;
+  equipPeriod: number;
+  elevPeriod: number;
+}
+
+function getVal(id: string, def: number): number {
+  const el = document.getElementById(id) as HTMLInputElement | null;
+  if (!el) return def;
+  const n = parseFloat(el.value);
+  return isNaN(n) ? def : n;
+}
+
+function getSel(id: string): string {
+  const el = document.getElementById(id) as HTMLSelectElement | null;
+  return el ? el.value : '';
+}
+
+function getInputs(): Inputs {
+  return {
+    propertyType: getSel('propertyType') || '区分マンション',
+    age: getVal('age', 15),
+    floorArea: getVal('floorArea', 60),
+    units: getVal('units', 1),
+    structure: getSel('structure') || 'RC',
+    monthlyRepairFund: getVal('monthlyRepairFund', 0),
+    hasElevator: (document.getElementById('hasElevator') as HTMLInputElement)?.checked ?? true,
+    wallPeriod: getVal('wallPeriod', 13),
+    roofPeriod: getVal('roofPeriod', 12),
+    equipPeriod: getVal('equipPeriod', 12),
+    elevPeriod: getVal('elevPeriod', 25),
+  };
+}
+
+// ══════════════════════════════════════════════════════════════════
+// シミュレーション
+// ══════════════════════════════════════════════════════════════════
+
+interface RepairEvent {
+  year: number;
+  ageAtEvent: number;
+  name: string;
+  icon: string;
+  costYen: number;
+}
+
+function simulate(inputs: Inputs): { yearlyCosts: number[]; events: RepairEvent[] } {
+  const coef = STRUCT_COEF[inputs.structure] ?? 1.0;
+  const yearlyCosts = new Array<number>(30).fill(0);
+  const events: RepairEvent[] = [];
+
+  for (const def of REPAIR_DEFS) {
+    if (!def.applies.includes(inputs.propertyType)) continue;
+    if (def.id === 'elevator' && !inputs.hasElevator) continue;
+
+    const periodKey = def.periodKey as keyof Inputs | null;
+    const period = periodKey
+      ? ((inputs[periodKey] as number) || def.defaultPeriod)
+      : def.defaultPeriod;
+
+    const costYen = def.cost(inputs.floorArea, inputs.units, coef, inputs.propertyType);
+
+    // 現在の築年数から次の修繕タイミングを算出
+    const lastRepairAge = Math.floor(inputs.age / period) * period;
+    let yearsFromNow = lastRepairAge + period - inputs.age;
+    if (yearsFromNow <= 0) yearsFromNow += period;
+
+    while (yearsFromNow <= 30) {
+      yearlyCosts[yearsFromNow - 1] += costYen;
+      events.push({
+        year: yearsFromNow,
+        ageAtEvent: inputs.age + yearsFromNow,
+        name: def.name,
+        icon: def.icon,
+        costYen,
+      });
+      yearsFromNow += period;
+    }
+  }
+
+  events.sort((a, b) => a.year - b.year || a.name.localeCompare(b.name));
+  return { yearlyCosts, events };
+}
+
+// ══════════════════════════════════════════════════════════════════
+// フォーマット
+// ══════════════════════════════════════════════════════════════════
+
+function fmtMan(yen: number): string {
+  return `${(yen / 10000).toFixed(1)} 万円`;
+}
+
+function setText(id: string, text: string): void {
+  const el = document.getElementById(id);
+  if (el) el.textContent = text;
+}
+
+// ══════════════════════════════════════════════════════════════════
+// 結果レンダリング
+// ══════════════════════════════════════════════════════════════════
+
+function renderResults(yearlyCosts: number[], inputs: Inputs): void {
+  const total10 = yearlyCosts.slice(0, 10).reduce((a, b) => a + b, 0);
+  const total20 = yearlyCosts.slice(0, 20).reduce((a, b) => a + b, 0);
+  const total30 = yearlyCosts.reduce((a, b) => a + b, 0);
+  const avgAnnual = total30 / 30;
+  const units = inputs.units || 1;
+
+  setText('total10', Math.round(total10 / 10000).toLocaleString('ja-JP'));
+  setText('total20', Math.round(total20 / 10000).toLocaleString('ja-JP'));
+  setText('total30', Math.round(total30 / 10000).toLocaleString('ja-JP'));
+  setText('avgAnnual', fmtMan(avgAnnual) + ' / 年');
+  setText('avgMonthly', fmtMan(avgAnnual / 12) + ' / 月');
+  setText('perUnit', fmtMan(total30 / units) + ' / 戸');
+  setText('perSqm', `${Math.round(total30 / inputs.floorArea).toLocaleString('ja-JP')} 円 / ㎡`);
+
+  // 修繕積立金との比較
+  const fundMonthly = inputs.monthlyRepairFund * 10000;
+  const fundSection = document.getElementById('fundSection');
+  if (fundMonthly > 0 && fundSection) {
+    const fund10 = fundMonthly * 12 * 10;
+    const fund20 = fundMonthly * 12 * 20;
+    const fund30 = fundMonthly * 12 * 30;
+    setText('fund10Acc', fmtMan(fund10));
+    setText('fund20Acc', fmtMan(fund20));
+    setText('fund30Acc', fmtMan(fund30));
+    setText('total10sub', fmtMan(total10));
+    setText('total20sub', fmtMan(total20));
+    setText('total30sub', fmtMan(total30));
+
+    const deficit = total30 - fund30;
+    const verdict = document.getElementById('fundVerdict');
+    if (verdict) {
+      if (deficit > 0) {
+        verdict.className = 'fund-verdict fund-short';
+        verdict.textContent = `⚠️ 30年間で ${fmtMan(deficit)} の不足が見込まれます`;
+      } else {
+        verdict.className = 'fund-verdict fund-ok';
+        verdict.textContent = `✅ 30年間の積立額は修繕費を ${fmtMan(-deficit)} 上回ります`;
+      }
+    }
+    fundSection.hidden = false;
+  } else if (fundSection) {
+    fundSection.hidden = true;
+  }
+
+  const empty = document.getElementById('resultEmpty');
+  const content = document.getElementById('resultContent');
+  if (empty) empty.hidden = true;
+  if (content) content.hidden = false;
+}
+
+// ══════════════════════════════════════════════════════════════════
+// イベントテーブル
+// ══════════════════════════════════════════════════════════════════
+
+function renderEventTable(events: RepairEvent[]): void {
+  const tbody = document.getElementById('eventTableBody');
+  const section = document.getElementById('timelineSection');
+  if (!tbody || !section) return;
+
+  if (events.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#6b6b6b;padding:24px">30年間に修繕イベントはありません</td></tr>';
+  } else {
+    tbody.innerHTML = events
+      .map(
+        (ev) => `
+        <tr>
+          <td class="td-year">${ev.year}年後</td>
+          <td class="td-age">築${ev.ageAtEvent}年</td>
+          <td class="td-name">${ev.icon} ${ev.name}</td>
+          <td class="td-cost">${fmtMan(ev.costYen)}</td>
+        </tr>`
+      )
+      .join('');
+  }
+  section.hidden = false;
+}
+
+// ══════════════════════════════════════════════════════════════════
+// グラフ描画
+// ══════════════════════════════════════════════════════════════════
+
+function setupCanvas(id: string): { ctx: CanvasRenderingContext2D; w: number; h: number } | null {
+  const canvas = document.getElementById(id);
+  if (!(canvas instanceof HTMLCanvasElement)) return null;
+  const dpr = window.devicePixelRatio || 1;
+  const w = canvas.offsetWidth;
+  const h = canvas.offsetHeight;
+  canvas.width = w * dpr;
+  canvas.height = h * dpr;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return null;
+  ctx.scale(dpr, dpr);
+  return { ctx, w, h };
+}
+
+function drawBarChart(yearlyCosts: number[]): void {
+  const c = setupCanvas('barChart');
+  if (!c) return;
+  const { ctx, w, h } = c;
+  const PL = 52, PB = 28, PT = 10, PR = 8;
+  const cW = w - PL - PR;
+  const cH = h - PT - PB;
+  const maxCost = Math.max(...yearlyCosts, 1);
+  const barW = Math.max(2, cW / 30 - 2);
+
+  ctx.clearRect(0, 0, w, h);
+
+  // Grid + Y labels
+  [0.25, 0.5, 0.75, 1].forEach((pct) => {
+    const y = PT + cH * (1 - pct);
+    ctx.strokeStyle = '#e2ddd6';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(PL, y);
+    ctx.lineTo(PL + cW, y);
+    ctx.stroke();
+    const man = (maxCost * pct) / 10000;
+    ctx.fillStyle = '#6b6b6b';
+    ctx.font = '10px sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText(man >= 100 ? `${Math.round(man)}万` : `${man.toFixed(0)}万`, PL - 4, y + 4);
+  });
+
+  // Bars
+  yearlyCosts.forEach((cost, i) => {
+    if (cost <= 0) return;
+    const bH = (cost / maxCost) * cH;
+    const x = PL + i * (cW / 30) + 1;
+    const y = PT + cH - bH;
+    ctx.fillStyle = '#c9943a';
+    ctx.fillRect(x, y, barW, bH);
+  });
+
+  // X axis labels every 5 years
+  for (let i = 4; i < 30; i += 5) {
+    const x = PL + i * (cW / 30) + barW / 2;
+    ctx.fillStyle = '#6b6b6b';
+    ctx.font = '10px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(`${i + 1}年`, x, h - PB + 14);
+  }
+
+  // X axis line
+  ctx.strokeStyle = '#aaa';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(PL, PT + cH);
+  ctx.lineTo(PL + cW, PT + cH);
+  ctx.stroke();
+}
+
+function drawLineChart(yearlyCosts: number[]): void {
+  const c = setupCanvas('lineChart');
+  if (!c) return;
+  const { ctx, w, h } = c;
+  const PL = 60, PB = 28, PT = 10, PR = 8;
+  const cW = w - PL - PR;
+  const cH = h - PT - PB;
+
+  const cumulative: number[] = [];
+  let sum = 0;
+  yearlyCosts.forEach((v) => { sum += v; cumulative.push(sum); });
+  const maxVal = Math.max(...cumulative, 1);
+
+  ctx.clearRect(0, 0, w, h);
+
+  // Grid + Y labels
+  [0.25, 0.5, 0.75, 1].forEach((pct) => {
+    const y = PT + cH * (1 - pct);
+    ctx.strokeStyle = '#e2ddd6';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(PL, y);
+    ctx.lineTo(PL + cW, y);
+    ctx.stroke();
+    const man = (maxVal * pct) / 10000;
+    ctx.fillStyle = '#6b6b6b';
+    ctx.font = '10px sans-serif';
+    ctx.textAlign = 'right';
+    const label = man >= 10000 ? `${(man / 10000).toFixed(1)}億` : `${Math.round(man)}万`;
+    ctx.fillText(label, PL - 4, y + 4);
+  });
+
+  // Area fill
+  ctx.beginPath();
+  cumulative.forEach((val, i) => {
+    const x = PL + (i / 29) * cW;
+    const y = PT + cH * (1 - val / maxVal);
+    if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+  });
+  ctx.lineTo(PL + cW, PT + cH);
+  ctx.lineTo(PL, PT + cH);
+  ctx.closePath();
+  ctx.fillStyle = 'rgba(201,148,58,0.15)';
+  ctx.fill();
+
+  // Line
+  ctx.beginPath();
+  ctx.strokeStyle = '#c9943a';
+  ctx.lineWidth = 2.5;
+  cumulative.forEach((val, i) => {
+    const x = PL + (i / 29) * cW;
+    const y = PT + cH * (1 - val / maxVal);
+    if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+  });
+  ctx.stroke();
+
+  // Milestone dots at 10/20/30
+  [9, 19, 29].forEach((i) => {
+    const x = PL + (i / 29) * cW;
+    const y = PT + cH * (1 - cumulative[i] / maxVal);
+    ctx.beginPath();
+    ctx.arc(x, y, 4, 0, Math.PI * 2);
+    ctx.fillStyle = '#c9943a';
+    ctx.fill();
+    ctx.fillStyle = '#6b6b6b';
+    ctx.font = '10px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(`${i + 1}年`, x, h - PB + 14);
+  });
+
+  // X axis line
+  ctx.strokeStyle = '#aaa';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(PL, PT + cH);
+  ctx.lineTo(PL + cW, PT + cH);
+  ctx.stroke();
+}
+
+function drawCharts(yearlyCosts: number[]): void {
+  drawBarChart(yearlyCosts);
+  drawLineChart(yearlyCosts);
+  const section = document.getElementById('chartSection');
+  if (section) section.hidden = false;
+}
+
+// ══════════════════════════════════════════════════════════════════
+// UI 制御
+// ══════════════════════════════════════════════════════════════════
+
+function updateUI(): void {
+  const pt = getSel('propertyType');
+  const isKubu = pt === '区分マンション';
+  const isIkkodate = pt === '戸建';
+  const isIttou = pt === '一棟マンション';
+
+  // 戸数フィールド
+  const unitsGroup = document.getElementById('unitsGroup');
+  if (unitsGroup) unitsGroup.hidden = isKubu || isIkkodate;
+
+  // エレベーター
+  const elevGroup = document.getElementById('elevatorGroup');
+  const elevPeriodGroup = document.getElementById('elevPeriodGroup');
+  if (elevGroup) elevGroup.hidden = !isIttou;
+  if (elevPeriodGroup) elevPeriodGroup.hidden = !isIttou;
+
+  // 屋根ラベル
+  const roofLabel = document.getElementById('roofPeriodLabel');
+  if (roofLabel) {
+    roofLabel.innerHTML = (isIkkodate || isKubu)
+      ? '屋根修繕周期 <span class="field-unit">年（標準: 15）</span>'
+      : '屋上防水・屋根周期 <span class="field-unit">年（標準: 12）</span>';
+  }
+
+  // 延床面積ヒント
+  const hint = document.getElementById('floorAreaHint');
+  if (hint) {
+    hint.textContent = isKubu
+      ? '専有面積を入力してください。'
+      : '建物全体の延床面積を入力してください。';
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════
+// メイン計算
+// ══════════════════════════════════════════════════════════════════
+
+function calculate(): void {
+  const inputs = getInputs();
+  if (inputs.floorArea <= 0) return;
+
+  const { yearlyCosts, events } = simulate(inputs);
+  renderResults(yearlyCosts, inputs);
+  renderEventTable(events);
+  requestAnimationFrame(() => drawCharts(yearlyCosts));
+}
+
+// ══════════════════════════════════════════════════════════════════
+// イベントリスナー
+// ══════════════════════════════════════════════════════════════════
+
+document.addEventListener('DOMContentLoaded', () => {
+  const ptSel = document.getElementById('propertyType') as HTMLSelectElement | null;
+
+  ptSel?.addEventListener('change', () => {
+    const pt = ptSel.value;
+    const fa = document.getElementById('floorArea') as HTMLInputElement | null;
+    const u = document.getElementById('units') as HTMLInputElement | null;
+    // デフォルト面積・戸数を物件タイプに合わせて変更
+    if (pt === '一棟マンション') { if (fa) fa.value = '400'; if (u) u.value = '8'; }
+    else if (pt === 'アパート')  { if (fa) fa.value = '200'; if (u) u.value = '6'; }
+    else                         { if (fa) fa.value = '60'; }
+    updateUI();
+    calculate();
+  });
+
+  document.getElementById('calcBtn')?.addEventListener('click', calculate);
+
+  // 入力変更で自動再計算
+  document.querySelectorAll('.field-input, .field-select').forEach((el) => {
+    el.addEventListener('change', calculate);
+  });
+  document.getElementById('hasElevator')?.addEventListener('change', calculate);
+
+  updateUI();
+  calculate();
+});
+
+// リサイズ時にチャート再描画
+let resizeTimer = 0;
+window.addEventListener('resize', () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = window.setTimeout(() => {
+    const inputs = getInputs();
+    const { yearlyCosts } = simulate(inputs);
+    drawBarChart(yearlyCosts);
+    drawLineChart(yearlyCosts);
+  }, 200);
+});
+</script>
+
+<style>
+/* ── Calculator Layout ── */
+.calc-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  align-items: start;
+}
+.inputs-col { display: flex; flex-direction: column; gap: 16px; }
+.results-sticky { position: sticky; top: 76px; }
+
+/* ── Card ── */
+.card {
+  background: var(--c-bg-card);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  box-shadow: var(--shadow-sm);
+}
+.card-heading {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--c-primary);
+  margin-bottom: 20px;
+}
+
+/* ── Fields ── */
+.field-group { margin-bottom: 16px; }
+.field-label {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--c-text);
+  margin-bottom: 6px;
+}
+.field-unit { font-size: 0.75rem; color: var(--c-text-muted); font-weight: 400; }
+.field-input,
+.field-select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-md);
+  font-size: 0.95rem;
+  font-family: var(--font);
+  background: #fff;
+  color: var(--c-text);
+  transition: border-color 0.15s;
+}
+.field-input:focus,
+.field-select:focus {
+  outline: none;
+  border-color: var(--c-primary);
+  box-shadow: 0 0 0 3px rgba(26,74,58,0.1);
+}
+.field-hint {
+  font-size: 0.78rem;
+  color: var(--c-text-muted);
+  margin-top: 4px;
+  line-height: 1.5;
+}
+.field-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.field-check input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--c-primary); }
+.divider { border: none; border-top: 1px solid var(--c-border); margin: 20px 0; }
+.section-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--c-accent);
+  margin-bottom: 12px;
+}
+.btn-calc {
+  width: 100%;
+  margin-top: 8px;
+  padding: 14px;
+  background: var(--c-primary);
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 700;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+  font-family: var(--font);
+}
+.btn-calc:hover { background: var(--c-primary-hover); }
+.btn-calc:active { transform: scale(0.98); }
+
+/* ── Details card ── */
+.details-card { padding: 0; overflow: hidden; }
+.details-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 20px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  list-style: none;
+  color: var(--c-text);
+}
+.details-summary::-webkit-details-marker { display: none; }
+.details-arrow { font-size: 0.75rem; color: var(--c-text-muted); transition: transform 0.2s; }
+details[open] .details-arrow { transform: rotate(180deg); }
+details[open] .details-summary { border-bottom: 1px solid var(--c-border); }
+.details-body { padding: 16px 20px 20px; }
+.details-body .field-group { margin-bottom: 14px; }
+.details-body .field-group:last-child { margin-bottom: 0; }
+
+/* ── Results ── */
+.result-empty {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--c-text-muted);
+  font-size: 0.9rem;
+  line-height: 1.7;
+}
+.result-periods {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 20px;
+}
+.period-card {
+  text-align: center;
+  padding: 12px 6px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--c-border);
+}
+.period-10 { border-color: #d1d5db; background: #f9fafb; }
+.period-20 { border-color: var(--c-accent); background: #fef9f0; }
+.period-30 { border-color: var(--c-primary); background: #f0f7f4; }
+.period-label { font-size: 0.7rem; color: var(--c-text-muted); margin-bottom: 4px; }
+.period-value { font-size: 1.4rem; font-weight: 800; color: var(--c-primary); line-height: 1.1; }
+.period-unit { font-size: 0.68rem; color: var(--c-text-muted); margin-top: 2px; }
+.result-rows { display: flex; flex-direction: column; gap: 10px; }
+.result-row { display: flex; justify-content: space-between; align-items: center; font-size: 0.87rem; }
+.result-label { color: var(--c-text-muted); }
+.result-value { font-weight: 700; color: var(--c-primary); }
+
+/* ── Fund comparison ── */
+.fund-rows { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
+.fund-row { display: flex; justify-content: space-between; font-size: 0.8rem; }
+.fund-row > span:first-child { color: var(--c-text-muted); }
+.fund-row strong { color: var(--c-text); }
+.fund-verdict { padding: 10px 14px; border-radius: var(--radius-md); font-size: 0.83rem; font-weight: 600; }
+.fund-short { background: #fef2f2; color: var(--c-danger); }
+.fund-ok { background: #f0faf4; color: var(--c-success); }
+.result-note { font-size: 0.75rem; color: var(--c-text-muted); margin-top: 16px; line-height: 1.6; }
+
+/* ── Event Table ── */
+.section-sub-sm { font-size: 0.82rem; color: var(--c-text-muted); margin-bottom: 16px; }
+.table-wrap { overflow-x: auto; }
+.event-table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+.event-table th {
+  background: var(--c-primary);
+  color: #fff;
+  padding: 10px 14px;
+  text-align: left;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+.event-table th.text-right { text-align: right; }
+.event-table td { padding: 10px 14px; border-bottom: 1px solid var(--c-border); vertical-align: top; }
+.event-table tr:last-child td { border-bottom: none; }
+.event-table tr:hover td { background: #f8faf9; }
+.td-year { font-weight: 700; color: var(--c-primary); white-space: nowrap; }
+.td-age { color: var(--c-text-muted); font-size: 0.82rem; white-space: nowrap; }
+.td-name { font-weight: 600; }
+.td-cost { text-align: right; font-weight: 700; color: var(--c-accent); white-space: nowrap; }
+
+/* ── Charts ── */
+.charts-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 8px; }
+.chart-title { font-size: 0.82rem; font-weight: 600; color: var(--c-text-muted); margin-bottom: 8px; }
+.chart-canvas { width: 100%; height: 180px; display: block; }
+
+/* ── Article ── */
+.article-wrap { margin-top: 56px; }
+.article { max-width: 760px; }
+.article-section { margin-bottom: 40px; }
+.article-section h2 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--c-primary);
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--c-accent);
+}
+.article-section p { font-size: 0.9rem; line-height: 1.85; margin-bottom: 12px; }
+.article-section ul { padding-left: 20px; margin-bottom: 12px; }
+.article-section li { font-size: 0.9rem; line-height: 1.8; }
+.article-section strong { color: var(--c-primary); }
+.type-table-wrap { overflow-x: auto; }
+.type-table { width: 100%; border-collapse: collapse; font-size: 0.875rem; margin-top: 8px; }
+.type-table th { background: var(--c-primary); color: #fff; padding: 10px 14px; text-align: left; font-size: 0.8rem; }
+.type-table td { padding: 10px 14px; border-bottom: 1px solid var(--c-border); }
+.type-table tr:last-child td { border-bottom: none; }
+.type-table tr:nth-child(even) td { background: #f8faf9; }
+
+/* ── FAQ ── */
+.faq-wrap { margin-top: 48px; }
+.faq-list { margin-top: 20px; max-width: 760px; display: flex; flex-direction: column; gap: 10px; }
+.faq-item { border: 1px solid var(--c-border); border-radius: 10px; overflow: hidden; }
+.faq-q {
+  padding: 16px 20px;
+  font-weight: 700;
+  font-size: 0.92rem;
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--c-text);
+}
+.faq-q::-webkit-details-marker { display: none; }
+.faq-q::after { content: '＋'; font-size: 1.1rem; color: var(--c-primary); flex-shrink: 0; margin-left: 12px; }
+.faq-item[open] .faq-q::after { content: '－'; }
+.faq-a { padding: 0 20px 16px; font-size: 0.88rem; line-height: 1.8; color: var(--c-text-muted); margin: 0; }
+
+/* ── CTA ── */
+.cta-wrap { margin-top: 48px; }
+.related-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; margin-top: 20px; }
+.related-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 6px;
+  background: #fff;
+  border: 1px solid var(--c-border);
+  border-radius: 12px;
+  padding: 20px 14px;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.15s, transform 0.15s, box-shadow 0.15s;
+}
+.related-card:hover {
+  border-color: var(--c-primary);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(26,74,58,0.12);
+  text-decoration: none;
+}
+.related-icon { font-size: 1.8rem; }
+.related-label { font-size: 0.88rem; font-weight: 700; color: var(--c-primary); }
+.related-desc { font-size: 0.75rem; color: var(--c-text-muted); line-height: 1.4; }
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .calc-layout { grid-template-columns: 1fr; }
+  .results-sticky { position: static; }
+  .charts-wrap { grid-template-columns: 1fr; }
+}
+@media (max-width: 480px) {
+  .result-periods { grid-template-columns: 1fr; }
+  .period-value { font-size: 1.25rem; }
+}
+</style>
