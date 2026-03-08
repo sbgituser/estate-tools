@@ -29,7 +29,7 @@ const jsonLd = {
 
 <BaseLayout
   title="地域別不動産投資データ | 不動産ツールズ"
-  description="東京23区・主要都市の不動産投資データ一覧。平均価格・利回り・家賃相場・空室率など地域別の投資指標を比較できます。"
+  description="東京23区・主要都市の不動産投資データ一覧。平均物件価格・地価・人口・投資グレードなど地域別の客観指標を比較できます。"
   canonical="https://estate.kuras-plus.com/city/"
   jsonLd={jsonLd}
 >
@@ -52,7 +52,7 @@ const jsonLd = {
       <p class="hero-eyebrow">Regional Data</p>
       <h1 class="hero-title">地域別不動産投資データ</h1>
       <p class="hero-desc">
-        主要エリアの価格相場・利回り・家賃・投資グレードを一覧比較。気になるエリアをクリックして詳細データと投資判断のポイントを確認できます。
+        主要エリアの物件価格・地価・人口・投資グレードを一覧比較。国土交通省・総務省の公的データに基づく客観指標です。
       </p>
     </div>
   </section>
@@ -77,12 +77,12 @@ const jsonLd = {
               <div class="city-stat-val">{city.avg_price_man.toLocaleString('ja-JP')}万</div>
             </div>
             <div class="city-stat">
-              <div class="city-stat-label">表面利回り</div>
-              <div class="city-stat-val yield">{city.avg_yield_pct}%</div>
+              <div class="city-stat-label">地価/㎡</div>
+              <div class="city-stat-val">{city.land_price_man_per_m2}万</div>
             </div>
             <div class="city-stat">
-              <div class="city-stat-label">平均家賃</div>
-              <div class="city-stat-val">{city.avg_rent_man}万</div>
+              <div class="city-stat-label">流動性</div>
+              <div class="city-stat-val">{city.liquidity}</div>
             </div>
           </div>
           <div class="city-card-link">詳細データを見る →</div>
@@ -115,7 +115,6 @@ const jsonLd = {
 .city-stat { text-align: center; }
 .city-stat-label { font-size: 0.65rem; color: var(--c-text-muted, #6b7280); font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 3px; }
 .city-stat-val { font-size: 0.95rem; font-weight: 800; color: var(--c-text, #1a1a2e); }
-.city-stat-val.yield { color: var(--c-success, #2d7a4f); }
 
 .city-card-link { font-size: 0.78rem; color: var(--c-primary, #1a4a3a); font-weight: 600; margin-top: auto; padding-top: 8px; border-top: 1px solid var(--c-border, #e5e7eb); }
 

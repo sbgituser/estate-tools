@@ -9,7 +9,7 @@
  * Options:
  *   --city=<slug|all>     更新対象エリア (例: --city=shibuya, --city=all)
  *   --fields=<field,...>  更新するフィールド (例: --fields=price,population)
- *                         指定なし = all (price, land, population, yield)
+ *                         指定なし = all (price, land, population, grade)
  *   --dry-run             実際にファイルを書き換えずに取得値をプレビュー
  *   --year=<YYYY>         取引価格の対象年 (デフォルト: 前年)
  *   --quarter=<1-4>       取引価格の対象四半期 (デフォルト: 直近)
@@ -20,10 +20,10 @@
  *   ESTAT_APP_ID        e-Stat（総務省統計局）
  *
  * データソース:
- *   price / land     → 国土交通省 不動産情報ライブラリ（XIT001, XPT001）
- *   population       → e-Stat API（住民基本台帳人口移動報告）
- *   yield            → price + rent から計算（avg_rent_man は手動更新）
- *   trend / grade    → 自動取得不可。手動更新（警告を出力）
+ *   price      → 国土交通省 不動産情報ライブラリ XIT001（中古マンション成約価格中央値）
+ *   land       → 国土交通省 不動産情報ライブラリ XPT001（住宅地地価公示平均）
+ *   population → e-Stat API（住民基本台帳人口・世帯数）
+ *   grade      → land_price + population_density から自動算出（編集者による上書き可）
  */
 
 import fs from 'node:fs';
@@ -68,7 +68,7 @@ function parseArgs() {
   const now = new Date();
   if (!opts.year)    opts.year    = now.getFullYear() - 1;
   if (!opts.quarter) opts.quarter = 4;
-  if (!opts.fields)  opts.fields  = ['price', 'land', 'population', 'yield'];
+  if (!opts.fields)  opts.fields  = ['price', 'land', 'population', 'grade'];
   return opts;
 }
 
@@ -77,7 +77,7 @@ function printHelp() {
 使い方: node scripts/update-cities.mjs [options]
 
   --city=<slug|all>      更新対象 (例: --city=shibuya)
-  --fields=<f1,f2,...>   更新フィールド: price | land | population | yield
+  --fields=<f1,f2,...>   更新フィールド: price | land | population | grade
   --dry-run              ファイル書き換えなし（プレビューのみ）
   --year=YYYY            取引価格の対象年（デフォルト: 前年）
   --quarter=1-4          四半期（デフォルト: 4）
@@ -256,22 +256,48 @@ async function fetchPopulation(appId, cityMeta) {
 }
 
 // ══════════════════════════════════════════════════════════════════
-// 3. 利回り計算（price + rent から算出）
+// 3. 投資グレード・流動性の自動算出
+//    使用データ（いずれも本スクリプトで自動取得可能）:
+//      land_price_man_per_m2 → 国土交通省 地価公示（XPT001）
+//      population_density    → population（e-Stat）÷ area_km2（静的値）
 // ══════════════════════════════════════════════════════════════════
 
 /**
- * avg_rent_man（月額・万円）と avg_price_man から表面利回りを計算
+ * 地価と人口密度からスコアを算出し investment_grade を返す
  *
- * ⚠️ 注意: avg_price_man が「区全体の中古マンション中央値」である場合、
- *   大型物件が含まれ avg_rent_man（想定1室賃料）との単位が揃わない。
- *   その場合は yield フィールドを --fields から除外し、手動で管理すること。
+ * スコア = 地価スコア（0〜5）+ 密度スコア（0〜2）
+ *   地価（万円/㎡）: >=200→5, >=150→4, >=100→3, >=60→2, >=35→1, else→0
+ *   人口密度（人/km²）: >=18000→2, >=12000→1, else→0
  *
- *   yield 自動計算が有効なのは、avg_price_man と avg_rent_man が
- *   「同一グレード・同一専有面積の物件」を想定して揃っている場合のみ。
+ * グレード: >=6→A+, >=5→A, >=4→A-, >=3→B+, else→B
  */
-function calcYield(priceMen, rentMen) {
-  if (!priceMen || !rentMen) return null;
-  return Math.round((rentMen * 12 / priceMen) * 1000) / 10; // 小数点1位
+function deriveGrade(landPrice, population, areaKm2) {
+  let score = 0;
+
+  // 地価スコア
+  if      (landPrice >= 200) score += 5;
+  else if (landPrice >= 150) score += 4;
+  else if (landPrice >= 100) score += 3;
+  else if (landPrice >= 60)  score += 2;
+  else if (landPrice >= 35)  score += 1;
+
+  // 人口密度スコア
+  const density = population / areaKm2;
+  if      (density >= 18000) score += 2;
+  else if (density >= 12000) score += 1;
+
+  if      (score >= 6) return 'A+';
+  else if (score >= 5) return 'A';
+  else if (score >= 4) return 'A-';
+  else if (score >= 3) return 'B+';
+  return 'B';
+}
+
+/** investment_grade から流動性を返す */
+function deriveLiquidity(grade) {
+  if (['A+', 'A', 'A-'].includes(grade)) return '高';
+  if (['B+'].includes(grade))             return '中';
+  return '低';
 }
 
 // ══════════════════════════════════════════════════════════════════
@@ -319,11 +345,8 @@ async function main() {
     process.exit(1);
   }
 
-  // 手動更新が必要なフィールドの警告
-  const manualFields = ['avg_rent_man', 'price_trend_1y_pct', 'rent_trend_1y_pct', 'investment_grade', 'liquidity', 'vacancy_rate_pct', 'cap_rate_pct'];
-  console.log('⚠️  以下のフィールドは自動取得不可のため、手動更新が必要です:');
-  console.log(`   ${manualFields.join(', ')}`);
-  console.log(`   参照: src/data/cities.schema.md`);
+  console.log('ℹ️  自動更新対象フィールド: price（物件価格）/ land（地価）/ population（人口・世帯数）/ grade（グレード・流動性）');
+  console.log('   investment_grade・liquidity は land_price + population_density から自動算出します。');
   console.log('');
 
   // 各エリアを処理
@@ -374,25 +397,17 @@ async function main() {
       }
     }
 
-    // ── 利回り再計算 ──────────────────────────────────────────────
-    if (opts.fields.includes('yield')) {
-      const price = updates.avg_price_man ?? city.avg_price_man;
-      const rent  = city.avg_rent_man; // rentは手動フィールドのため既存値を使用
-      const y     = calcYield(price, rent);
-      if (y !== null) {
-        const existing = city.avg_yield_pct;
-        const diff     = Math.abs(y - existing);
-        if (diff > 1.0) {
-          // 既存値と1pt以上乖離する場合は自動上書きせず警告のみ
-          console.warn(`  [WARN] yield計算値 ${y}% が既存値 ${existing}% と大きく乖離しています（差: ${diff.toFixed(1)}pt）`);
-          console.warn(`         avg_price_man と avg_rent_man の想定単位が揃っているか確認してください。`);
-          console.warn(`         自動上書きをスキップします。手動で avg_yield_pct を更新してください。`);
-        } else {
-          updates.avg_yield_pct = y;
-          updates.cap_rate_pct  = y; // cap_rate は avg_yield と同値で仮置き（手動調整推奨）
-          console.log(`  [yield] ${rent}万円 × 12 / ${price}万円 = ${y}% (既存: ${existing}%)`);
-        }
-      }
+    // ── 投資グレード・流動性の再算出 ─────────────────────────────
+    if (opts.fields.includes('grade')) {
+      const land      = updates.land_price_man_per_m2 ?? city.land_price_man_per_m2;
+      const pop       = updates.population             ?? city.population;
+      const area      = city.area_km2;
+      const newGrade  = deriveGrade(land, pop, area);
+      const newLiq    = deriveLiquidity(newGrade);
+      const density   = Math.round(pop / area);
+      console.log(`  [grade] 地価${land}万円/㎡ + 人口密度${density}人/km² → ${newGrade} / 流動性: ${newLiq} (既存: ${city.investment_grade})`);
+      updates.investment_grade = newGrade;
+      updates.liquidity        = newLiq;
     }
 
     results.push({ city, updates });

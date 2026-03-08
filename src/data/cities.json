@@ -9,29 +9,22 @@
     "households": 137000,
     "area_km2": 15.11,
     "avg_price_man": 13500,
-    "avg_rent_man": 18.5,
-    "avg_yield_pct": 3.8,
     "land_price_man_per_m2": 185,
-    "price_trend_1y_pct": 6.2,
-    "rent_trend_1y_pct": 2.8,
     "investment_grade": "A",
     "liquidity": "高",
-    "vacancy_rate_pct": 4.2,
-    "cap_rate_pct": 3.8,
     "stations": [
-      { "name": "渋谷", "lines": ["JR山手線", "東急東横線", "東京メトロ銀座線", "東京メトロ半蔵門線", "東京メトロ副都心線"], "avg_price_man": 14200 },
-      { "name": "恵比寿", "lines": ["JR山手線", "東京メトロ日比谷線"], "avg_price_man": 15800 },
-      { "name": "原宿", "lines": ["JR山手線", "東京メトロ千代田線"], "avg_price_man": 13900 },
-      { "name": "代官山", "lines": ["東急東横線"], "avg_price_man": 14500 },
-      { "name": "中目黒", "lines": ["東急東横線", "東京メトロ日比谷線"], "avg_price_man": 13200 },
-      { "name": "表参道", "lines": ["東京メトロ銀座線", "東京メトロ千代田線", "東京メトロ半蔵門線"], "avg_price_man": 16200 }
+      { "name": "渋谷",   "lines": ["JR山手線", "東急東横線", "東京メトロ銀座線", "東京メトロ半蔵門線", "東京メトロ副都心線"] },
+      { "name": "恵比寿", "lines": ["JR山手線", "東京メトロ日比谷線"] },
+      { "name": "原宿",   "lines": ["JR山手線", "東京メトロ千代田線"] },
+      { "name": "代官山", "lines": ["東急東横線"] },
+      { "name": "中目黒", "lines": ["東急東横線", "東京メトロ日比谷線"] },
+      { "name": "表参道", "lines": ["東京メトロ銀座線", "東京メトロ千代田線", "東京メトロ半蔵門線"] }
     ],
     "nearby_areas": [
-      { "slug": "minato", "name": "港区", "avg_price_man": 16800, "avg_yield_pct": 3.2 },
-      { "slug": "setagaya", "name": "世田谷区", "avg_price_man": 9200, "avg_yield_pct": 4.5 },
-      { "slug": "meguro", "name": "目黒区", "avg_price_man": 11500, "avg_yield_pct": 4.1 },
-      { "slug": "shinjuku", "name": "新宿区", "avg_price_man": 10800, "avg_yield_pct": 4.3 },
-      { "slug": "nakameguro", "name": "中目黒エリア", "avg_price_man": 13200, "avg_yield_pct": 3.9 }
+      { "slug": "minato",   "name": "港区" },
+      { "slug": "setagaya", "name": "世田谷区" },
+      { "slug": "meguro",   "name": "目黒区" },
+      { "slug": "shinjuku", "name": "新宿区" }
     ],
     "faq": [
       {
@@ -60,10 +53,10 @@
       }
     ],
     "investment_points": [
-      { "icon": "📈", "title": "価格上昇トレンド", "body": "再開発・外資参入で近年年率5〜7%の価格上昇。キャピタルゲイン狙いの長期保有に適す。" },
+      { "icon": "📈", "title": "価格上昇トレンド", "body": "再開発・外資参入で近年価格上昇が継続。キャピタルゲイン狙いの長期保有に適す。" },
       { "icon": "🏢", "title": "IT企業集積による需要", "body": "渋谷ヒカリエ・セルリアンタワー周辺に大手IT・スタートアップが集積。高所得層の賃貸需要が安定。" },
       { "icon": "🌍", "title": "外国人投資家の注目", "body": "円安・訪日需要を背景に海外投資家の参入が活発。流動性・出口戦略の観点でプラス。" },
-      { "icon": "⚠️", "title": "低利回りリスク", "body": "表面利回り3〜4%台が中心。ローン・管理費・税金を考慮するとCFがマイナスになるケースも。" }
+      { "icon": "⚠️", "title": "高地価による低利回りリスク", "body": "地価185万円/㎡超。ローン・管理費・税金を考慮するとCFがマイナスになるケースも。" }
     ]
   },
   {
@@ -76,26 +69,19 @@
     "households": 161000,
     "area_km2": 20.37,
     "avg_price_man": 16800,
-    "avg_rent_man": 22.0,
-    "avg_yield_pct": 3.2,
     "land_price_man_per_m2": 220,
-    "price_trend_1y_pct": 7.1,
-    "rent_trend_1y_pct": 3.2,
     "investment_grade": "A+",
     "liquidity": "高",
-    "vacancy_rate_pct": 3.8,
-    "cap_rate_pct": 3.2,
     "stations": [
-      { "name": "六本木", "lines": ["東京メトロ日比谷線", "都営大江戸線"], "avg_price_man": 18500 },
-      { "name": "麻布十番", "lines": ["東京メトロ南北線", "都営大江戸線"], "avg_price_man": 17200 },
-      { "name": "赤坂", "lines": ["東京メトロ千代田線"], "avg_price_man": 16800 },
-      { "name": "品川", "lines": ["JR山手線", "JR東海道線", "東海道新幹線"], "avg_price_man": 15200 }
+      { "name": "六本木",   "lines": ["東京メトロ日比谷線", "都営大江戸線"] },
+      { "name": "麻布十番", "lines": ["東京メトロ南北線", "都営大江戸線"] },
+      { "name": "赤坂",     "lines": ["東京メトロ千代田線"] },
+      { "name": "品川",     "lines": ["JR山手線", "JR東海道線", "東海道新幹線"] }
     ],
     "nearby_areas": [
-      { "slug": "shibuya", "name": "渋谷区", "avg_price_man": 13500, "avg_yield_pct": 3.8 },
-      { "slug": "chiyoda", "name": "千代田区", "avg_price_man": 15500, "avg_yield_pct": 3.5 },
-      { "slug": "shinjuku", "name": "新宿区", "avg_price_man": 10800, "avg_yield_pct": 4.3 },
-      { "slug": "meguro", "name": "目黒区", "avg_price_man": 11500, "avg_yield_pct": 4.1 }
+      { "slug": "shibuya",  "name": "渋谷区" },
+      { "slug": "shinjuku", "name": "新宿区" },
+      { "slug": "meguro",   "name": "目黒区" }
     ],
     "faq": [
       {
@@ -109,7 +95,7 @@
     ],
     "investment_points": [
       { "icon": "🌍", "title": "外国人富裕層需要", "body": "大使館・外資系企業集積で高所得外国人の長期賃貸需要が極めて安定。" },
-      { "icon": "💎", "title": "希少性プレミアム", "body": "供給制限と希少ブランドにより価格下落リスクが都内最低水準。" },
+      { "icon": "💎", "title": "希少性プレミアム", "body": "地価220万円/㎡超の供給制限エリア。価格下落リスクが都内最低水準。" },
       { "icon": "⚠️", "title": "高額参入障壁", "body": "1室1億円超が当たり前。自己資金・ローン審査の要件が高く参入ハードルが高い。" }
     ]
   },
@@ -123,25 +109,18 @@
     "households": 499000,
     "area_km2": 58.05,
     "avg_price_man": 9200,
-    "avg_rent_man": 11.5,
-    "avg_yield_pct": 4.5,
     "land_price_man_per_m2": 72,
-    "price_trend_1y_pct": 4.1,
-    "rent_trend_1y_pct": 2.1,
     "investment_grade": "B+",
     "liquidity": "中",
-    "vacancy_rate_pct": 5.8,
-    "cap_rate_pct": 4.5,
     "stations": [
-      { "name": "三軒茶屋", "lines": ["東急田園都市線", "東急世田谷線"], "avg_price_man": 9800 },
-      { "name": "下北沢", "lines": ["小田急線", "京王井の頭線"], "avg_price_man": 8900 },
-      { "name": "二子玉川", "lines": ["東急田園都市線", "東急大井町線"], "avg_price_man": 11200 },
-      { "name": "経堂", "lines": ["小田急線"], "avg_price_man": 7800 }
+      { "name": "三軒茶屋", "lines": ["東急田園都市線", "東急世田谷線"] },
+      { "name": "下北沢",   "lines": ["小田急線", "京王井の頭線"] },
+      { "name": "二子玉川", "lines": ["東急田園都市線", "東急大井町線"] },
+      { "name": "経堂",     "lines": ["小田急線"] }
     ],
     "nearby_areas": [
-      { "slug": "shibuya", "name": "渋谷区", "avg_price_man": 13500, "avg_yield_pct": 3.8 },
-      { "slug": "meguro", "name": "目黒区", "avg_price_man": 11500, "avg_yield_pct": 4.1 },
-      { "slug": "ota", "name": "大田区", "avg_price_man": 7200, "avg_yield_pct": 5.0 }
+      { "slug": "shibuya", "name": "渋谷区" },
+      { "slug": "meguro",  "name": "目黒区" }
     ],
     "faq": [
       {
@@ -154,8 +133,8 @@
       }
     ],
     "investment_points": [
-      { "icon": "👨‍👩‍👧", "title": "ファミリー需要の厚み", "body": "23区最大人口。良好な住環境でファミリー長期入居が多く、安定したキャッシュフローが見込める。" },
-      { "icon": "📊", "title": "4〜5%台の利回り", "body": "都心3区より利回り水準が高く、ローン返済後もCFプラスになりやすい。" },
+      { "icon": "👨‍👩‍👧", "title": "ファミリー需要の厚み", "body": "23区最大人口（約94万人）。良好な住環境でファミリー長期入居が多く、安定したキャッシュフローが見込める。" },
+      { "icon": "📊", "title": "都心より利回りを取りやすい", "body": "地価72万円/㎡は都心3区の半分以下。都心と比べ利回り水準が高く、CFプラスになりやすい。" },
       { "icon": "⚠️", "title": "エリア差が大きい", "body": "駅距離・路線・間取りによって利回りに大きな差。物件選別眼が求められる。" }
     ]
   },
@@ -169,25 +148,19 @@
     "households": 165000,
     "area_km2": 14.67,
     "avg_price_man": 11500,
-    "avg_rent_man": 13.2,
-    "avg_yield_pct": 4.1,
     "land_price_man_per_m2": 105,
-    "price_trend_1y_pct": 5.0,
-    "rent_trend_1y_pct": 2.5,
-    "investment_grade": "A-",
+    "investment_grade": "A",
     "liquidity": "高",
-    "vacancy_rate_pct": 4.8,
-    "cap_rate_pct": 4.1,
     "stations": [
-      { "name": "中目黒", "lines": ["東急東横線", "東京メトロ日比谷線"], "avg_price_man": 13200 },
-      { "name": "自由が丘", "lines": ["東急東横線", "東急大井町線"], "avg_price_man": 12800 },
-      { "name": "学芸大学", "lines": ["東急東横線"], "avg_price_man": 11200 },
-      { "name": "目黒", "lines": ["JR山手線", "東急目黒線", "東京メトロ南北線", "都営三田線"], "avg_price_man": 12500 }
+      { "name": "中目黒",   "lines": ["東急東横線", "東京メトロ日比谷線"] },
+      { "name": "自由が丘", "lines": ["東急東横線", "東急大井町線"] },
+      { "name": "学芸大学", "lines": ["東急東横線"] },
+      { "name": "目黒",     "lines": ["JR山手線", "東急目黒線", "東京メトロ南北線", "都営三田線"] }
     ],
     "nearby_areas": [
-      { "slug": "shibuya", "name": "渋谷区", "avg_price_man": 13500, "avg_yield_pct": 3.8 },
-      { "slug": "setagaya", "name": "世田谷区", "avg_price_man": 9200, "avg_yield_pct": 4.5 },
-      { "slug": "minato", "name": "港区", "avg_price_man": 16800, "avg_yield_pct": 3.2 }
+      { "slug": "shibuya",  "name": "渋谷区" },
+      { "slug": "setagaya", "name": "世田谷区" },
+      { "slug": "minato",   "name": "港区" }
     ],
     "faq": [
       {
@@ -215,24 +188,17 @@
     "households": 219000,
     "area_km2": 18.23,
     "avg_price_man": 10800,
-    "avg_rent_man": 13.8,
-    "avg_yield_pct": 4.3,
     "land_price_man_per_m2": 98,
-    "price_trend_1y_pct": 4.8,
-    "rent_trend_1y_pct": 2.3,
-    "investment_grade": "B+",
+    "investment_grade": "A-",
     "liquidity": "高",
-    "vacancy_rate_pct": 5.2,
-    "cap_rate_pct": 4.3,
     "stations": [
-      { "name": "新宿", "lines": ["JR山手線", "JR中央線", "小田急線", "京王線", "東京メトロ丸ノ内線", "都営新宿線", "都営大江戸線"], "avg_price_man": 11500 },
-      { "name": "神楽坂", "lines": ["東京メトロ東西線"], "avg_price_man": 10200 },
-      { "name": "四谷", "lines": ["JR中央線", "東京メトロ丸ノ内線", "東京メトロ南北線"], "avg_price_man": 11800 }
+      { "name": "新宿",   "lines": ["JR山手線", "JR中央線", "小田急線", "京王線", "東京メトロ丸ノ内線", "都営新宿線", "都営大江戸線"] },
+      { "name": "神楽坂", "lines": ["東京メトロ東西線"] },
+      { "name": "四谷",   "lines": ["JR中央線", "東京メトロ丸ノ内線", "東京メトロ南北線"] }
     ],
     "nearby_areas": [
-      { "slug": "shibuya", "name": "渋谷区", "avg_price_man": 13500, "avg_yield_pct": 3.8 },
-      { "slug": "chiyoda", "name": "千代田区", "avg_price_man": 15500, "avg_yield_pct": 3.5 },
-      { "slug": "toshima", "name": "豊島区", "avg_price_man": 8200, "avg_yield_pct": 5.1 }
+      { "slug": "shibuya", "name": "渋谷区" },
+      { "slug": "minato",  "name": "港区" }
     ],
     "faq": [
       {
