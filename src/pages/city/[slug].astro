@@ -1,0 +1,380 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import citiesData from '../../data/cities.json';
+
+export function getStaticPaths() {
+  return citiesData.map((city) => ({
+    params: { slug: city.slug },
+    props: { city },
+  }));
+}
+
+const { city } = Astro.props;
+
+const gradeColor: Record<string, string> = {
+  'A+': '#1a4a3a',
+  'A':  '#2d7a4f',
+  'A-': '#3a8a5f',
+  'B+': '#c9943a',
+  'B':  '#b08030',
+  'B-': '#8b6520',
+};
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: '不動産ツールズ', item: 'https://estate.kuras-plus.com' },
+      { '@type': 'ListItem', position: 2, name: '地域別不動産データ', item: 'https://estate.kuras-plus.com/city/' },
+      { '@type': 'ListItem', position: 3, name: `${city.prefecture}${city.name}`, item: `https://estate.kuras-plus.com/city/${city.slug}` },
+    ],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: `${city.name}の不動産投資データ・相場情報`,
+    description: city.description,
+    url: `https://estate.kuras-plus.com/city/${city.slug}`,
+    author: { '@type': 'Organization', name: '不動産ツールズ' },
+    publisher: { '@type': 'Organization', name: '不動産ツールズ | kuras-plus' },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: city.faq.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
+  },
+];
+---
+
+<BaseLayout
+  title={`${city.name}の不動産投資・相場情報 | 不動産ツールズ`}
+  description={`${city.prefecture}${city.name}の不動産投資データ。平均価格${city.avg_price_man.toLocaleString('ja-JP')}万円・平均利回り${city.avg_yield_pct}%・平均家賃${city.avg_rent_man}万円など最新相場情報と投資判断のポイントを解説。`}
+  canonical={`https://estate.kuras-plus.com/city/${city.slug}`}
+  jsonLd={jsonLd}
+>
+  <Header slot="header" currentPath={`/city/${city.slug}`} />
+
+  <!-- Breadcrumb -->
+  <nav class="breadcrumb" aria-label="パンくずリスト">
+    <div class="container">
+      <ol>
+        <li><a href="/">不動産ツールズ</a></li>
+        <li aria-hidden="true">›</li>
+        <li><a href="/city/">地域別データ</a></li>
+        <li aria-hidden="true">›</li>
+        <li aria-current="page">{city.prefecture}{city.name}</li>
+      </ol>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="city-hero">
+    <div class="container">
+      <div class="city-hero-inner">
+        <div class="city-meta">
+          <span class="city-badge">{city.region}</span>
+          <span class="city-grade" style={`background:${gradeColor[city.investment_grade] ?? '#888'}`}>
+            投資グレード {city.investment_grade}
+          </span>
+        </div>
+        <h1 class="city-title">{city.name}の不動産投資・相場情報</h1>
+        <p class="city-desc">{city.description}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Summary cards -->
+  <section class="container section-gap">
+    <h2 class="section-title">主要指標サマリー</h2>
+    <div class="summary-grid">
+      <div class="summary-card">
+        <div class="summary-label">平均物件価格</div>
+        <div class="summary-value">{city.avg_price_man.toLocaleString('ja-JP')}<span class="summary-unit">万円</span></div>
+        <div class="summary-trend" class:list={[city.price_trend_1y_pct >= 0 ? 'up' : 'down']}>
+          前年比 {city.price_trend_1y_pct >= 0 ? '+' : ''}{city.price_trend_1y_pct}%
+        </div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-label">平均家賃（月額）</div>
+        <div class="summary-value">{city.avg_rent_man}<span class="summary-unit">万円</span></div>
+        <div class="summary-trend" class:list={[city.rent_trend_1y_pct >= 0 ? 'up' : 'down']}>
+          前年比 {city.rent_trend_1y_pct >= 0 ? '+' : ''}{city.rent_trend_1y_pct}%
+        </div>
+      </div>
+      <div class="summary-card highlight">
+        <div class="summary-label">平均利回り（表面）</div>
+        <div class="summary-value">{city.avg_yield_pct}<span class="summary-unit">%</span></div>
+        <div class="summary-sub">想定CF試算は下のツールへ</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-label">地価（万円/㎡）</div>
+        <div class="summary-value">{city.land_price_man_per_m2.toLocaleString('ja-JP')}<span class="summary-unit">万円</span></div>
+        <div class="summary-sub">路線価・公示地価ベース概算</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-label">空室率（概算）</div>
+        <div class="summary-value">{city.vacancy_rate_pct}<span class="summary-unit">%</span></div>
+        <div class="summary-sub">流動性: {city.liquidity}</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-label">世帯数</div>
+        <div class="summary-value">{city.households.toLocaleString('ja-JP')}<span class="summary-unit">世帯</span></div>
+        <div class="summary-sub">人口 {city.population.toLocaleString('ja-JP')}人</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Investment points -->
+  <section class="container section-gap">
+    <h2 class="section-title">投資ポイント・注意点</h2>
+    <div class="points-grid">
+      {city.investment_points.map((pt) => (
+        <div class="point-card">
+          <div class="point-icon">{pt.icon}</div>
+          <div class="point-body">
+            <div class="point-title">{pt.title}</div>
+            <p class="point-text">{pt.body}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- Yield bar chart (SVG) -->
+  <section class="container section-gap">
+    <h2 class="section-title">主要駅別 平均価格</h2>
+    <p class="section-sub">駅周辺マンション成約価格の目安（万円）</p>
+    <div class="bar-chart-wrap">
+      <svg class="bar-chart" viewBox={`0 0 600 ${city.stations.length * 52 + 40}`} role="img" aria-label={`${city.name}駅別平均価格`}>
+        {(() => {
+          const max = Math.max(...city.stations.map(s => s.avg_price_man));
+          const barW = 360;
+          const rowH = 52;
+          const labelW = 120;
+          const pad = 20;
+          return city.stations.map((st, i) => {
+            const y = pad + i * rowH;
+            const w = (st.avg_price_man / max) * barW;
+            return (
+              <g key={st.name}>
+                <text x={labelW - 8} y={y + 18} text-anchor="end" class="bar-label">{st.name}</text>
+                <rect x={labelW} y={y} width={w} height={28} rx="4" class="bar-rect" />
+                <text x={labelW + w + 6} y={y + 18} class="bar-value">{st.avg_price_man.toLocaleString('ja-JP')}万</text>
+              </g>
+            );
+          });
+        })()}
+      </svg>
+    </div>
+  </section>
+
+  <!-- Stations table -->
+  <section class="container section-gap">
+    <h2 class="section-title">主要駅・路線情報</h2>
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>駅名</th>
+            <th>主要路線</th>
+            <th>平均価格目安</th>
+          </tr>
+        </thead>
+        <tbody>
+          {city.stations.map((st) => (
+            <tr>
+              <td class="td-bold">{st.name}駅</td>
+              <td class="td-lines">{st.lines.join(' / ')}</td>
+              <td class="td-price">{st.avg_price_man.toLocaleString('ja-JP')}万円</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- CTA: calculators -->
+  <section class="container section-gap">
+    <h2 class="section-title">この地域の物件を試算する</h2>
+    <p class="section-sub">{city.name}の相場データを入力して、収益を試算してみましょう。</p>
+    <div class="cta-grid">
+      <a class="cta-card" href={`/calculators/yield?price=${city.avg_price_man}&rent=${city.avg_rent_man}`}>
+        <span class="cta-icon">📊</span>
+        <span class="cta-label">利回り計算</span>
+        <span class="cta-desc">表面・実質利回りを即算出</span>
+      </a>
+      <a class="cta-card" href={`/calculators/roi?price=${city.avg_price_man}&rent=${city.avg_rent_man}`}>
+        <span class="cta-icon">💹</span>
+        <span class="cta-label">ROI計算</span>
+        <span class="cta-desc">自己資金ベースの投資収益率</span>
+      </a>
+      <a class="cta-card" href="/calculators/cash-flow">
+        <span class="cta-icon">💰</span>
+        <span class="cta-label">CFシミュレーター</span>
+        <span class="cta-desc">長期キャッシュフロー予測</span>
+      </a>
+      <a class="cta-card" href="/calculators/mortgage">
+        <span class="cta-icon">🏦</span>
+        <span class="cta-label">ローン計算</span>
+        <span class="cta-desc">毎月返済額・総返済額を試算</span>
+      </a>
+      <a class="cta-card" href="/calculators/fixed-asset-tax">
+        <span class="cta-icon">🏛️</span>
+        <span class="cta-label">固定資産税</span>
+        <span class="cta-desc">年間税額の概算計算</span>
+      </a>
+      <a class="cta-card" href="/calculators/sale-profit">
+        <span class="cta-icon">🏷️</span>
+        <span class="cta-label">売却益試算</span>
+        <span class="cta-desc">出口戦略・手取り金額を確認</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- Nearby areas -->
+  <section class="container section-gap">
+    <h2 class="section-title">周辺エリアとの比較</h2>
+    <div class="nearby-grid">
+      {city.nearby_areas.map((area) => (
+        <a class="nearby-card" href={`/city/${area.slug}`}>
+          <div class="nearby-name">{area.name}</div>
+          <div class="nearby-row">
+            <span class="nearby-label">平均価格</span>
+            <span class="nearby-val">{area.avg_price_man.toLocaleString('ja-JP')}万円</span>
+          </div>
+          <div class="nearby-row">
+            <span class="nearby-label">平均利回り</span>
+            <span class="nearby-val yield">{area.avg_yield_pct}%</span>
+          </div>
+          <div class="nearby-link">詳細を見る →</div>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="container section-gap faq-section">
+    <h2 class="section-title">よくある質問</h2>
+    <div class="faq-list">
+      {city.faq.map((item) => (
+        <details class="faq-item">
+          <summary class="faq-q">{item.q}</summary>
+          <p class="faq-a">{item.a}</p>
+        </details>
+      ))}
+    </div>
+  </section>
+
+  <!-- Disclaimer -->
+  <section class="container section-gap" style="padding-bottom: 80px;">
+    <div class="disclaimer">
+      <p>※ 本ページに掲載している価格・利回り・家賃等のデータはあくまで概算の参考値です。実際の相場は物件・時期・条件により大きく異なります。投資判断はご自身の責任において行ってください。</p>
+    </div>
+  </section>
+
+  <Footer slot="footer" />
+</BaseLayout>
+
+<style>
+/* ===== Layout ===== */
+.breadcrumb { background: var(--c-bg-secondary, #f8f9fa); border-bottom: 1px solid var(--c-border, #e5e7eb); }
+.breadcrumb .container { padding-top: 12px; padding-bottom: 12px; }
+.breadcrumb ol { display: flex; align-items: center; gap: 8px; list-style: none; margin: 0; padding: 0; font-size: 0.82rem; color: var(--c-text-muted, #6b7280); flex-wrap: wrap; }
+.breadcrumb a { color: var(--c-primary, #1a4a3a); text-decoration: none; }
+.breadcrumb a:hover { text-decoration: underline; }
+
+.section-gap { margin-top: 56px; }
+
+/* ===== Hero ===== */
+.city-hero { background: linear-gradient(135deg, #0f2d20 0%, #1a4a3a 60%, #2d5a4a 100%); color: #fff; padding: 56px 0 48px; }
+.city-hero-inner { max-width: 720px; }
+.city-meta { display: flex; gap: 10px; align-items: center; margin-bottom: 16px; flex-wrap: wrap; }
+.city-badge { background: rgba(255,255,255,0.15); color: #fff; font-size: 0.78rem; padding: 3px 10px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.25); }
+.city-grade { color: #fff; font-size: 0.78rem; font-weight: 700; padding: 3px 12px; border-radius: 20px; }
+.city-title { font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 800; line-height: 1.3; margin: 0 0 16px; }
+.city-desc { font-size: 0.95rem; line-height: 1.8; color: rgba(255,255,255,0.85); margin: 0; max-width: 640px; }
+
+/* ===== Summary cards ===== */
+.summary-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px; margin-top: 24px; }
+.summary-card { background: #fff; border: 1px solid var(--c-border, #e5e7eb); border-radius: 12px; padding: 20px 18px; }
+.summary-card.highlight { border-color: var(--c-primary, #1a4a3a); background: #f0f8f4; }
+.summary-label { font-size: 0.75rem; color: var(--c-text-muted, #6b7280); font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em; margin-bottom: 6px; }
+.summary-value { font-size: 1.75rem; font-weight: 800; color: var(--c-text, #1a1a2e); line-height: 1.1; }
+.summary-unit { font-size: 0.85rem; font-weight: 600; color: var(--c-text-muted, #6b7280); margin-left: 2px; }
+.summary-trend { font-size: 0.78rem; margin-top: 6px; font-weight: 600; }
+.summary-trend.up { color: var(--c-success, #2d7a4f); }
+.summary-trend.down { color: var(--c-danger, #c0392b); }
+.summary-sub { font-size: 0.75rem; color: var(--c-text-muted, #6b7280); margin-top: 6px; }
+
+/* ===== Investment points ===== */
+.points-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; margin-top: 24px; }
+.point-card { display: flex; gap: 14px; align-items: flex-start; background: #fff; border: 1px solid var(--c-border, #e5e7eb); border-radius: 12px; padding: 18px; }
+.point-icon { font-size: 1.6rem; flex-shrink: 0; }
+.point-title { font-weight: 700; font-size: 0.92rem; color: var(--c-text, #1a1a2e); margin-bottom: 4px; }
+.point-text { font-size: 0.83rem; color: var(--c-text-muted, #6b7280); line-height: 1.65; margin: 0; }
+
+/* ===== Bar chart ===== */
+.bar-chart-wrap { margin-top: 24px; overflow-x: auto; }
+.bar-chart { width: 100%; max-width: 640px; display: block; }
+.bar-label { font-size: 13px; fill: var(--c-text, #1a1a2e); font-weight: 500; }
+.bar-rect { fill: var(--c-primary, #1a4a3a); opacity: 0.85; }
+.bar-value { font-size: 12px; fill: var(--c-text-muted, #6b7280); dominant-baseline: middle; }
+
+/* ===== Table ===== */
+.table-wrap { overflow-x: auto; margin-top: 24px; }
+.data-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+.data-table th { background: var(--c-primary, #1a4a3a); color: #fff; padding: 10px 14px; text-align: left; font-weight: 600; font-size: 0.8rem; }
+.data-table td { padding: 12px 14px; border-bottom: 1px solid var(--c-border, #e5e7eb); vertical-align: top; }
+.data-table tr:last-child td { border-bottom: none; }
+.data-table tr:hover td { background: #f8faf9; }
+.td-bold { font-weight: 700; white-space: nowrap; }
+.td-lines { color: var(--c-text-muted, #6b7280); font-size: 0.82rem; line-height: 1.6; }
+.td-price { font-weight: 700; color: var(--c-primary, #1a4a3a); white-space: nowrap; }
+
+/* ===== CTA calculators ===== */
+.cta-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 14px; margin-top: 24px; }
+.cta-card { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 6px; background: #fff; border: 1px solid var(--c-border, #e5e7eb); border-radius: 12px; padding: 20px 14px; text-decoration: none; color: inherit; transition: border-color 0.15s, transform 0.15s, box-shadow 0.15s; }
+.cta-card:hover { border-color: var(--c-primary, #1a4a3a); transform: translateY(-2px); box-shadow: 0 4px 16px rgba(26,74,58,0.12); }
+.cta-icon { font-size: 1.8rem; }
+.cta-label { font-size: 0.88rem; font-weight: 700; color: var(--c-primary, #1a4a3a); }
+.cta-desc { font-size: 0.75rem; color: var(--c-text-muted, #6b7280); line-height: 1.4; }
+
+/* ===== Nearby ===== */
+.nearby-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 14px; margin-top: 24px; }
+.nearby-card { display: block; background: #fff; border: 1px solid var(--c-border, #e5e7eb); border-radius: 12px; padding: 18px 16px; text-decoration: none; color: inherit; transition: border-color 0.15s, transform 0.15s; }
+.nearby-card:hover { border-color: var(--c-primary, #1a4a3a); transform: translateY(-2px); }
+.nearby-name { font-weight: 800; font-size: 1rem; color: var(--c-text, #1a1a2e); margin-bottom: 10px; }
+.nearby-row { display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; margin-bottom: 4px; }
+.nearby-label { color: var(--c-text-muted, #6b7280); }
+.nearby-val { font-weight: 700; }
+.nearby-val.yield { color: var(--c-success, #2d7a4f); }
+.nearby-link { font-size: 0.78rem; color: var(--c-primary, #1a4a3a); margin-top: 10px; font-weight: 600; }
+
+/* ===== FAQ ===== */
+.faq-section { max-width: 760px; }
+.faq-list { margin-top: 24px; display: flex; flex-direction: column; gap: 10px; }
+.faq-item { border: 1px solid var(--c-border, #e5e7eb); border-radius: 10px; overflow: hidden; }
+.faq-q { padding: 16px 20px; font-weight: 700; font-size: 0.92rem; cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center; color: var(--c-text, #1a1a2e); }
+.faq-q::after { content: '＋'; font-size: 1.1rem; color: var(--c-primary, #1a4a3a); flex-shrink: 0; margin-left: 12px; }
+.faq-item[open] .faq-q::after { content: '－'; }
+.faq-a { padding: 0 20px 16px; font-size: 0.88rem; line-height: 1.8; color: var(--c-text-muted, #374151); margin: 0; }
+
+/* ===== Disclaimer ===== */
+.disclaimer { background: var(--c-bg-secondary, #f8f9fa); border: 1px solid var(--c-border, #e5e7eb); border-radius: 10px; padding: 16px 20px; }
+.disclaimer p { font-size: 0.78rem; color: var(--c-text-muted, #6b7280); line-height: 1.7; margin: 0; }
+
+/* ===== Responsive ===== */
+@media (max-width: 640px) {
+  .summary-grid { grid-template-columns: repeat(2, 1fr); }
+  .points-grid { grid-template-columns: 1fr; }
+  .cta-grid { grid-template-columns: repeat(2, 1fr); }
+  .nearby-grid { grid-template-columns: repeat(2, 1fr); }
+}
+</style>

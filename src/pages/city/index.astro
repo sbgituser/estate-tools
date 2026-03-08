@@ -1,0 +1,125 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import citiesData from '../../data/cities.json';
+
+const gradeColor: Record<string, string> = {
+  'A+': '#1a4a3a',
+  'A':  '#2d7a4f',
+  'A-': '#3a8a5f',
+  'B+': '#c9943a',
+  'B':  '#b08030',
+};
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: '地域別不動産投資データ一覧',
+  url: 'https://estate.kuras-plus.com/city/',
+  numberOfItems: citiesData.length,
+  itemListElement: citiesData.map((city, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: `${city.prefecture}${city.name}の不動産投資データ`,
+    url: `https://estate.kuras-plus.com/city/${city.slug}`,
+  })),
+};
+---
+
+<BaseLayout
+  title="地域別不動産投資データ | 不動産ツールズ"
+  description="東京23区・主要都市の不動産投資データ一覧。平均価格・利回り・家賃相場・空室率など地域別の投資指標を比較できます。"
+  canonical="https://estate.kuras-plus.com/city/"
+  jsonLd={jsonLd}
+>
+  <Header slot="header" currentPath="/city/" />
+
+  <!-- Breadcrumb -->
+  <nav class="breadcrumb" aria-label="パンくずリスト">
+    <div class="container">
+      <ol>
+        <li><a href="/">不動産ツールズ</a></li>
+        <li aria-hidden="true">›</li>
+        <li aria-current="page">地域別不動産データ</li>
+      </ol>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="page-hero">
+    <div class="container">
+      <p class="hero-eyebrow">Regional Data</p>
+      <h1 class="hero-title">地域別不動産投資データ</h1>
+      <p class="hero-desc">
+        主要エリアの価格相場・利回り・家賃・投資グレードを一覧比較。気になるエリアをクリックして詳細データと投資判断のポイントを確認できます。
+      </p>
+    </div>
+  </section>
+
+  <!-- City list -->
+  <section class="container mt-48" style="padding-bottom: 80px;">
+    <h2 class="section-title">エリア一覧</h2>
+    <p class="section-sub">掲載エリアは順次拡充予定</p>
+    <div class="city-grid">
+      {citiesData.map((city) => (
+        <a class="city-card" href={`/city/${city.slug}`}>
+          <div class="city-card-top">
+            <div class="city-card-name">{city.name}</div>
+            <div class="city-card-pref">{city.prefecture}</div>
+            <span class="city-card-grade" style={`background:${gradeColor[city.investment_grade] ?? '#888'}`}>
+              {city.investment_grade}
+            </span>
+          </div>
+          <div class="city-card-stats">
+            <div class="city-stat">
+              <div class="city-stat-label">平均価格</div>
+              <div class="city-stat-val">{city.avg_price_man.toLocaleString('ja-JP')}万</div>
+            </div>
+            <div class="city-stat">
+              <div class="city-stat-label">表面利回り</div>
+              <div class="city-stat-val yield">{city.avg_yield_pct}%</div>
+            </div>
+            <div class="city-stat">
+              <div class="city-stat-label">平均家賃</div>
+              <div class="city-stat-val">{city.avg_rent_man}万</div>
+            </div>
+          </div>
+          <div class="city-card-link">詳細データを見る →</div>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <Footer slot="footer" />
+</BaseLayout>
+
+<style>
+.breadcrumb { background: var(--c-bg-secondary, #f8f9fa); border-bottom: 1px solid var(--c-border, #e5e7eb); }
+.breadcrumb .container { padding-top: 12px; padding-bottom: 12px; }
+.breadcrumb ol { display: flex; align-items: center; gap: 8px; list-style: none; margin: 0; padding: 0; font-size: 0.82rem; color: var(--c-text-muted, #6b7280); flex-wrap: wrap; }
+.breadcrumb a { color: var(--c-primary, #1a4a3a); text-decoration: none; }
+.breadcrumb a:hover { text-decoration: underline; }
+
+.city-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; margin-top: 24px; }
+
+.city-card { display: flex; flex-direction: column; background: #fff; border: 1px solid var(--c-border, #e5e7eb); border-radius: 14px; padding: 20px; text-decoration: none; color: inherit; transition: border-color 0.15s, transform 0.15s, box-shadow 0.15s; }
+.city-card:hover { border-color: var(--c-primary, #1a4a3a); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(26,74,58,0.1); }
+
+.city-card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; margin-bottom: 14px; }
+.city-card-name { font-size: 1.15rem; font-weight: 800; color: var(--c-text, #1a1a2e); }
+.city-card-pref { font-size: 0.72rem; color: var(--c-text-muted, #6b7280); margin-top: 2px; }
+.city-card-grade { font-size: 0.72rem; font-weight: 800; color: #fff; padding: 3px 8px; border-radius: 20px; white-space: nowrap; align-self: flex-start; }
+
+.city-card-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px; }
+.city-stat { text-align: center; }
+.city-stat-label { font-size: 0.65rem; color: var(--c-text-muted, #6b7280); font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 3px; }
+.city-stat-val { font-size: 0.95rem; font-weight: 800; color: var(--c-text, #1a1a2e); }
+.city-stat-val.yield { color: var(--c-success, #2d7a4f); }
+
+.city-card-link { font-size: 0.78rem; color: var(--c-primary, #1a4a3a); font-weight: 600; margin-top: auto; padding-top: 8px; border-top: 1px solid var(--c-border, #e5e7eb); }
+
+@media (max-width: 480px) {
+  .city-grid { grid-template-columns: 1fr 1fr; }
+}
+</style>
