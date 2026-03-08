@@ -69,6 +69,14 @@ const tools = [
     description: '売却価格・仲介手数料・ローン残債を入力するだけで手元に残る金額を即試算。損益分岐売却価格・シナリオ比較・価格別早見表で出口戦略をサポートします。',
     badge: '無料',
   },
+  {
+    href: '/calculators/repair-cost',
+    icon: '🔧',
+    label: 'Simulator',
+    title: '修繕費シミュレーター',
+    description: '物件タイプ・築年数・面積を入力して10〜30年の修繕費を自動推計。外壁・屋上・給排水・設備更新の修繕タイミングも一覧表示。長期CFを正確に把握できます。',
+    badge: '無料',
+  },
 ];
 
 const jsonLd = [
@@ -88,7 +96,7 @@ const jsonLd = [
     '@type': 'ItemList',
     name: '不動産投資無料ツール一覧',
     url: 'https://estate.kuras-plus.com',
-    numberOfItems: 8,
+    numberOfItems: 9,
     itemListElement: tools.map((t, i) => ({
       '@type': 'ListItem',
       position: i + 1,

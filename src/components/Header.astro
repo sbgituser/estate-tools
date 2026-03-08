@@ -5,56 +5,73 @@ export interface Props {
 
 const { currentPath = Astro.url.pathname } = Astro.props;
 
-const nav = [
-  { href: '/', label: 'ホーム' },
-  { href: '/calculators/yield', label: '利回り計算' },
-  { href: '/calculators/roi', label: 'ROI計算' },
-  { href: '/calculators/cash-flow', label: 'CF計算' },
-  { href: '/calculators/mortgage', label: 'ローン計算' },
-  { href: '/calculators/fixed-asset-tax', label: '固定資産税' },
-  { href: '/calculators/real-estate-acquisition-tax', label: '取得税' },
-  { href: '/calculators/rent-vacancy-impact', label: '下落・空室' },
-  { href: '/calculators/sale-profit', label: '売却益' },
-  { href: '/calculators/repair-cost', label: '修繕費' },
-  { href: '/city/shibuya', label: '地域データ' },
-];
-
-const categories = [
+// デスクトップ: ドロップダウングループ
+const desktopGroups = [
+  {
+    label: '計算ツール',
+    items: [
+      { href: '/calculators/yield',                    label: '📊 不動産利回り計算' },
+      { href: '/calculators/roi',                      label: '💹 ROI計算' },
+      { href: '/calculators/cash-flow',                label: '💰 CFシミュレーター' },
+      { href: '/calculators/sale-profit',              label: '🏷️ 売却益試算' },
+      { href: '/calculators/repair-cost',              label: '🔧 修繕費シミュレーター' },
+      { href: '/calculators/rent-vacancy-impact',      label: '📉 家賃下落・空室影響' },
+      { href: '/calculators/mortgage',                 label: '🏦 ローン返済計算' },
+      { href: '/calculators/fixed-asset-tax',          label: '🏛️ 固定資産税計算' },
+      { href: '/calculators/real-estate-acquisition-tax', label: '🏷️ 不動産取得税計算' },
+    ],
+  },
   {
     label: '地域データ',
     items: [
-      { href: '/city/shibuya', label: '渋谷区' },
-      { href: '/city/minato', label: '港区' },
+      { href: '/city/',         label: '📍 エリア一覧' },
+      { href: '/city/shibuya',  label: '渋谷区' },
+      { href: '/city/minato',   label: '港区' },
       { href: '/city/setagaya', label: '世田谷区' },
-      { href: '/city/meguro', label: '目黒区' },
+      { href: '/city/meguro',   label: '目黒区' },
       { href: '/city/shinjuku', label: '新宿区' },
     ],
   },
+];
+
+// モバイル: カテゴリ別
+const mobileCategories = [
   {
     label: '収益計算',
     items: [
-      { href: '/calculators/yield', label: '不動産利回り計算ツール' },
-      { href: '/calculators/roi', label: '不動産投資ROI計算ツール' },
+      { href: '/calculators/yield',               label: '不動産利回り計算ツール' },
+      { href: '/calculators/roi',                 label: '不動産投資ROI計算ツール' },
+      { href: '/calculators/cash-flow',           label: '不動産投資CFシミュレーター' },
+      { href: '/calculators/sale-profit',         label: '不動産売却益シミュレーター' },
+      { href: '/calculators/repair-cost',         label: '修繕費シミュレーター' },
       { href: '/calculators/rent-vacancy-impact', label: '家賃下落・空室率影響シミュレーター' },
-      { href: '/calculators/cash-flow', label: '不動産投資キャッシュフローシミュレーター' },
-      { href: '/calculators/sale-profit', label: '不動産売却益シミュレーター' },
-      { href: '/calculators/repair-cost', label: '修繕費シミュレーター' },
     ],
   },
   {
-    label: '資金計算',
+    label: '資金・税金計算',
     items: [
-      { href: '/calculators/mortgage', label: '住宅ローン返済シミュレーター' },
-    ],
-  },
-  {
-    label: '税金計算',
-    items: [
-      { href: '/calculators/fixed-asset-tax', label: '固定資産税シミュレーター' },
+      { href: '/calculators/mortgage',                    label: '住宅ローン返済シミュレーター' },
+      { href: '/calculators/fixed-asset-tax',             label: '固定資産税シミュレーター' },
       { href: '/calculators/real-estate-acquisition-tax', label: '不動産取得税シミュレーター' },
     ],
   },
+  {
+    label: '地域データ',
+    items: [
+      { href: '/city/',         label: 'エリア一覧' },
+      { href: '/city/shibuya',  label: '渋谷区' },
+      { href: '/city/minato',   label: '港区' },
+      { href: '/city/setagaya', label: '世田谷区' },
+      { href: '/city/meguro',   label: '目黒区' },
+      { href: '/city/shinjuku', label: '新宿区' },
+    ],
+  },
 ];
+
+// 現在パスがグループ内のいずれかにマッチするか
+function groupActive(items: { href: string }[]): boolean {
+  return items.some((i) => currentPath === i.href || currentPath.startsWith(i.href + '/'));
+}
 ---
 
 <header class="site-header">
@@ -67,15 +84,34 @@ const categories = [
       </span>
     </a>
 
+    <!-- Desktop nav (ドロップダウン) -->
     <nav class="site-nav" aria-label="メインナビゲーション">
-      {nav.map(({ href, label }) => (
-        <a
-          href={href}
-          class={currentPath === href ? 'active' : ''}
-          aria-current={currentPath === href ? 'page' : undefined}
-        >
-          {label}
-        </a>
+      <a
+        href="/"
+        class={`nav-link${currentPath === '/' ? ' active' : ''}`}
+        aria-current={currentPath === '/' ? 'page' : undefined}
+      >
+        ホーム
+      </a>
+
+      {desktopGroups.map((group) => (
+        <div class={`nav-group${groupActive(group.items) ? ' active' : ''}`}>
+          <button class="nav-group-btn" type="button" aria-haspopup="true">
+            {group.label} <span class="nav-caret">▾</span>
+          </button>
+          <div class="nav-dropdown" role="menu">
+            {group.items.map(({ href, label }) => (
+              <a
+                href={href}
+                class={`nav-dropdown-item${currentPath === href ? ' active' : ''}`}
+                role="menuitem"
+                aria-current={currentPath === href ? 'page' : undefined}
+              >
+                {label}
+              </a>
+            ))}
+          </div>
+        </div>
       ))}
     </nav>
 
@@ -111,7 +147,7 @@ const categories = [
     ホーム
   </a>
 
-  {categories.map((cat) => (
+  {mobileCategories.map((cat) => (
     <div class="mobile-category">
       <div class="mobile-category-label">{cat.label}</div>
       {cat.items.map(({ href, label }) => (
@@ -128,6 +164,7 @@ const categories = [
 </nav>
 
 <script>
+  // ── Mobile drawer ──
   const btn = document.getElementById('hamburger-btn');
   const closeBtn = document.getElementById('mobile-close-btn');
   const menu = document.getElementById('mobile-menu');
@@ -154,14 +191,106 @@ const categories = [
   btn?.addEventListener('click', openMenu);
   closeBtn?.addEventListener('click', closeMenu);
   overlay?.addEventListener('click', closeMenu);
-
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') closeMenu();
-  });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeMenu(); });
 </script>
 
 <style>
-  /* Hamburger button — hidden on desktop */
+  /* ── Header ── */
+  .site-nav {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  /* ── Direct link ── */
+  .nav-link {
+    color: rgba(255,255,255,0.85);
+    font-size: 0.875rem;
+    padding: 6px 12px;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: background 0.15s, color 0.15s;
+    white-space: nowrap;
+  }
+  .nav-link:hover { background: rgba(255,255,255,0.12); color: #fff; text-decoration: none; }
+  .nav-link.active { color: #fff; background: rgba(255,255,255,0.15); }
+
+  /* ── Dropdown group ── */
+  .nav-group {
+    position: relative;
+  }
+
+  .nav-group-btn {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: transparent;
+    border: none;
+    color: rgba(255,255,255,0.85);
+    font-size: 0.875rem;
+    font-family: var(--font);
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+    white-space: nowrap;
+  }
+  .nav-group-btn:hover,
+  .nav-group:hover .nav-group-btn,
+  .nav-group:focus-within .nav-group-btn {
+    background: rgba(255,255,255,0.12);
+    color: #fff;
+  }
+  .nav-group.active .nav-group-btn {
+    color: #fff;
+    background: rgba(255,255,255,0.15);
+  }
+
+  .nav-caret { font-size: 0.7rem; transition: transform 0.2s; }
+  .nav-group:hover .nav-caret,
+  .nav-group:focus-within .nav-caret { transform: rotate(180deg); }
+
+  /* ── Dropdown panel ── */
+  .nav-dropdown {
+    display: none;
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    min-width: 220px;
+    background: #fff;
+    border: 1px solid var(--c-border, #e2ddd6);
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.13);
+    z-index: 300;
+    padding: 6px 0;
+    animation: dropIn 0.15s ease;
+  }
+  @keyframes dropIn {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .nav-group:hover .nav-dropdown,
+  .nav-group:focus-within .nav-dropdown {
+    display: block;
+  }
+
+  .nav-dropdown-item {
+    display: block;
+    padding: 9px 16px;
+    font-size: 0.875rem;
+    color: var(--c-text, #2c2c2c);
+    text-decoration: none;
+    transition: background 0.12s;
+    white-space: nowrap;
+  }
+  .nav-dropdown-item:hover { background: #f5f3ef; color: var(--c-primary, #1a4a3a); text-decoration: none; }
+  .nav-dropdown-item.active {
+    background: #f0f7f4;
+    color: var(--c-primary, #1a4a3a);
+    font-weight: 600;
+  }
+
+  /* ── Hamburger ── */
   .hamburger {
     display: none;
     flex-direction: column;
@@ -183,10 +312,9 @@ const categories = [
     height: 2px;
     background: #fff;
     border-radius: 2px;
-    transition: transform 0.2s, opacity 0.2s;
   }
 
-  /* Mobile overlay */
+  /* ── Mobile overlay ── */
   .mobile-overlay {
     display: none;
     position: fixed;
@@ -196,12 +324,11 @@ const categories = [
   }
   .mobile-overlay.open { display: block; }
 
-  /* Mobile drawer */
+  /* ── Mobile drawer ── */
   .mobile-menu {
     display: none;
     position: fixed;
-    top: 0;
-    right: 0;
+    top: 0; right: 0;
     width: min(320px, 88vw);
     height: 100dvh;
     background: #fff;
@@ -232,11 +359,8 @@ const categories = [
     color: #fff;
     font-size: 1.1rem;
     cursor: pointer;
-    width: 32px;
-    height: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    width: 32px; height: 32px;
+    display: flex; align-items: center; justify-content: center;
     border-radius: 4px;
     transition: background 0.15s;
   }
@@ -280,8 +404,10 @@ const categories = [
     font-weight: 600;
   }
 
+  /* ── Responsive ── */
   @media (max-width: 640px) {
     .hamburger { display: flex; }
     .mobile-menu { display: flex; }
+    .site-nav { display: none; }
   }
 </style>
