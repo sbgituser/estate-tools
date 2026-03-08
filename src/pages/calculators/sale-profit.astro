@@ -1,0 +1,1746 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebApplication',
+    name: '不動産売却益シミュレーター',
+    url: 'https://estate.kuras-plus.com/calculators/sale-profit',
+    description: '売却価格・仲介手数料・ローン残債を入力するだけで手元に残る金額を無料でシミュレーション。損益分岐売却価格・シナリオ比較・価格別早見表も確認できます。',
+    applicationCategory: 'FinanceApplication',
+    operatingSystem: 'All',
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'JPY' },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'ホーム', item: 'https://estate.kuras-plus.com' },
+      { '@type': 'ListItem', position: 2, name: '不動産売却益シミュレーター', item: 'https://estate.kuras-plus.com/calculators/sale-profit' },
+    ],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      {
+        '@type': 'Question',
+        name: '不動産を売ると手元にいくら残りますか？',
+        acceptedAnswer: { '@type': 'Answer', text: '手元に残る金額は「売却価格 − 仲介手数料などの諸費用 − ローン残債」が基本です。税金が発生する場合はさらに差し引かれます。当ツールで概算をご確認ください。' },
+      },
+      {
+        '@type': 'Question',
+        name: '売却価格がそのまま利益になるわけではないのですか？',
+        acceptedAnswer: { '@type': 'Answer', text: 'なりません。売却価格から仲介手数料・諸費用・ローン残債・譲渡所得税を差し引いた金額が実際の手取りです。売却価格の10〜20%以上が差し引かれるケースも珍しくありません。' },
+      },
+      {
+        '@type': 'Question',
+        name: 'ローン残債があると売却益はどうなりますか？',
+        acceptedAnswer: { '@type': 'Answer', text: '売却代金はまずローン残債の返済に充てられます。残債が多いと手取りが大きく減り、残債が売却価格を上回る「オーバーローン」になると、不足分を自己資金で補填する必要があります。' },
+      },
+      {
+        '@type': 'Question',
+        name: '不動産売却時にはどんな費用がかかりますか？',
+        acceptedAnswer: { '@type': 'Answer', text: '主な費用は①仲介手数料（売却価格×3%＋6万円×消費税が上限目安）②印紙税③抵当権抹消登記費用などです。仲介手数料だけで数十〜100万円以上になることも多く、事前把握が重要です。' },
+      },
+      {
+        '@type': 'Question',
+        name: '不動産売却益の計算では税金も考えるべきですか？',
+        acceptedAnswer: { '@type': 'Answer', text: '保有期間や利益額によっては譲渡所得税が発生します。5年超保有の長期譲渡は税率約20.3%、5年以下の短期譲渡は税率約39.6%（所得税＋復興特別所得税＋住民税の合計概算）が目安です。居住用財産の3,000万円特別控除など特例もあるため、正確な税額は税理士にご確認ください。' },
+      },
+      {
+        '@type': 'Question',
+        name: '損しないためにはいくら以上で売ればよいですか？',
+        acceptedAnswer: { '@type': 'Answer', text: '損益分岐売却価格は「購入価格＋購入時諸費用＋売却時諸費用の見込み＋ローン残債」の合計です。当ツールでは「損益分岐売却価格」として自動計算・表示しています。' },
+      },
+    ],
+  },
+];
+---
+
+<BaseLayout
+  title="不動産売却益シミュレーター | 手取り・損益分岐を無料試算"
+  description="売却価格・仲介手数料・ローン残債を入力するだけで手元に残る金額を無料シミュレーション。損益分岐売却価格・シナリオ比較・価格別早見表で出口戦略をサポート。登録不要・完全無料。"
+  jsonLd={jsonLd}
+>
+  <Header slot="header" currentPath="/calculators/sale-profit" />
+
+  <!-- Hero -->
+  <section class="page-hero">
+    <div class="container">
+      <nav class="breadcrumb" aria-label="パンくずリスト">
+        <a href="/">ホーム</a>
+        <span>›</span>
+        <span>売却益シミュレーター</span>
+      </nav>
+      <p class="hero-eyebrow">Sale Profit Simulator</p>
+      <h1 class="hero-title">不動産売却益<br />シミュレーター</h1>
+      <p class="hero-desc">
+        売却価格・諸費用・ローン残債を入力するだけで<br />
+        手元に残る金額・損益分岐売却価格を即時試算します。
+      </p>
+    </div>
+  </section>
+
+  <div class="container mt-48" style="padding-bottom: 80px;">
+
+    <!-- ── Main calculator layout ── -->
+    <div class="calc-layout">
+
+      <!-- ── Inputs ── -->
+      <section class="card" aria-label="入力フォーム">
+        <h2 class="card-heading">売却条件を入力</h2>
+
+        <!-- === 購入時情報 === -->
+        <p class="group-label">購入時情報</p>
+
+        <div class="field-group">
+          <div class="field-label">
+            <label for="buyPrice">購入価格</label>
+            <span class="field-display"><span id="buyPriceDisplay">3,000</span> 万円</span>
+          </div>
+          <input class="range-slider" type="range" id="buyPriceSlider"
+            data-target="buyPrice" value="3000" min="100" max="30000" step="100" />
+          <input class="field-input" type="number" id="buyPrice"
+            value="3000" min="100" max="30000" step="100" inputmode="numeric" />
+        </div>
+
+        <div class="field-group">
+          <div class="field-label">
+            <label for="buyExpenses">購入時諸費用</label>
+            <span class="field-display"><span id="buyExpensesDisplay">120</span> 万円</span>
+          </div>
+          <input class="range-slider" type="range" id="buyExpensesSlider"
+            data-target="buyExpenses" value="120" min="0" max="1000" step="10" />
+          <input class="field-input" type="number" id="buyExpenses"
+            value="120" min="0" max="1000" step="10" inputmode="numeric" />
+          <p class="field-hint">仲介手数料・登記費用・印紙税・火災保険など。購入価格の3〜5%が目安。</p>
+        </div>
+
+        <div class="field-group">
+          <div class="field-label">
+            <label for="equity">自己資金（頭金）</label>
+            <span class="field-display"><span id="equityDisplay">600</span> 万円</span>
+          </div>
+          <input class="range-slider" type="range" id="equitySlider"
+            data-target="equity" value="600" min="0" max="10000" step="50" />
+          <input class="field-input" type="number" id="equity"
+            value="600" min="0" max="10000" step="50" inputmode="numeric" />
+          <p class="field-hint">購入時に自分で用意した金額（頭金のみ。諸費用は別項目）。最終損益の基準になります。</p>
+        </div>
+
+        <hr class="divider" />
+
+        <!-- === 売却時情報 === -->
+        <p class="group-label">売却時情報</p>
+
+        <div class="field-group">
+          <div class="field-label">
+            <label for="sellPrice">想定売却価格</label>
+            <span class="field-display"><span id="sellPriceDisplay">3,200</span> 万円</span>
+          </div>
+          <input class="range-slider" type="range" id="sellPriceSlider"
+            data-target="sellPrice" value="3200" min="100" max="30000" step="100" />
+          <input class="field-input" type="number" id="sellPrice"
+            value="3200" min="100" max="30000" step="100" inputmode="numeric" />
+        </div>
+
+        <div class="field-group">
+          <div class="field-label">
+            <label for="agentFee">仲介手数料</label>
+            <span class="field-display"><span id="agentFeeDisplay">112</span> 万円</span>
+          </div>
+          <input class="range-slider" type="range" id="agentFeeSlider"
+            data-target="agentFee" value="112" min="0" max="500" step="1" />
+          <input class="field-input" type="number" id="agentFee"
+            value="112" min="0" max="500" step="1" inputmode="numeric" />
+          <p class="field-hint">
+            法定上限: 売却価格×3%＋6万円×消費税。売却価格 3,200万円の場合、上限目安は
+            <strong id="agentFeeAuto">112</strong> 万円。
+          </p>
+        </div>
+
+        <div class="field-group">
+          <div class="field-label">
+            <label for="sellOther">売却時その他費用</label>
+            <span class="field-display"><span id="sellOtherDisplay">20</span> 万円</span>
+          </div>
+          <input class="range-slider" type="range" id="sellOtherSlider"
+            data-target="sellOther" value="20" min="0" max="200" step="5" />
+          <input class="field-input" type="number" id="sellOther"
+            value="20" min="0" max="200" step="5" inputmode="numeric" />
+          <p class="field-hint">印紙税・抵当権抹消登記費用・測量費・その他手続き費用など。</p>
+        </div>
+
+        <hr class="divider" />
+
+        <!-- === ローン残債 === -->
+        <p class="group-label">ローン残債</p>
+
+        <div class="debt-mode-toggle" role="group" aria-label="残債入力方法">
+          <label class="mode-btn">
+            <input type="radio" name="debtMode" value="direct" checked />
+            <span>直接入力</span>
+          </label>
+          <label class="mode-btn">
+            <input type="radio" name="debtMode" value="calc" />
+            <span>借入条件から概算</span>
+          </label>
+        </div>
+
+        <!-- 直接入力モード -->
+        <div id="debtDirectSection">
+          <div class="field-group">
+            <div class="field-label">
+              <label for="debtDirect">現在のローン残債</label>
+              <span class="field-display"><span id="debtDirectDisplay">1,800</span> 万円</span>
+            </div>
+            <input class="range-slider" type="range" id="debtDirectSlider"
+              data-target="debtDirect" value="1800" min="0" max="20000" step="50" />
+            <input class="field-input" type="number" id="debtDirect"
+              value="1800" min="0" max="20000" step="50" inputmode="numeric" />
+            <p class="field-hint">金融機関の残高証明書またはネットバンキングで確認できます。ローンがない場合は0を入力。</p>
+          </div>
+        </div>
+
+        <!-- 概算計算モード -->
+        <div id="debtCalcSection" style="display:none;">
+          <div class="field-group">
+            <div class="field-label">
+              <label for="loanAmount">借入額</label>
+              <span class="field-display"><span id="loanAmountDisplay">2,400</span> 万円</span>
+            </div>
+            <input class="range-slider" type="range" id="loanAmountSlider"
+              data-target="loanAmount" value="2400" min="0" max="20000" step="100" />
+            <input class="field-input" type="number" id="loanAmount"
+              value="2400" min="0" max="20000" step="100" inputmode="numeric" />
+          </div>
+          <div class="field-group">
+            <div class="field-label">
+              <label for="loanRate">金利（年利）</label>
+              <span class="field-display"><span id="loanRateDisplay">1.5</span> %</span>
+            </div>
+            <input class="range-slider" type="range" id="loanRateSlider"
+              data-target="loanRate" value="1.5" min="0" max="10" step="0.1" />
+            <input class="field-input" type="number" id="loanRate"
+              value="1.5" min="0" max="10" step="0.1" inputmode="decimal" />
+          </div>
+          <div class="field-group">
+            <div class="field-label">
+              <label for="loanYears">返済年数</label>
+              <span class="field-display"><span id="loanYearsDisplay">35</span> 年</span>
+            </div>
+            <input class="range-slider" type="range" id="loanYearsSlider"
+              data-target="loanYears" value="35" min="1" max="50" step="1" />
+            <input class="field-input" type="number" id="loanYears"
+              value="35" min="1" max="50" step="1" inputmode="numeric" />
+          </div>
+          <div class="field-group">
+            <div class="field-label">
+              <label for="elapsedYears">返済経過年数</label>
+              <span class="field-display"><span id="elapsedYearsDisplay">10</span> 年</span>
+            </div>
+            <input class="range-slider" type="range" id="elapsedYearsSlider"
+              data-target="elapsedYears" value="10" min="0" max="49" step="1" />
+            <input class="field-input" type="number" id="elapsedYears"
+              value="10" min="0" max="49" step="1" inputmode="numeric" />
+          </div>
+          <div class="estimated-debt-box">
+            元利均等返済での概算残債: <strong id="estimatedDebt">—</strong>
+          </div>
+        </div>
+
+        <!-- === 税金設定（任意） === -->
+        <details class="details-block" id="taxDetails">
+          <summary>譲渡所得税の概算設定（任意）</summary>
+          <div class="details-content">
+            <p class="details-desc">
+              不動産売却の利益に対して譲渡所得税が発生する場合があります。
+              ここでは参考として概算税額を計算できます。
+              <strong>正確な税額は必ず税理士にご確認ください。</strong>
+            </p>
+            <div class="check-field">
+              <input type="checkbox" id="doTax" />
+              <label for="doTax">譲渡所得税の概算を計算する</label>
+            </div>
+            <div id="taxOptions" style="display:none; margin-top: 14px;">
+              <p class="details-sub">保有期間の区分</p>
+              <div class="radio-group">
+                <label>
+                  <input type="radio" name="holdPeriod" value="long" checked />
+                  5年超（長期譲渡） — 税率 約20.3%
+                </label>
+                <label>
+                  <input type="radio" name="holdPeriod" value="short" />
+                  5年以下（短期譲渡） — 税率 約39.6%
+                </label>
+              </div>
+              <div class="check-field" style="margin-top: 10px;">
+                <input type="checkbox" id="residential" />
+                <label for="residential">居住用財産の3,000万円特別控除を適用する</label>
+              </div>
+              <p class="field-hint" style="margin-top: 6px;">
+                ※ マイホームの売却で一定条件を満たすと、譲渡所得から最大3,000万円を控除できます。
+                投資用物件は通常適用外です。
+              </p>
+            </div>
+          </div>
+        </details>
+
+        <div id="errorMsg" class="error-msg" hidden></div>
+      </section>
+
+      <!-- ── Results ── -->
+      <section class="card results-card" aria-label="計算結果" aria-live="polite">
+        <h2 class="card-heading">計算結果</h2>
+
+        <div id="sampleBadge" class="sample-badge">
+          <span>📋</span> サンプル値による計算例 — 値を変更すると即時更新されます
+        </div>
+
+        <!-- ヒーロー: 手取り -->
+        <div class="hero-result" id="heroResult">
+          <div class="hero-label" id="heroLabel">売却後の手取り額</div>
+          <div class="hero-value" id="heroValue">—</div>
+          <div class="hero-status" id="heroStatus"></div>
+        </div>
+
+        <!-- 自己資金との比較 -->
+        <div class="profit-band" id="profitBand">
+          <div class="profit-label">自己資金（頭金＋購入諸費用）との比較</div>
+          <div class="profit-value" id="profitValue">—</div>
+          <div class="profit-note" id="profitNote"></div>
+        </div>
+
+        <!-- 手取りフロー -->
+        <div class="flow-section">
+          <div class="flow-row">
+            <span class="flow-icon icon-plus">＋</span>
+            <span class="flow-name">売却価格</span>
+            <span class="flow-amt" id="fSellPrice">—</span>
+          </div>
+          <div class="flow-row">
+            <span class="flow-icon icon-minus">－</span>
+            <span class="flow-name">売却時諸費用</span>
+            <span class="flow-amt red" id="fSellCosts">—</span>
+          </div>
+          <div class="flow-row">
+            <span class="flow-icon icon-minus">－</span>
+            <span class="flow-name">ローン残債</span>
+            <span class="flow-amt red" id="fDebt">—</span>
+          </div>
+          <div class="flow-divider"></div>
+          <div class="flow-row flow-result">
+            <span class="flow-icon icon-eq">＝</span>
+            <span class="flow-name"><strong>売却後の手取り</strong></span>
+            <span class="flow-amt bold" id="fNetProceeds">—</span>
+          </div>
+          <div class="flow-row" id="taxFlowRow" style="display:none;">
+            <span class="flow-icon icon-minus">－</span>
+            <span class="flow-name">概算譲渡所得税</span>
+            <span class="flow-amt red" id="fTax">—</span>
+          </div>
+          <div class="flow-row flow-result" id="afterTaxFlowRow" style="display:none;">
+            <span class="flow-icon icon-eq">＝</span>
+            <span class="flow-name"><strong>税引後手取り</strong></span>
+            <span class="flow-amt bold" id="fAfterTax">—</span>
+          </div>
+        </div>
+
+        <!-- 詳細テーブル -->
+        <table class="result-table">
+          <tbody>
+            <tr class="table-section"><td colspan="2">売却時</td></tr>
+            <tr>
+              <th>想定売却価格</th>
+              <td id="rSellPrice">—</td>
+            </tr>
+            <tr>
+              <th>仲介手数料</th>
+              <td id="rAgentFee">—</td>
+            </tr>
+            <tr>
+              <th>その他売却費用</th>
+              <td id="rSellOther">—</td>
+            </tr>
+            <tr class="table-subtotal">
+              <th>売却時諸費用合計</th>
+              <td id="rSellCosts">—</td>
+            </tr>
+            <tr>
+              <th>ローン残債</th>
+              <td id="rDebt">—</td>
+            </tr>
+            <tr class="table-section"><td colspan="2">購入時</td></tr>
+            <tr>
+              <th>購入価格</th>
+              <td id="rBuyPrice">—</td>
+            </tr>
+            <tr>
+              <th>購入時諸費用</th>
+              <td id="rBuyExpenses">—</td>
+            </tr>
+            <tr class="table-subtotal">
+              <th>購入時総投資額</th>
+              <td id="rTotalInvest">—</td>
+            </tr>
+            <tr class="table-section"><td colspan="2">収支</td></tr>
+            <tr>
+              <th>単純売却差益</th>
+              <td id="rSimplePL">—</td>
+            </tr>
+            <tr class="table-total">
+              <th>売却後の手取り</th>
+              <td id="rNetProceeds">—</td>
+            </tr>
+            <tr id="rTaxGainRow" style="display:none;" class="table-subtotal">
+              <th>概算譲渡所得</th>
+              <td id="rTaxableGain">—</td>
+            </tr>
+            <tr id="rTaxAmtRow" style="display:none;" class="table-subtotal">
+              <th>概算譲渡所得税</th>
+              <td id="rTaxAmount">—</td>
+            </tr>
+            <tr id="rAfterTaxRow" style="display:none;" class="table-total">
+              <th>税引後手取り</th>
+              <td id="rAfterTax">—</td>
+            </tr>
+            <tr class="table-section"><td colspan="2">自己資金との比較</td></tr>
+            <tr>
+              <th>投下自己資金合計</th>
+              <td id="rTotalEquity">—</td>
+            </tr>
+            <tr class="table-roi">
+              <th>最終損益</th>
+              <td id="rFinalPL">—</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- 損益分岐価格 -->
+        <div class="breakeven-box" id="breakevenBox">
+          <div class="breakeven-label">損益分岐売却価格（概算）</div>
+          <div class="breakeven-value" id="breakevenValue">—</div>
+          <div class="breakeven-note" id="breakevenNote"></div>
+        </div>
+
+        <p class="result-disclaimer">
+          ※ 概算シミュレーターです。実際の手取りは諸条件・税制・交渉状況により異なります。<br />
+          ※ 税金計算は概算であり、正確な税額・特例の適用可否は税理士にご確認ください。
+        </p>
+      </section>
+
+    </div><!-- /.calc-layout -->
+
+    <!-- ── シナリオ比較 ── -->
+    <section class="mt-48">
+      <h2 class="section-title">売却価格シナリオ比較</h2>
+      <p class="section-sub">売却価格が変わったとき、手取りと損益がどう変わるかを確認できます</p>
+      <div class="scenario-grid" id="scenarioGrid">
+        <!-- JS生成 -->
+      </div>
+    </section>
+
+    <!-- ── 価格別早見表 ── -->
+    <section class="mt-48">
+      <h2 class="section-title">売却価格別 手取り早見表</h2>
+      <p class="section-sub">現在の入力条件で、売却価格を±20%の範囲で確認できます</p>
+      <div class="table-scroll">
+        <table class="lookup-table">
+          <thead>
+            <tr>
+              <th>売却価格</th>
+              <th>売却諸費用</th>
+              <th>ローン残債</th>
+              <th>売却後手取り</th>
+              <th>最終損益</th>
+              <th>判定</th>
+            </tr>
+          </thead>
+          <tbody id="lookupTableBody">
+            <!-- JS生成 -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ── 関連ツール ── -->
+    <section class="related-section mt-48">
+      <h2 class="section-title">関連ツール</h2>
+      <p class="section-sub">不動産投資の「購入 → 運用 → 売却」を一連で確認できます</p>
+      <div class="related-grid">
+        <a href="/calculators/cash-flow" class="related-card">
+          <div class="related-icon">💰</div>
+          <div class="related-title">不動産投資キャッシュフローシミュレーター</div>
+          <p class="related-desc">運用中の年次手残り・黒字転換年・自己資金回収年を確認。売却益と合わせて出口まで含む総収益を把握</p>
+          <span class="related-arrow">使ってみる →</span>
+        </a>
+        <a href="/calculators/roi" class="related-card">
+          <div class="related-icon">💹</div>
+          <div class="related-title">不動産投資ROI計算ツール</div>
+          <p class="related-desc">自己資金に対するリターンを計算。購入時の収益性判断に</p>
+          <span class="related-arrow">使ってみる →</span>
+        </a>
+        <a href="/calculators/mortgage" class="related-card">
+          <div class="related-icon">🏦</div>
+          <div class="related-title">住宅ローン返済シミュレーター</div>
+          <p class="related-desc">月額返済額・総返済額を確認。残債の概算にも活用できます</p>
+          <span class="related-arrow">使ってみる →</span>
+        </a>
+        <a href="/calculators/real-estate-acquisition-tax" class="related-card">
+          <div class="related-icon">🏷️</div>
+          <div class="related-title">不動産取得税シミュレーター</div>
+          <p class="related-desc">購入時の取得税を概算。購入コスト全体の把握に</p>
+          <span class="related-arrow">使ってみる →</span>
+        </a>
+        <a href="/calculators/fixed-asset-tax" class="related-card">
+          <div class="related-icon">🏛️</div>
+          <div class="related-title">固定資産税シミュレーター</div>
+          <p class="related-desc">保有中の年間固定費を把握。キャッシュフロー計算に活用</p>
+          <span class="related-arrow">使ってみる →</span>
+        </a>
+        <a href="/calculators/yield" class="related-card">
+          <div class="related-icon">📊</div>
+          <div class="related-title">不動産利回り計算ツール</div>
+          <p class="related-desc">表面・実質利回りを即確認。購入物件の収益性評価に</p>
+          <span class="related-arrow">使ってみる →</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- ── 説明セクション ── -->
+    <section class="explain mt-48">
+      <h2 class="section-title">不動産売却益の基礎知識</h2>
+      <div class="explain-grid">
+        <div class="explain-card">
+          <h3>🏷️ 不動産売却益シミュレーターとは</h3>
+          <p>
+            不動産を売却したとき、実際に手元に残る金額（手取り）を簡単に試算できるツールです。
+            売却価格がそのまま手取りになるわけではなく、
+            <strong>仲介手数料・諸費用・ローン残債・場合によっては譲渡所得税</strong>
+            が差し引かれます。このツールで事前にシミュレーションすることで、
+            売却の意思決定や出口戦略の検討が具体的になります。
+          </p>
+        </div>
+        <div class="explain-card">
+          <h3>💡 売却時の手取りはどう決まるか</h3>
+          <p>
+            基本の計算式は次のとおりです。<br />
+            <strong>手取り = 売却価格 − 売却諸費用 − ローン残債</strong><br />
+            税金を考慮する場合はここからさらに譲渡所得税が差し引かれます。
+            単純に「高く売れた＝儲かった」とはならないため、
+            費用と残債を把握した上での売却計画が重要です。
+          </p>
+        </div>
+        <div class="explain-card">
+          <h3>🏦 ローン残債が手取りに与える影響</h3>
+          <p>
+            売却代金はまずローン残債の返済に充てられます。
+            残債が多いと手取りは大きく減少します。
+            特に購入後の早い段階での売却は元金がまだ多く残っているため、
+            手取りが少なくなりやすい傾向があります。
+            残債が売却価格を上回る「オーバーローン」になると、
+            不足分を自己資金で補填する必要があります。
+          </p>
+        </div>
+        <div class="explain-card">
+          <h3>💼 仲介手数料を考慮すべき理由</h3>
+          <p>
+            仲介手数料の法定上限は
+            <strong>売却価格×3%＋6万円（消費税別）</strong>です。
+            3,000万円の物件なら最大約105万円（消費税込み約115万円）かかります。
+            売却価格が高い物件ほど手数料も高くなるため、
+            事前の費用把握が手取りの正確な見積もりに不可欠です。
+          </p>
+        </div>
+        <div class="explain-card">
+          <h3>📊 売却益と手取りはなぜ違うのか</h3>
+          <p>
+            「売却益」は購入価格との差額（売却価格−購入価格）ですが、
+            「手取り」はそこからさらに購入・売却の諸費用やローン残債を差し引いた金額です。
+            売却益がプラスでも、諸費用や残債が大きければ手取りが僅かしか残らない、
+            あるいはマイナスになることもあります。
+          </p>
+        </div>
+        <div class="explain-card">
+          <h3>🚪 出口戦略が重要な理由</h3>
+          <p>
+            不動産投資では「購入時の利回り・運用中のキャッシュフロー・売却時の手取り」
+            の3段階をトータルで評価することが重要です。
+            売却益が見込めない物件は、運用中のCFが良くても総収益が伸びません。
+            購入時から出口を意識した計画を立てることで、
+            投資全体のパフォーマンスが最大化されます。
+          </p>
+        </div>
+        <div class="explain-card">
+          <h3>⚠️ 概算と実際の手取りが異なる理由</h3>
+          <p>当ツールは概算シミュレーターです。実際の手取りは以下の要因により異なることがあります。</p>
+          <ul>
+            <li>値引き交渉による売却価格の変動</li>
+            <li>固定資産税・管理費等の日割り精算</li>
+            <li>測量費・クリーニング・リフォーム費用の発生</li>
+            <li>繰上返済手数料</li>
+            <li>実際の税額（取得費加算・減価償却・特別控除の詳細計算）</li>
+          </ul>
+          <p>最終的な手取りは不動産会社・税理士・金融機関にご確認ください。</p>
+        </div>
+        <div class="explain-card">
+          <h3>📐 損益分岐売却価格の活用法</h3>
+          <p>
+            「損益分岐売却価格」は、売却後の手取りがゼロになる最低限の価格です。
+            この価格以下での売却は手取りがマイナス（持ち出し）になることを意味します。
+            交渉の下限ラインや売却タイミング判断の目安として活用できます。
+            また、早見表では価格帯ごとの手取りを一覧確認できます。
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── FAQ ── -->
+    <section class="faq-section mt-48">
+      <h2 class="section-title">よくある質問</h2>
+      <div class="faq-list">
+        <details class="faq-item">
+          <summary>不動産を売ると手元にいくら残りますか？</summary>
+          <p>手元に残る金額は「売却価格 − 仲介手数料などの諸費用 − ローン残債」で計算します。税金が発生する場合はさらに差し引かれます。当ツールのシミュレーターで概算をご確認ください。</p>
+        </details>
+        <details class="faq-item">
+          <summary>売却価格がそのまま利益になるわけではないのですか？</summary>
+          <p>なりません。売却価格から「①仲介手数料などの売却諸費用」「②ローン残債」「③場合によっては譲渡所得税」を差し引いた金額が実際の手取りです。売却価格の10〜20%以上が差し引かれるケースも珍しくありません。</p>
+        </details>
+        <details class="faq-item">
+          <summary>ローン残債があると売却益はどうなりますか？</summary>
+          <p>売却代金はまずローン残債の返済に充てられます。残債が多いと手取りが大きく減少し、残債が売却価格を上回る「オーバーローン」になると、不足分を自己資金で補填する必要があります。</p>
+        </details>
+        <details class="faq-item">
+          <summary>不動産売却時にはどんな費用がかかりますか？</summary>
+          <p>主な費用は①仲介手数料（売却価格×3%＋6万円×消費税が上限目安）②印紙税③抵当権抹消登記費用などです。仲介手数料だけで数十〜100万円以上になることも多く、事前の把握が重要です。</p>
+        </details>
+        <details class="faq-item">
+          <summary>不動産売却益の計算では税金も考えるべきですか？</summary>
+          <p>保有期間や利益額によっては譲渡所得税が発生します。5年超保有の長期譲渡は税率約20.3%、5年以下の短期譲渡は税率約39.6%（所得税＋復興特別所得税＋住民税の合計概算）が目安です。居住用財産の3,000万円特別控除など特例もあるため、正確な税額は税理士にご確認ください。</p>
+        </details>
+        <details class="faq-item">
+          <summary>損しないためにはいくら以上で売ればよいですか？</summary>
+          <p>損益分岐売却価格は「購入価格＋購入時諸費用＋売却時諸費用の見込み＋ローン残債」の合計です。当ツールでは「損益分岐売却価格」として自動計算・表示しています。ただし売却諸費用の見積もりに誤差があるため、あくまで参考値としてご利用ください。</p>
+        </details>
+      </div>
+    </section>
+
+  </div><!-- /.container -->
+
+  <Footer slot="footer" />
+</BaseLayout>
+
+<style>
+/* ── Layout ── */
+.calc-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  align-items: start;
+}
+@media (max-width: 768px) {
+  .calc-layout { grid-template-columns: 1fr; }
+}
+
+/* ── Card ── */
+.card {
+  background: var(--c-bg-card);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  box-shadow: var(--shadow-sm);
+}
+.card-heading {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--c-primary);
+  margin-bottom: 20px;
+}
+
+/* ── Group label ── */
+.group-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--c-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 12px;
+}
+
+/* ── Field group ── */
+.field-group { margin-bottom: 16px; }
+.field-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 4px;
+}
+.field-label label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--c-text);
+}
+.field-display {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--c-primary);
+  white-space: nowrap;
+}
+.field-hint {
+  font-size: 0.72rem;
+  color: var(--c-text-muted);
+  margin-top: 3px;
+  line-height: 1.5;
+}
+
+/* ── Range slider ── */
+.range-slider {
+  width: 100%;
+  height: 20px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: linear-gradient(
+    to right,
+    var(--c-primary) var(--pct, 0%),
+    var(--c-border)  var(--pct, 0%)
+  );
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+  padding: 0;
+  margin: 0 0 6px;
+  display: block;
+}
+.range-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--c-primary);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+  transition: transform 0.1s, background 0.1s;
+}
+.range-slider::-webkit-slider-thumb:hover,
+.range-slider:active::-webkit-slider-thumb {
+  background: var(--c-primary-hover);
+  transform: scale(1.15);
+}
+.range-slider::-moz-range-thumb {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--c-primary);
+  border: none;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+}
+.range-slider::-moz-range-progress { background: var(--c-primary); height: 4px; border-radius: 2px; }
+.range-slider::-moz-range-track    { background: var(--c-border);  height: 4px; border-radius: 2px; }
+
+/* ── Number input ── */
+.field-input {
+  width: 100%;
+  padding: 7px 10px;
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-sm);
+  font-size: 0.875rem;
+  font-family: var(--font);
+  color: var(--c-text);
+  background: var(--c-bg);
+  transition: border-color 0.15s;
+  -moz-appearance: textfield;
+}
+.field-input::-webkit-outer-spin-button,
+.field-input::-webkit-inner-spin-button { -webkit-appearance: none; }
+.field-input:focus {
+  outline: none;
+  border-color: var(--c-primary);
+  box-shadow: 0 0 0 2px rgba(26,74,58,0.1);
+}
+
+/* ── Divider ── */
+.divider { border: none; border-top: 1px solid var(--c-border); margin: 18px 0 14px; }
+
+/* ── Debt mode toggle ── */
+.debt-mode-toggle {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.mode-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 6px 14px;
+  border: 1.5px solid var(--c-border);
+  border-radius: var(--radius-sm);
+  color: var(--c-text-muted);
+  background: var(--c-bg);
+  transition: all 0.15s;
+  user-select: none;
+}
+.mode-btn:has(input:checked) {
+  border-color: var(--c-primary);
+  color: var(--c-primary);
+  background: rgba(26,74,58,0.06);
+}
+.mode-btn input { display: none; }
+
+/* ── Estimated debt box ── */
+.estimated-debt-box {
+  background: rgba(26,74,58,0.06);
+  border: 1px solid rgba(26,74,58,0.2);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  font-size: 0.82rem;
+  color: var(--c-text-muted);
+  margin-bottom: 8px;
+}
+.estimated-debt-box strong { color: var(--c-primary); font-size: 1rem; }
+
+/* ── Details / Tax section ── */
+.details-block {
+  margin-top: 18px;
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+.details-block summary {
+  padding: 12px 16px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--c-text);
+  cursor: pointer;
+  background: var(--c-bg);
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  user-select: none;
+}
+.details-block summary::after {
+  content: '▼';
+  font-size: 0.7rem;
+  color: var(--c-text-muted);
+  transition: transform 0.2s;
+}
+.details-block[open] summary::after { transform: rotate(-180deg); }
+.details-content {
+  padding: 14px 16px;
+  border-top: 1px solid var(--c-border);
+}
+.details-desc {
+  font-size: 0.78rem;
+  color: var(--c-text-muted);
+  line-height: 1.6;
+  margin-bottom: 12px;
+}
+.details-sub {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--c-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 8px;
+}
+.check-field {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--c-text);
+  cursor: pointer;
+}
+.check-field input { width: 16px; height: 16px; cursor: pointer; accent-color: var(--c-primary); }
+.radio-group { display: flex; flex-direction: column; gap: 8px; }
+.radio-group label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+  color: var(--c-text);
+  cursor: pointer;
+}
+.radio-group input { accent-color: var(--c-primary); }
+
+/* ── Sample badge ── */
+.sample-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(201,148,58,0.10);
+  border: 1px solid var(--c-accent);
+  color: var(--c-warning);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 7px 12px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 16px;
+  line-height: 1.4;
+}
+
+/* ── Error ── */
+.error-msg {
+  background: rgba(192,57,43,0.08);
+  border: 1px solid var(--c-danger);
+  border-radius: var(--radius-sm);
+  color: var(--c-danger);
+  font-size: 0.82rem;
+  padding: 10px 12px;
+  margin-top: 8px;
+}
+
+/* ── Hero result ── */
+.hero-result {
+  text-align: center;
+  padding: 20px 16px 14px;
+  border-radius: var(--radius-md);
+  border: 2px solid var(--c-border);
+  margin-bottom: 12px;
+  transition: border-color 0.2s, background 0.2s;
+}
+.hero-result.positive { border-color: var(--c-success); background: rgba(45,122,79,0.04); }
+.hero-result.negative { border-color: var(--c-danger);  background: rgba(192,57,43,0.04); }
+.hero-label { font-size: 0.72rem; font-weight: 700; color: var(--c-text-muted); margin-bottom: 6px; }
+.hero-value { font-size: 2.2rem; font-weight: 700; color: var(--c-primary); line-height: 1.1; margin-bottom: 6px; }
+.hero-result.positive .hero-value { color: var(--c-success); }
+.hero-result.negative .hero-value { color: var(--c-danger); }
+.hero-status { font-size: 0.75rem; color: var(--c-text-muted); line-height: 1.4; }
+
+/* ── Profit band ── */
+.profit-band {
+  border-radius: var(--radius-md);
+  border: 1.5px solid var(--c-border);
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  text-align: center;
+}
+.profit-band.gain { border-color: var(--c-success); background: rgba(45,122,79,0.04); }
+.profit-band.loss { border-color: var(--c-danger);  background: rgba(192,57,43,0.04); }
+.profit-label { font-size: 0.7rem; font-weight: 700; color: var(--c-text-muted); margin-bottom: 4px; }
+.profit-value { font-size: 1.4rem; font-weight: 700; color: var(--c-text); }
+.profit-band.gain .profit-value { color: var(--c-success); }
+.profit-band.loss .profit-value { color: var(--c-danger); }
+.profit-note { font-size: 0.72rem; color: var(--c-text-muted); margin-top: 4px; }
+
+/* ── Flow breakdown ── */
+.flow-section {
+  background: var(--c-bg);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  margin-bottom: 18px;
+}
+.flow-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 0;
+  font-size: 0.85rem;
+}
+.flow-icon {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.icon-plus { background: rgba(45,122,79,0.15); color: var(--c-success); }
+.icon-minus { background: rgba(192,57,43,0.12); color: var(--c-danger); }
+.icon-eq   { background: rgba(26,74,58,0.12);  color: var(--c-primary); }
+.flow-name { flex: 1; color: var(--c-text-muted); }
+.flow-name strong { color: var(--c-text); }
+.flow-amt { font-weight: 600; color: var(--c-text); white-space: nowrap; font-size: 0.9rem; }
+.flow-amt.red   { color: var(--c-danger); }
+.flow-amt.green { color: var(--c-success); }
+.flow-amt.bold  { font-size: 1rem; }
+.flow-divider {
+  height: 1px;
+  background: var(--c-border);
+  margin: 6px 0;
+}
+.flow-result {
+  padding-top: 6px;
+}
+
+/* ── Result table ── */
+.result-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+  margin-bottom: 14px;
+}
+.result-table th, .result-table td {
+  padding: 7px 4px;
+  border-bottom: 1px solid var(--c-border);
+  text-align: left;
+}
+.result-table th { color: var(--c-text-muted); font-weight: 400; width: 58%; }
+.result-table td { text-align: right; font-weight: 600; color: var(--c-text); }
+.result-table .table-section td {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--c-text-muted);
+  background: var(--c-bg);
+  padding: 10px 4px 4px;
+  border-bottom: none;
+}
+.result-table .table-subtotal th,
+.result-table .table-subtotal td {
+  font-weight: 700;
+  color: var(--c-text);
+  border-top: 1px solid var(--c-border);
+}
+.result-table .table-total th,
+.result-table .table-total td {
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--c-primary);
+  border-top: 2px solid var(--c-border);
+  border-bottom: none;
+}
+.result-table .table-roi th,
+.result-table .table-roi td {
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--c-primary);
+  border-bottom: none;
+}
+
+/* ── Breakeven box ── */
+.breakeven-box {
+  background: rgba(201,148,58,0.08);
+  border: 1.5px solid var(--c-accent);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  text-align: center;
+  margin-bottom: 14px;
+  transition: border-color 0.2s, background 0.2s;
+}
+.breakeven-box.above {
+  background: rgba(45,122,79,0.06);
+  border-color: var(--c-success);
+}
+.breakeven-box.below {
+  background: rgba(192,57,43,0.06);
+  border-color: var(--c-danger);
+}
+.breakeven-label { font-size: 0.7rem; font-weight: 700; color: var(--c-text-muted); margin-bottom: 4px; }
+.breakeven-value { font-size: 1.5rem; font-weight: 700; color: var(--c-accent); margin-bottom: 4px; }
+.breakeven-box.above .breakeven-value { color: var(--c-success); }
+.breakeven-box.below .breakeven-value { color: var(--c-danger); }
+.breakeven-note { font-size: 0.72rem; color: var(--c-text-muted); }
+
+/* ── Result disclaimer ── */
+.result-disclaimer { font-size: 0.72rem; color: var(--c-text-muted); line-height: 1.6; }
+
+/* ── Scenario grid ── */
+.scenario-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 16px;
+}
+@media (max-width: 640px) {
+  .scenario-grid { grid-template-columns: 1fr; }
+}
+.scenario-card {
+  background: var(--c-bg-card);
+  border: 2px solid var(--c-border);
+  border-radius: var(--radius-md);
+  padding: 18px;
+  text-align: center;
+}
+.scenario-card.base      { border-color: var(--c-primary); }
+.scenario-card.optimistic { border-color: var(--c-success); }
+.scenario-card.pessimistic { border-color: var(--c-danger); }
+.sc-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--c-text-muted);
+  margin-bottom: 4px;
+}
+.scenario-card.base       .sc-label { color: var(--c-primary); }
+.scenario-card.optimistic .sc-label { color: var(--c-success); }
+.scenario-card.pessimistic .sc-label { color: var(--c-danger); }
+.sc-pct { font-size: 0.82rem; color: var(--c-text-muted); margin-bottom: 6px; }
+.sc-price { font-size: 1.25rem; font-weight: 700; color: var(--c-text); margin-bottom: 12px; }
+.sc-details { text-align: left; }
+.sc-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.78rem;
+  padding: 3px 0;
+  border-bottom: 1px solid var(--c-border);
+}
+.sc-row:last-child { border-bottom: none; }
+.sc-row span:first-child { color: var(--c-text-muted); }
+.sc-row span:last-child  { font-weight: 600; color: var(--c-text); }
+.sc-row .positive { color: var(--c-success); }
+.sc-row .negative { color: var(--c-danger); }
+.sc-verdict {
+  margin-top: 12px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 99px;
+  display: inline-block;
+}
+.sc-verdict.positive { background: rgba(45,122,79,0.12); color: var(--c-success); }
+.sc-verdict.negative { background: rgba(192,57,43,0.10); color: var(--c-danger); }
+.sc-verdict.zero     { background: rgba(0,0,0,0.06); color: var(--c-text-muted); }
+
+/* ── Lookup table ── */
+.table-scroll { overflow-x: auto; margin-top: 16px; }
+.lookup-table {
+  width: 100%;
+  min-width: 560px;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+}
+.lookup-table th {
+  background: var(--c-primary);
+  color: #fff;
+  padding: 10px 12px;
+  text-align: right;
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.lookup-table th:first-child { text-align: left; }
+.lookup-table td {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--c-border);
+  text-align: right;
+  font-weight: 500;
+  color: var(--c-text);
+  background: var(--c-bg-card);
+  white-space: nowrap;
+}
+.lookup-table td:first-child { text-align: left; }
+.lookup-table .base-row td { background: rgba(26,74,58,0.06); font-weight: 700; }
+.base-badge {
+  display: inline-block;
+  font-size: 0.65rem;
+  font-weight: 700;
+  background: var(--c-primary);
+  color: #fff;
+  padding: 1px 6px;
+  border-radius: 99px;
+  margin-left: 4px;
+  vertical-align: middle;
+}
+.pct-badge {
+  display: inline-block;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 99px;
+  margin-left: 4px;
+  vertical-align: middle;
+}
+.pct-badge.up { background: rgba(45,122,79,0.15); color: var(--c-success); }
+.pct-badge.dn { background: rgba(192,57,43,0.12); color: var(--c-danger); }
+td.red   { color: var(--c-danger); }
+td.green { color: var(--c-success); }
+.verdict {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 99px;
+}
+.verdict-ok  { background: rgba(45,122,79,0.12); color: var(--c-success); }
+.verdict-bad { background: rgba(192,57,43,0.10); color: var(--c-danger); }
+.verdict-ng  { background: rgba(0,0,0,0.08); color: var(--c-text-muted); }
+
+/* ── Related ── */
+.related-section { max-width: 860px; }
+.related-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+.related-card {
+  display: block;
+  background: var(--c-bg-card);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  text-decoration: none;
+  color: var(--c-text);
+  transition: box-shadow 0.2s, transform 0.2s, border-color 0.2s;
+  box-shadow: var(--shadow-sm);
+}
+.related-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+  border-color: var(--c-primary);
+  text-decoration: none;
+}
+.related-icon { font-size: 1.5rem; margin-bottom: 8px; }
+.related-title { font-size: 0.9rem; font-weight: 700; color: var(--c-primary); margin-bottom: 6px; }
+.related-desc { font-size: 0.78rem; color: var(--c-text-muted); line-height: 1.6; margin-bottom: 10px; }
+.related-arrow { font-size: 0.78rem; color: var(--c-primary); font-weight: 600; }
+
+/* ── Explanation ── */
+.explain-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+.explain-card {
+  background: var(--c-bg-card);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-md);
+  padding: 20px;
+}
+.explain-card h3 { font-size: 0.95rem; font-weight: 700; color: var(--c-primary); margin-bottom: 10px; }
+.explain-card p, .explain-card ul { font-size: 0.82rem; color: var(--c-text-muted); line-height: 1.8; }
+.explain-card ul { padding-left: 1.2em; }
+.explain-card li { margin-bottom: 4px; }
+.explain-card strong { color: var(--c-text); }
+
+/* ── FAQ ── */
+.faq-section { max-width: 680px; }
+.faq-list { margin-top: 16px; display: flex; flex-direction: column; gap: 8px; }
+.faq-item {
+  background: var(--c-bg-card);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+.faq-item summary {
+  padding: 14px 18px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--c-text);
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  user-select: none;
+}
+.faq-item summary::after {
+  content: '＋';
+  font-size: 1rem;
+  color: var(--c-primary);
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-left: 8px;
+}
+.faq-item[open] summary::after { content: '－'; }
+.faq-item p {
+  padding: 0 18px 14px;
+  font-size: 0.82rem;
+  color: var(--c-text-muted);
+  line-height: 1.8;
+  border-top: 1px solid var(--c-border);
+  padding-top: 12px;
+}
+</style>
+
+<script>
+/* ─── Helpers ─────────────────────────────────────────── */
+
+function fmt(val: number, dec = 0): string {
+  return val.toLocaleString('ja-JP', {
+    minimumFractionDigits: dec,
+    maximumFractionDigits: dec,
+  });
+}
+
+function fmtPM(val: number, dec = 0): string {
+  return (val >= 0 ? '+' : '') + fmt(val, dec);
+}
+
+function getNum(id: string, fallback = 0): number {
+  const el = document.getElementById(id) as HTMLInputElement | null;
+  if (!el) return fallback;
+  const v = parseFloat(el.value);
+  return isNaN(v) ? fallback : v;
+}
+
+function setText(id: string, text: string): void {
+  const el = document.getElementById(id);
+  if (el) el.textContent = text;
+}
+
+function clamp(val: number, min: number, max: number): number {
+  return Math.max(min, Math.min(max, val));
+}
+
+function updateFill(slider: HTMLInputElement): void {
+  const min = parseFloat(slider.min) || 0;
+  const max = parseFloat(slider.max) || 100;
+  const val = parseFloat(slider.value) || 0;
+  const pct = clamp((val - min) / (max - min) * 100, 0, 100);
+  slider.style.setProperty('--pct', `${pct}%`);
+}
+
+function updateDisplay(id: string, val: string): void {
+  const el = document.getElementById(`${id}Display`);
+  if (el) el.textContent = Number(val).toLocaleString('ja-JP');
+}
+
+/* ─── Loan calc ─────────────────────────────────────────── */
+
+/** 元利均等返済での残債（万円） */
+function calcRemainingDebt(
+  principal: number,
+  annualRatePct: number,
+  totalYears: number,
+  elapsedYears: number
+): number {
+  if (principal <= 0) return 0;
+  if (annualRatePct === 0) {
+    const remainYears = Math.max(0, totalYears - elapsedYears);
+    return principal * (remainYears / totalYears);
+  }
+  const r = annualRatePct / 100 / 12;
+  const n = totalYears * 12;
+  const k = Math.min(elapsedYears * 12, n);
+  const debt = principal
+    * (Math.pow(1 + r, n) - Math.pow(1 + r, k))
+    / (Math.pow(1 + r, n) - 1);
+  return Math.max(0, debt);
+}
+
+/** 仲介手数料の法定上限概算（消費税込み） */
+function calcAutoAgentFee(sellPrice: number): number {
+  return Math.round((sellPrice * 0.03 + 6) * 1.1);
+}
+
+/* ─── 残債取得 ──────────────────────────────────────────── */
+
+function getDebtValue(): number {
+  const mode = (document.querySelector('input[name="debtMode"]:checked') as HTMLInputElement)?.value ?? 'direct';
+  if (mode === 'direct') {
+    return getNum('debtDirect', 1800);
+  }
+  const loanAmount   = getNum('loanAmount',   2400);
+  const loanRate     = getNum('loanRate',       1.5);
+  const loanYears    = getNum('loanYears',       35);
+  const elapsedYears = getNum('elapsedYears',    10);
+  const debt = calcRemainingDebt(loanAmount, loanRate, loanYears, elapsedYears);
+  setText('estimatedDebt', fmt(Math.round(debt)) + ' 万円');
+  return Math.round(debt);
+}
+
+/* ─── メイン計算 ────────────────────────────────────────── */
+
+function calculate(): void {
+  const buyPrice    = getNum('buyPrice',    3000);
+  const buyExpenses = getNum('buyExpenses',  120);
+  const equity      = getNum('equity',       600);
+  const sellPrice   = getNum('sellPrice',   3200);
+  const agentFee    = getNum('agentFee',     112);
+  const sellOther   = getNum('sellOther',     20);
+  const debt        = getDebtValue();
+
+  const doTax      = (document.getElementById('doTax')      as HTMLInputElement)?.checked ?? false;
+  const isShort    = (document.querySelector('input[name="holdPeriod"]:checked') as HTMLInputElement)?.value === 'short';
+  const residential = (document.getElementById('residential') as HTMLInputElement)?.checked ?? false;
+
+  // バリデーション
+  const errEl = document.getElementById('errorMsg');
+  if (buyPrice <= 0 || sellPrice <= 0) {
+    if (errEl) {
+      errEl.textContent = '購入価格と想定売却価格は1以上の値を入力してください。';
+      errEl.hidden = false;
+    }
+    return;
+  }
+  if (errEl) errEl.hidden = true;
+
+  const sellCosts    = agentFee + sellOther;
+  const netProceeds  = sellPrice - sellCosts - debt;
+  const totalEquity  = equity + buyExpenses;
+  const simplePL     = sellPrice - buyPrice - buyExpenses - sellCosts;
+  const finalPL      = netProceeds - totalEquity;
+  const breakEven    = Math.ceil((buyPrice + buyExpenses + sellCosts + debt) / 10) * 10;
+
+  // 税計算
+  let taxableGain = 0;
+  let taxAmount   = 0;
+  let afterTaxNet = netProceeds;
+
+  if (doTax) {
+    const acqCost   = buyPrice + buyExpenses;
+    const deduction = residential ? 3000 : 0;
+    taxableGain = Math.max(0, sellPrice - acqCost - sellCosts - deduction);
+    const taxRate = isShort ? 0.3963 : 0.20315;
+    taxAmount   = taxableGain * taxRate;
+    afterTaxNet = netProceeds - taxAmount;
+  }
+
+  const displayNet = doTax ? afterTaxNet : netProceeds;
+
+  // ── ヒーロー ──
+  const heroResult = document.getElementById('heroResult');
+  setText('heroLabel', doTax ? '税引後の手取り額' : '売却後の手取り額');
+  setText('heroValue', fmt(Math.round(displayNet)) + ' 万円');
+  if (heroResult) {
+    heroResult.classList.remove('positive', 'negative');
+    heroResult.classList.add(displayNet >= 0 ? 'positive' : 'negative');
+  }
+  const statusText = debt > sellPrice - sellCosts
+    ? '売却代金だけではローンを完済できません（オーバーローン）'
+    : netProceeds === 0
+      ? '手残りはちょうどゼロです'
+      : netProceeds > 0
+        ? 'ローン完済後に手残りがあります'
+        : '';
+  setText('heroStatus', statusText);
+
+  // ── 損益バンド ──
+  const profitBand = document.getElementById('profitBand');
+  const profitNet  = doTax ? afterTaxNet - totalEquity : finalPL;
+  setText('profitValue', fmtPM(Math.round(profitNet)) + ' 万円');
+  setText('profitNote',
+    profitNet >= 0
+      ? `自己資金 ${fmt(totalEquity)} 万円を全額回収し ${fmt(Math.round(profitNet))} 万円のプラス`
+      : `自己資金 ${fmt(totalEquity)} 万円のうち ${fmt(Math.round(-profitNet))} 万円が未回収`
+  );
+  if (profitBand) {
+    profitBand.classList.remove('gain', 'loss');
+    profitBand.classList.add(profitNet >= 0 ? 'gain' : 'loss');
+  }
+
+  // ── フロー ──
+  setText('fSellPrice',   '+' + fmt(sellPrice) + ' 万円');
+  setText('fSellCosts',   '−' + fmt(sellCosts) + ' 万円');
+  setText('fDebt',        '−' + fmt(Math.round(debt)) + ' 万円');
+  setText('fNetProceeds', fmt(Math.round(netProceeds)) + ' 万円');
+
+  const fNetEl = document.getElementById('fNetProceeds');
+  if (fNetEl) {
+    fNetEl.className = 'flow-amt bold' + (netProceeds < 0 ? ' red' : netProceeds > 0 ? ' green' : '');
+  }
+
+  const taxFlowRow    = document.getElementById('taxFlowRow');
+  const afterTaxFlowRow = document.getElementById('afterTaxFlowRow');
+  if (taxFlowRow)    taxFlowRow.style.display    = doTax ? '' : 'none';
+  if (afterTaxFlowRow) afterTaxFlowRow.style.display = doTax ? '' : 'none';
+  if (doTax) {
+    setText('fTax',      '−' + fmt(Math.round(taxAmount))   + ' 万円');
+    setText('fAfterTax', fmt(Math.round(afterTaxNet)) + ' 万円');
+    const fAtEl = document.getElementById('fAfterTax');
+    if (fAtEl) fAtEl.className = 'flow-amt bold' + (afterTaxNet < 0 ? ' red' : afterTaxNet > 0 ? ' green' : '');
+  }
+
+  // ── テーブル ──
+  setText('rSellPrice',   fmt(sellPrice) + ' 万円');
+  setText('rAgentFee',    fmt(agentFee)  + ' 万円');
+  setText('rSellOther',   fmt(sellOther) + ' 万円');
+  setText('rSellCosts',   fmt(sellCosts) + ' 万円');
+  setText('rDebt',        fmt(Math.round(debt)) + ' 万円');
+  setText('rBuyPrice',    fmt(buyPrice)   + ' 万円');
+  setText('rBuyExpenses', fmt(buyExpenses) + ' 万円');
+  setText('rTotalInvest', fmt(buyPrice + buyExpenses) + ' 万円');
+  setText('rSimplePL',    fmtPM(Math.round(simplePL)) + ' 万円');
+  setText('rNetProceeds', fmt(Math.round(netProceeds)) + ' 万円');
+  setText('rTotalEquity', fmt(totalEquity) + ' 万円');
+  setText('rFinalPL',     fmtPM(Math.round(finalPL)) + ' 万円');
+
+  const simplePLEl = document.getElementById('rSimplePL');
+  if (simplePLEl) simplePLEl.style.color = simplePL >= 0 ? 'var(--c-success)' : 'var(--c-danger)';
+
+  const finalPLEl = document.getElementById('rFinalPL');
+  if (finalPLEl) finalPLEl.style.color = finalPL >= 0 ? 'var(--c-success)' : 'var(--c-danger)';
+
+  // 税行の表示切り替え
+  const taxRows = ['rTaxGainRow', 'rTaxAmtRow', 'rAfterTaxRow'];
+  taxRows.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = doTax ? '' : 'none';
+  });
+  if (doTax) {
+    setText('rTaxableGain', fmt(Math.round(taxableGain)) + ' 万円');
+    setText('rTaxAmount',   fmt(Math.round(taxAmount))   + ' 万円');
+    setText('rAfterTax',    fmt(Math.round(afterTaxNet)) + ' 万円');
+  }
+
+  // ── 損益分岐 ──
+  setText('breakevenValue', fmt(breakEven) + ' 万円');
+  const diffFromBE = sellPrice - breakEven;
+  setText('breakevenNote',
+    diffFromBE >= 0
+      ? `現在の売却価格は損益分岐点より ${fmt(Math.round(diffFromBE))} 万円高い`
+      : `損益分岐点まであと ${fmt(Math.round(-diffFromBE))} 万円必要`
+  );
+  const beBox = document.getElementById('breakevenBox');
+  if (beBox) {
+    beBox.classList.remove('above', 'below');
+    beBox.classList.add(diffFromBE >= 0 ? 'above' : 'below');
+  }
+
+  // ── 仲介手数料ヒント更新 ──
+  const autoFee = calcAutoAgentFee(sellPrice);
+  setText('agentFeeAuto', fmt(autoFee));
+
+  // ── シナリオ比較・早見表 ──
+  buildScenarioGrid(sellPrice, sellCosts, debt, buyPrice, buyExpenses, equity, totalEquity, doTax, isShort, residential);
+  buildLookupTable(sellPrice, sellCosts, debt, totalEquity, doTax, isShort, buyPrice, buyExpenses, residential);
+}
+
+/* ─── シナリオ比較 ──────────────────────────────────────── */
+
+function buildScenarioGrid(
+  baseSellPrice: number,
+  sellCosts: number,
+  debt: number,
+  buyPrice: number,
+  buyExpenses: number,
+  equity: number,
+  totalEquity: number,
+  doTax: boolean,
+  isShort: boolean,
+  residential: boolean
+): void {
+  const scenarios = [
+    { label: '楽観', pct: +5,  cls: 'optimistic' },
+    { label: 'ベース', pct: 0, cls: 'base' },
+    { label: '悲観',  pct: -10, cls: 'pessimistic' },
+  ];
+
+  const grid = document.getElementById('scenarioGrid');
+  if (!grid) return;
+
+  grid.innerHTML = scenarios.map(s => {
+    const sp  = Math.round(baseSellPrice * (1 + s.pct / 100));
+    const net = sp - sellCosts - debt;
+    const finalPL = net - totalEquity;
+
+    let taxAmt    = 0;
+    let afterNet  = net;
+    if (doTax && net > 0) {
+      const acq = buyPrice + buyExpenses;
+      const ded = residential ? 3000 : 0;
+      const tg  = Math.max(0, sp - acq - sellCosts - ded);
+      taxAmt   = tg * (isShort ? 0.3963 : 0.20315);
+      afterNet = net - taxAmt;
+    }
+
+    const pctLabel = s.pct === 0 ? '基準価格' : s.pct > 0 ? `+${s.pct}%` : `${s.pct}%`;
+    const verdictClass = finalPL > 0 ? 'positive' : finalPL < 0 ? 'negative' : 'zero';
+    const verdictText  = finalPL > 0 ? '黒字売却' : finalPL < 0 ? '赤字売却' : '収支ゼロ';
+
+    return `
+      <div class="scenario-card ${s.cls}">
+        <div class="sc-label">${s.label}</div>
+        <div class="sc-pct">${pctLabel}</div>
+        <div class="sc-price">${fmt(sp)} 万円</div>
+        <div class="sc-details">
+          <div class="sc-row">
+            <span>売却後手取り</span>
+            <span class="${net < 0 ? 'negative' : net > 0 ? 'positive' : ''}">${fmt(Math.round(net))} 万円</span>
+          </div>
+          ${doTax ? `
+          <div class="sc-row">
+            <span>概算税額</span>
+            <span class="negative">−${fmt(Math.round(taxAmt))} 万円</span>
+          </div>
+          <div class="sc-row">
+            <span>税引後手取り</span>
+            <span class="${afterNet < 0 ? 'negative' : afterNet > 0 ? 'positive' : ''}">${fmt(Math.round(afterNet))} 万円</span>
+          </div>
+          ` : ''}
+          <div class="sc-row">
+            <span>最終損益</span>
+            <span class="${verdictClass}">${fmtPM(Math.round(finalPL))} 万円</span>
+          </div>
+        </div>
+        <div class="sc-verdict ${verdictClass}">${verdictText}</div>
+      </div>
+    `;
+  }).join('');
+}
+
+/* ─── 早見表 ────────────────────────────────────────────── */
+
+function buildLookupTable(
+  baseSellPrice: number,
+  sellCosts: number,
+  debt: number,
+  totalEquity: number,
+  doTax: boolean,
+  isShort: boolean,
+  buyPrice: number,
+  buyExpenses: number,
+  residential: boolean
+): void {
+  const tbody = document.getElementById('lookupTableBody');
+  if (!tbody) return;
+
+  const ratios = [-20, -15, -10, -5, 0, +5, +10];
+
+  tbody.innerHTML = ratios.map(r => {
+    const sp  = Math.round(baseSellPrice * (1 + r / 100));
+    const net = sp - sellCosts - debt;
+    const finalPL = net - totalEquity;
+
+    let displayNet = net;
+    if (doTax && net > 0) {
+      const acq = buyPrice + buyExpenses;
+      const ded = residential ? 3000 : 0;
+      const tg  = Math.max(0, sp - acq - sellCosts - ded);
+      displayNet = net - tg * (isShort ? 0.3963 : 0.20315);
+    }
+
+    const isBase  = r === 0;
+    const verdict = net < 0
+      ? { cls: 'verdict-ng',  text: '不可' }
+      : finalPL >= 0
+        ? { cls: 'verdict-ok',  text: '黒字' }
+        : { cls: 'verdict-bad', text: '赤字' };
+
+    const priceBadge = isBase
+      ? ' <span class="base-badge">基準</span>'
+      : r > 0
+        ? ` <span class="pct-badge up">+${r}%</span>`
+        : ` <span class="pct-badge dn">${r}%</span>`;
+
+    const netTd     = `<td class="${net < 0 ? 'red' : ''}">${fmt(Math.round(displayNet))} 万円</td>`;
+    const finalPLTd = `<td class="${finalPL >= 0 ? 'green' : 'red'}">${fmtPM(Math.round(finalPL))} 万円</td>`;
+
+    return `<tr class="${isBase ? 'base-row' : ''}">
+      <td>${fmt(sp)} 万円${priceBadge}</td>
+      <td>${fmt(sellCosts)} 万円</td>
+      <td>${fmt(Math.round(debt))} 万円</td>
+      ${netTd}
+      ${finalPLTd}
+      <td><span class="verdict ${verdict.cls}">${verdict.text}</span></td>
+    </tr>`;
+  }).join('');
+}
+
+/* ─── UI: 残債モード切替 ────────────────────────────────── */
+
+function updateDebtSection(): void {
+  const mode = (document.querySelector('input[name="debtMode"]:checked') as HTMLInputElement)?.value ?? 'direct';
+  const directSection = document.getElementById('debtDirectSection');
+  const calcSection   = document.getElementById('debtCalcSection');
+  if (directSection) directSection.style.display = mode === 'direct' ? '' : 'none';
+  if (calcSection)   calcSection.style.display   = mode === 'calc'   ? '' : 'none';
+}
+
+/* ─── UI: 税オプション切替 ──────────────────────────────── */
+
+function updateTaxOptions(): void {
+  const doTax    = (document.getElementById('doTax') as HTMLInputElement)?.checked ?? false;
+  const taxOpts  = document.getElementById('taxOptions');
+  if (taxOpts) taxOpts.style.display = doTax ? '' : 'none';
+}
+
+/* ─── サンプルバッジ非表示 ──────────────────────────────── */
+
+function hideSampleBadge(): void {
+  const badge = document.getElementById('sampleBadge');
+  if (badge) badge.hidden = true;
+}
+
+/* ─── スライダー ↔ 数値入力の同期 ──────────────────────── */
+
+function syncSliderToNum(slider: HTMLInputElement): void {
+  const targetId = slider.dataset.target;
+  if (!targetId) return;
+  const numEl = document.getElementById(targetId) as HTMLInputElement | null;
+  if (!numEl) return;
+  numEl.value = slider.value;
+  updateFill(slider);
+  updateDisplay(targetId, slider.value);
+}
+
+function syncNumToSlider(numEl: HTMLInputElement): void {
+  const slider = document.querySelector<HTMLInputElement>(
+    `input.range-slider[data-target="${numEl.id}"]`
+  );
+  if (!slider) return;
+  const min  = parseFloat(slider.min)  || 0;
+  const max  = parseFloat(slider.max)  || 100;
+  const step = parseFloat(slider.step) || 1;
+  let val = parseFloat(numEl.value);
+  if (isNaN(val) || val < min) val = min;
+  if (val > max) val = max;
+  val = Math.round(val / step) * step;
+  numEl.value  = String(val);
+  slider.value = String(val);
+  updateFill(slider);
+  updateDisplay(numEl.id, numEl.value);
+}
+
+/* ─── 初期化 ─────────────────────────────────────────────── */
+
+document.addEventListener('DOMContentLoaded', () => {
+
+  // スライダー初期塗り & イベント
+  document.querySelectorAll<HTMLInputElement>('input.range-slider').forEach(slider => {
+    updateFill(slider);
+    slider.addEventListener('input', () => {
+      syncSliderToNum(slider);
+      hideSampleBadge();
+      calculate();
+    });
+  });
+
+  // 数値入力 → スライダー同期
+  document.querySelectorAll<HTMLInputElement>('input.field-input').forEach(numEl => {
+    numEl.addEventListener('keydown', (e: KeyboardEvent) => {
+      if (['-', 'e', 'E', '+'].includes(e.key)) e.preventDefault();
+    });
+    numEl.addEventListener('change', () => {
+      syncNumToSlider(numEl);
+      hideSampleBadge();
+      calculate();
+    });
+  });
+
+  // 残債モード切替
+  document.querySelectorAll<HTMLInputElement>('input[name="debtMode"]').forEach(radio => {
+    radio.addEventListener('change', () => {
+      updateDebtSection();
+      hideSampleBadge();
+      calculate();
+    });
+  });
+
+  // 税チェック
+  document.getElementById('doTax')?.addEventListener('change', () => {
+    updateTaxOptions();
+    hideSampleBadge();
+    calculate();
+  });
+
+  // 保有期間・居住用特例 変更
+  document.querySelectorAll<HTMLInputElement>('input[name="holdPeriod"]').forEach(r => {
+    r.addEventListener('change', () => { hideSampleBadge(); calculate(); });
+  });
+  document.getElementById('residential')?.addEventListener('change', () => {
+    hideSampleBadge();
+    calculate();
+  });
+
+  // 初期計算
+  updateDebtSection();
+  calculate();
+});
+</script>

@@ -61,6 +61,14 @@ const tools = [
     description: '年次CF推移・黒字転換年・自己資金回収年をまとめて試算。元利均等・元金均等の比較やベース/悲観シナリオのグラフ表示にも対応した長期収支予測ツール。',
     badge: '無料',
   },
+  {
+    href: '/calculators/sale-profit',
+    icon: '🏷️',
+    label: 'Simulator',
+    title: '不動産売却益シミュレーター',
+    description: '売却価格・仲介手数料・ローン残債を入力するだけで手元に残る金額を即試算。損益分岐売却価格・シナリオ比較・価格別早見表で出口戦略をサポートします。',
+    badge: '無料',
+  },
 ];
 
 const jsonLd = [
@@ -80,7 +88,7 @@ const jsonLd = [
     '@type': 'ItemList',
     name: '不動産投資無料ツール一覧',
     url: 'https://estate.kuras-plus.com',
-    numberOfItems: 7,
+    numberOfItems: 8,
     itemListElement: tools.map((t, i) => ({
       '@type': 'ListItem',
       position: i + 1,
