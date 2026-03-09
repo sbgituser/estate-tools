@@ -1,0 +1,1038 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebApplication',
+    name: '頭金シミュレーター',
+    url: 'https://estate.kuras-plus.com/calculators/down-payment',
+    description: '住宅ローンの頭金を変えた場合の毎月返済額・総利息を比較できる無料シミュレーターです。',
+    applicationCategory: 'FinanceApplication',
+    operatingSystem: 'All',
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'JPY' },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'ホーム', item: 'https://estate.kuras-plus.com' },
+      { '@type': 'ListItem', position: 2, name: '頭金シミュレーター', item: 'https://estate.kuras-plus.com/calculators/down-payment' },
+    ],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      {
+        '@type': 'Question',
+        name: '頭金はいくら必要ですか？',
+        acceptedAnswer: { '@type': 'Answer', text: '一般的に物件価格の10〜20%が目安です。フラット35では頭金10%以上で金利優遇があります。諸費用（物件価格の3〜7%）は別途現金で用意する必要があります。' },
+      },
+      {
+        '@type': 'Question',
+        name: '頭金なしで住宅ローンは組めますか？',
+        acceptedAnswer: { '@type': 'Answer', text: 'フルローン（頭金0円）でも住宅ローンを組める金融機関はあります。ただし総返済額・総利息が増えるほか、諸費用は別途現金で用意が必要な場合が多いです。' },
+      },
+      {
+        '@type': 'Question',
+        name: '頭金を入れると利息はどれくらい減りますか？',
+        acceptedAnswer: { '@type': 'Answer', text: '金利1.5%・35年返済の場合、頭金100万円につき総利息はおよそ23〜26万円減少します。頭金500万円なら約120〜130万円の利息削減効果があります。' },
+      },
+      {
+        '@type': 'Question',
+        name: '住宅ローンの頭金平均はいくらですか？',
+        acceptedAnswer: { '@type': 'Answer', text: '国土交通省の住宅市場動向調査によると、住宅購入時の自己資金比率の平均は物件価格の20〜30%程度です。ただし30代以下では10%未満のケースも多くあります。' },
+      },
+    ],
+  },
+];
+---
+
+<BaseLayout
+  title="頭金シミュレーター｜住宅ローンの頭金を変えると返済額・総利息はどう変わる？"
+  description="住宅ローンの頭金を変えた場合の毎月返済額・総返済額・総利息を比較計算。頭金0〜20%の4シナリオを一覧表示できる無料シミュレーターです。登録不要。"
+  jsonLd={jsonLd}
+>
+  <Header slot="header" currentPath="/calculators/down-payment" />
+
+  <!-- Hero -->
+  <section class="page-hero">
+    <div class="container">
+      <nav class="breadcrumb" aria-label="パンくずリスト">
+        <a href="/">ホーム</a>
+        <span>›</span>
+        <span>頭金シミュレーター</span>
+      </nav>
+      <p class="hero-eyebrow">Down Payment Simulator</p>
+      <h1 class="hero-title">頭金シミュレーター</h1>
+      <p class="hero-desc">
+        頭金を変えた場合の毎月返済額・総利息を瞬時に比較。<br />
+        「頭金はいくら入れるべき？」を数字で確認できます。
+      </p>
+    </div>
+  </section>
+
+  <!-- Calculator -->
+  <div class="container mt-48" style="padding-bottom: 80px;">
+    <div class="calc-layout">
+
+      <!-- ── Inputs ── -->
+      <section class="card" aria-label="入力フォーム">
+        <h2 class="card-heading">条件を入力</h2>
+
+        <p class="group-label">物件情報</p>
+
+        <!-- 物件価格 -->
+        <div class="field-group">
+          <div class="field-label">
+            <label for="price">物件価格</label>
+            <span class="field-display"><span id="priceDisplay">4,000</span> 万円</span>
+          </div>
+          <input class="range-slider" type="range" id="priceSlider"
+            data-target="price" value="4000" min="100" max="20000" step="100" />
+          <input class="field-input" type="number" id="price"
+            value="4000" min="100" max="20000" step="100" inputmode="numeric"
+            data-shared="shared-property-price" />
+        </div>
+
+        <!-- 頭金 -->
+        <div class="field-group">
+          <div class="field-label">
+            <label for="down">頭金（現在の設定）</label>
+            <span class="field-display"><span id="downDisplay">800</span> 万円</span>
+          </div>
+          <input class="range-slider" type="range" id="downSlider"
+            data-target="down" value="800" min="0" max="4000" step="50" />
+          <input class="field-input" type="number" id="down"
+            value="800" min="0" max="4000" step="50" inputmode="numeric"
+            data-shared="shared-down-payment" />
+          <p class="field-hint">
+            物件価格の <strong id="downPctDisplay">20.0</strong>%。
+            スライダーで動かすと比較表が即時更新されます。
+          </p>
+        </div>
+
+        <!-- 借入額（自動計算） -->
+        <div class="borrow-display">
+          <span class="borrow-label">借入額（自動計算）</span>
+          <span class="borrow-value" id="borrowDisplay">3,200 万円</span>
+        </div>
+
+        <hr class="divider" />
+        <p class="group-label">返済条件</p>
+
+        <!-- 年利 -->
+        <div class="field-group">
+          <div class="field-label">
+            <label for="rate">年利（金利）</label>
+            <span class="field-display"><span id="rateDisplay">1.5</span> %</span>
+          </div>
+          <input class="range-slider" type="range" id="rateSlider"
+            data-target="rate" value="1.5" min="0" max="10" step="0.05" />
+          <input class="field-input" type="number" id="rate"
+            value="1.5" min="0" max="10" step="0.05" inputmode="decimal"
+            data-shared="shared-loan-rate" />
+          <p class="field-hint">変動金利：0.3〜1%台 / 固定10年：1〜2%台 / フラット35：1.8〜2.5%台（目安）</p>
+        </div>
+
+        <!-- 返済年数 -->
+        <div class="field-group">
+          <div class="field-label">
+            <label for="years">返済年数</label>
+            <span class="field-display"><span id="yearsDisplay">35</span> 年</span>
+          </div>
+          <input class="range-slider" type="range" id="yearsSlider"
+            data-target="years" value="35" min="1" max="50" step="1" />
+          <input class="field-input" type="number" id="years"
+            value="35" min="1" max="50" step="1" inputmode="numeric"
+            data-shared="shared-loan-years" />
+        </div>
+
+        <!-- 返済方式 -->
+        <div class="field-group">
+          <div class="field-label-text">返済方式</div>
+          <div class="repay-toggle">
+            <label class="repay-option">
+              <input type="radio" name="repayType" value="equal-payment" checked />
+              <span>元利均等返済</span>
+            </label>
+            <label class="repay-option">
+              <input type="radio" name="repayType" value="equal-principal" />
+              <span>元金均等返済</span>
+            </label>
+          </div>
+          <p class="field-hint">元利均等：毎月同額。元金均等：当初高く徐々に減少。</p>
+        </div>
+
+        <hr class="divider" />
+        <p class="group-label">任意設定</p>
+
+        <!-- ボーナス返済 -->
+        <div class="field-group">
+          <div class="field-label">
+            <label for="bonus">ボーナス加算額（年2回）</label>
+            <span class="field-display"><span id="bonusDisplay">0</span> 万円/回</span>
+          </div>
+          <input class="range-slider" type="range" id="bonusSlider"
+            data-target="bonus" value="0" min="0" max="50" step="1" />
+          <input class="field-input" type="number" id="bonus"
+            value="0" min="0" max="50" step="1" inputmode="numeric" />
+        </div>
+
+        <!-- 管理費・修繕積立金 -->
+        <div class="field-group">
+          <div class="field-label">
+            <label for="fee">管理費・修繕積立金（月額）</label>
+            <span class="field-display"><span id="feeDisplay">0</span> 万円</span>
+          </div>
+          <input class="range-slider" type="range" id="feeSlider"
+            data-target="fee" value="0" min="0" max="20" step="0.5" />
+          <input class="field-input" type="number" id="fee"
+            value="0" min="0" max="20" step="0.5" inputmode="decimal" />
+          <p class="field-hint">マンション購入の場合に入力。戸建てなら0でOK。</p>
+        </div>
+      </section>
+
+      <!-- ── Results ── -->
+      <section class="card results-card" aria-label="計算結果" aria-live="polite">
+        <h2 class="card-heading">計算結果</h2>
+
+        <div id="sampleBadge" class="sample-badge">
+          <span>📋</span> サンプル値による計算例 — 値を変更すると即時更新されます
+        </div>
+
+        <div id="errorMsg" class="error-msg" hidden></div>
+
+        <!-- Hero metrics -->
+        <div class="hero-metrics">
+          <div class="metric-box primary-box">
+            <div class="metric-label">毎月返済額</div>
+            <div class="metric-value" id="rMonthly">—</div>
+          </div>
+          <div class="metric-box">
+            <div class="metric-label">借入額</div>
+            <div class="metric-value sm" id="rBorrow">—</div>
+          </div>
+        </div>
+
+        <!-- Sub metrics -->
+        <div class="sub-metrics">
+          <div class="sub-metric">
+            <div class="sub-label">総返済額</div>
+            <div class="sub-value" id="rTotal">—</div>
+          </div>
+          <div class="sub-metric">
+            <div class="sub-label">総利息</div>
+            <div class="sub-value" id="rInterest">—</div>
+          </div>
+          <div class="sub-metric">
+            <div class="sub-label">年間返済額</div>
+            <div class="sub-value" id="rAnnual">—</div>
+          </div>
+          <div class="sub-metric">
+            <div class="sub-label">管理費込み月支払</div>
+            <div class="sub-value" id="rWithFee">—</div>
+          </div>
+        </div>
+
+        <!-- Bonus row -->
+        <div id="bonusRow" class="info-row" hidden>
+          <span class="info-row-label">ボーナス月返済額</span>
+          <span class="info-row-value" id="rBonusMonthly">—</span>
+        </div>
+
+        <!-- Diff box -->
+        <div id="diffBox" class="diff-box" hidden>
+          <p class="diff-title" id="diffTitle">頭金XXX万円を入れると…</p>
+          <div class="diff-grid">
+            <div class="diff-item">
+              <span class="diff-label">月返済の節約</span>
+              <span class="diff-value green" id="diffMonthly">—</span>
+            </div>
+            <div class="diff-item">
+              <span class="diff-label">総利息の節約</span>
+              <span class="diff-value green" id="diffInterest">—</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Comparison table -->
+        <p class="section-label mt-16">頭金別シミュレーション</p>
+        <div class="scenario-wrap">
+          <table class="scenario-table">
+            <thead>
+              <tr>
+                <th>頭金</th>
+                <th>頭金率</th>
+                <th>借入額</th>
+                <th>月返済</th>
+                <th>総利息</th>
+                <th>月返済差額<br /><small>（頭金0比）</small></th>
+              </tr>
+            </thead>
+            <tbody id="scenarioBody"></tbody>
+          </table>
+        </div>
+
+        <!-- Charts -->
+        <p class="section-label mt-16">グラフで比較</p>
+        <div class="charts-wrap">
+          <div class="chart-box">
+            <p class="chart-title">頭金額 vs 月返済額</p>
+            <svg id="chartMonthly" class="bar-chart" viewBox="0 0 280 160"
+              preserveAspectRatio="xMidYMax meet"
+              aria-label="頭金額と月返済額の棒グラフ"></svg>
+          </div>
+          <div class="chart-box">
+            <p class="chart-title">頭金額 vs 総利息</p>
+            <svg id="chartInterest" class="bar-chart" viewBox="0 0 280 160"
+              preserveAspectRatio="xMidYMax meet"
+              aria-label="頭金額と総利息の棒グラフ"></svg>
+          </div>
+        </div>
+
+        <p class="result-disclaimer">
+          ※ 元利均等・元金均等ともに概算です。ボーナス返済は年2回の加算として計算。
+          団体信用生命保険料・諸費用・税金は含まれていません。
+        </p>
+      </section>
+    </div>
+
+    <!-- ── Explanation ── -->
+    <section class="explain mt-48">
+      <h2 class="section-title">頭金を入れるメリット</h2>
+      <div class="explain-grid">
+        <div class="explain-card">
+          <h3>💰 月々の返済額が下がる</h3>
+          <p>
+            頭金を入れると借入額が減るため毎月の返済額が下がります。
+            4,000万円の物件で頭金800万円（20%）を用意すると借入額は3,200万円になります。
+            金利1.5%・35年返済で試算するとフルローンより月約2.4万円減少します。
+          </p>
+        </div>
+        <div class="explain-card">
+          <h3>📉 総利息が大幅に減る</h3>
+          <p>
+            頭金の効果は月返済額だけでなく総利息の削減にも現れます。
+            頭金100万円につき（金利1.5%・35年返済）総利息を<strong>約23〜26万円</strong>減らす効果があります。
+            頭金500万円なら150万円以上の利息節約になります。
+          </p>
+        </div>
+        <div class="explain-card">
+          <h3>🏦 借入審査が通りやすくなる</h3>
+          <p>
+            頭金が多いほど返済比率（年収に占める年間返済額の割合）が下がり
+            金融機関の審査において有利になります。
+            フラット35では頭金10%以上で金利が優遇される仕組みもあります。
+          </p>
+        </div>
+        <div class="explain-card">
+          <h3>⚠️ 頭金のデメリットも理解する</h3>
+          <p>
+            頭金を多く入れすぎると手元の現金が減ります。
+            住宅購入後は修繕費・引越し費用・家具家電など想定外の出費が発生することがあります。
+            一般的には引渡し後に生活費6ヶ月分の現金を手元に残すことを推奨します。
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="explain mt-48">
+      <h2 class="section-title">頭金の目安</h2>
+      <div class="explain-grid">
+        <div class="explain-card">
+          <h3>🎯 物件価格の10〜20%が一般的</h3>
+          <p>
+            日本では物件価格の10〜20%を頭金として用意するのが一般的です。
+            フラット35では頭金10%以上で金利優遇を受けられます。
+            また物件価格の5〜10%程度が<strong>諸費用</strong>（仲介手数料・登記費用・不動産取得税など）として
+            別途かかるため、頭金とは別に現金を確保する必要があります。
+          </p>
+        </div>
+        <div class="explain-card">
+          <h3>💡 頭金0円のフルローンも選択肢</h3>
+          <p>
+            頭金を用意するよりも手元現金を温存し投資に回すほうが有利な場合もあります。
+            特に住宅ローン金利が低い現在では運用利回りが金利を上回るケースも考えられます。
+            ただし変動金利のリスクと手元資金のバランスを慎重に検討してください。
+          </p>
+        </div>
+        <div class="explain-card">
+          <h3>📊 平均的な頭金額は？</h3>
+          <p>
+            国土交通省の調査によると住宅購入時の自己資金比率の平均は物件価格の20〜30%程度ですが
+            30代以下では10%未満のケースも多く見られます。
+            重要なのは平均ではなく、自分のライフプランや家計状況に合った金額を選ぶことです。
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="explain mt-48">
+      <h2 class="section-title">頭金と住宅ローンの関係</h2>
+      <div class="explain-grid">
+        <div class="explain-card">
+          <h3>🔗 頭金が多いほど借入額が減る</h3>
+          <p>
+            住宅ローンの借入額＝物件価格−頭金です。
+            借入額が減ると毎月の返済額も下がり、返済期間中の利息総額も少なくなります。
+            本ツールで頭金スライダーを動かして各条件での変化をリアルタイムで確認してみてください。
+          </p>
+        </div>
+        <div class="explain-card">
+          <h3>🏠 諸費用は頭金とは別に用意する</h3>
+          <p>
+            住宅購入には物件価格のほかに諸費用がかかります。
+            新築で物件価格の3〜5%、中古で5〜7%程度が目安です。
+            主な諸費用は仲介手数料・登記費用・住宅ローン手数料・火災保険料・不動産取得税などです。
+          </p>
+        </div>
+        <div class="explain-card">
+          <h3>📅 頭金の準備時期について</h3>
+          <p>
+            住宅購入の3〜5年前から頭金を計画的に積み立てるのが理想です。
+            積立の方法としては定期預金・財形住宅貯蓄・積立NISAなどが一般的です。
+            ただし積立NISAで運用している場合、相場下落時に売却せざるを得ないリスクも考慮が必要です。
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Related tools ── -->
+    <section class="related-section mt-48">
+      <h2 class="section-title">関連ツール</h2>
+      <div class="related-grid">
+        <a href="/calculators/mortgage" class="related-card">
+          <div class="related-icon">🏦</div>
+          <div class="related-title">住宅ローン返済シミュレーター</div>
+          <p class="related-desc">借入額・金利・返済年数から毎月返済額・返済負担率を詳細計算</p>
+          <span class="related-arrow">使ってみる →</span>
+        </a>
+        <a href="/calculators/price-check" class="related-card">
+          <div class="related-icon">🔍</div>
+          <div class="related-title">不動産価格妥当性チェッカー</div>
+          <p class="related-desc">物件価格が地域相場と比べて割安・割高かを即判定</p>
+          <span class="related-arrow">使ってみる →</span>
+        </a>
+        <a href="/calculators/cash-flow" class="related-card">
+          <div class="related-icon">💰</div>
+          <div class="related-title">キャッシュフローシミュレーター</div>
+          <p class="related-desc">年次CF推移・黒字転換年・自己資金回収年を長期試算</p>
+          <span class="related-arrow">使ってみる →</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- ── FAQ ── -->
+    <section class="faq-section mt-48">
+      <h2 class="section-title">よくある質問</h2>
+      <div class="faq-list">
+        <details class="faq-item">
+          <summary class="faq-q">頭金はいくら必要ですか？</summary>
+          <div class="faq-a">
+            <p>
+              一般的に物件価格の<strong>10〜20%</strong>が目安とされています。
+              フラット35（住宅金融支援機構）では頭金10%以上で金利が優遇されます。
+              また物件価格とは別に諸費用（新築で3〜5%、中古で5〜7%）が必要です。
+              手元に生活費6ヶ月分を残すことを前提に計画することが重要です。
+            </p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary class="faq-q">頭金なしで住宅ローンは組めますか？</summary>
+          <div class="faq-a">
+            <p>フルローン（頭金0円）でも住宅ローンを組める金融機関はあります。ただし以下の点に注意が必要です。</p>
+            <ul style="margin-top: 8px; padding-left: 1.2em; font-size: 0.82rem; line-height: 1.8; color: var(--c-text-muted);">
+              <li>諸費用（物件価格の3〜7%）は別途現金で用意が必要な場合が多い</li>
+              <li>金融機関によっては金利が高くなる場合がある</li>
+              <li>借入額が増えるため審査が厳しくなる場合がある</li>
+              <li>総返済額・総利息が大幅に増える</li>
+            </ul>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary class="faq-q">頭金を入れると利息はどれくらい減りますか？</summary>
+          <div class="faq-a">
+            <p>
+              金利1.5%・35年返済の場合、頭金100万円につき総利息はおよそ
+              <strong>23〜26万円</strong>減少します。
+              頭金500万円なら約120〜130万円の利息削減効果があります。
+              本ツールの「頭金別シミュレーション」欄で、ご自身の条件での金額をご確認ください。
+            </p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary class="faq-q">住宅ローンの頭金平均はいくらですか？</summary>
+          <div class="faq-a">
+            <p>
+              国土交通省の住宅市場動向調査によると、住宅購入時の自己資金比率の平均は
+              物件価格の20〜30%程度です。ただし30代以下の若い世代では10%未満のケースも多く、
+              収入・貯蓄・ライフプランによって大きく異なります。
+              大切なのは平均値ではなく、ご自身の家計に無理のない金額を選ぶことです。
+            </p>
+          </div>
+        </details>
+      </div>
+    </section>
+
+  </div>
+
+  <Footer slot="footer" />
+</BaseLayout>
+
+<style>
+/* ── Layout ── */
+.calc-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  align-items: start;
+}
+@media (max-width: 768px) { .calc-layout { grid-template-columns: 1fr; } }
+
+/* ── Card ── */
+.card {
+  background: var(--c-bg-card);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  box-shadow: var(--shadow-sm);
+}
+.card-heading { font-size: 1rem; font-weight: 700; color: var(--c-primary); margin-bottom: 20px; }
+
+/* ── Field group ── */
+.group-label {
+  font-size: 0.72rem; font-weight: 700; color: var(--c-text-muted);
+  text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 12px;
+}
+.field-group { margin-bottom: 16px; }
+.field-label { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px; }
+.field-label label { font-size: 0.875rem; font-weight: 600; color: var(--c-text); }
+.field-label-text { font-size: 0.875rem; font-weight: 600; color: var(--c-text); margin-bottom: 8px; }
+.field-display { font-size: 0.875rem; font-weight: 700; color: var(--c-primary); white-space: nowrap; }
+.field-hint { font-size: 0.72rem; color: var(--c-text-muted); margin-top: 3px; line-height: 1.5; }
+.divider { border: none; border-top: 1px solid var(--c-border); margin: 18px 0 14px; }
+
+/* ── Range slider ── */
+.range-slider {
+  width: 100%; height: 20px;
+  -webkit-appearance: none; appearance: none;
+  background: linear-gradient(to right, var(--c-primary) var(--pct, 0%), var(--c-border) var(--pct, 0%));
+  border-radius: 2px; outline: none; cursor: pointer; padding: 0; margin: 0 0 6px; display: block;
+}
+.range-slider::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 22px; height: 22px; border-radius: 50%;
+  background: var(--c-primary); box-shadow: 0 1px 4px rgba(0,0,0,0.25); transition: transform 0.1s, background 0.1s;
+}
+.range-slider::-webkit-slider-thumb:hover,
+.range-slider:active::-webkit-slider-thumb { background: var(--c-primary-hover); transform: scale(1.15); }
+.range-slider::-moz-range-thumb {
+  width: 22px; height: 22px; border-radius: 50%; background: var(--c-primary); border: none;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+}
+
+/* ── Number input ── */
+.field-input {
+  width: 100%; padding: 7px 10px; border: 1px solid var(--c-border);
+  border-radius: var(--radius-sm); font-size: 0.875rem; font-family: var(--font);
+  color: var(--c-text); background: var(--c-bg); transition: border-color 0.15s;
+  -moz-appearance: textfield;
+}
+.field-input::-webkit-outer-spin-button,
+.field-input::-webkit-inner-spin-button { -webkit-appearance: none; }
+.field-input:focus { outline: none; border-color: var(--c-primary); box-shadow: 0 0 0 2px rgba(26,74,58,0.1); }
+
+/* ── Borrow display ── */
+.borrow-display {
+  display: flex; justify-content: space-between; align-items: center;
+  background: rgba(26,74,58,0.06); border: 1px solid rgba(26,74,58,0.18);
+  border-radius: var(--radius-sm); padding: 10px 14px; margin-bottom: 4px;
+}
+.borrow-label { font-size: 0.8rem; color: var(--c-text-muted); font-weight: 600; }
+.borrow-value { font-size: 1rem; font-weight: 700; color: var(--c-primary); }
+
+/* ── Repay toggle ── */
+.repay-toggle { display: flex; gap: 8px; }
+.repay-option {
+  display: flex; align-items: center; gap: 6px; cursor: pointer;
+  padding: 8px 14px; border: 1px solid var(--c-border); border-radius: var(--radius-sm);
+  font-size: 0.82rem; font-weight: 600; color: var(--c-text-muted);
+  transition: border-color 0.15s, background 0.15s, color 0.15s; flex: 1; justify-content: center;
+}
+.repay-option:has(input:checked) { border-color: var(--c-primary); background: rgba(26,74,58,0.06); color: var(--c-primary); }
+.repay-option input { display: none; }
+
+/* ── Sample badge ── */
+.sample-badge {
+  display: flex; align-items: center; gap: 6px;
+  background: rgba(201,148,58,0.10); border: 1px solid var(--c-accent);
+  color: var(--c-warning); font-size: 0.75rem; font-weight: 600;
+  padding: 7px 12px; border-radius: var(--radius-sm); margin-bottom: 14px; line-height: 1.4;
+}
+
+/* ── Error ── */
+.error-msg {
+  background: rgba(192,57,43,0.08); border: 1px solid var(--c-danger);
+  border-radius: var(--radius-sm); color: var(--c-danger);
+  font-size: 0.82rem; padding: 10px 12px; margin-bottom: 12px;
+}
+
+/* ── Hero metrics ── */
+.hero-metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+@media (max-width: 480px) { .hero-metrics { grid-template-columns: 1fr; } }
+.metric-box { border: 2px solid var(--c-border); border-radius: var(--radius-md); padding: 14px; text-align: center; }
+.primary-box { border-color: var(--c-primary); background: rgba(26,74,58,0.04); }
+.metric-label { font-size: 0.7rem; font-weight: 700; color: var(--c-text-muted); margin-bottom: 6px; }
+.metric-value { font-size: 1.6rem; font-weight: 700; color: var(--c-primary); line-height: 1; margin-bottom: 4px; }
+.metric-value.sm { font-size: 1.2rem; }
+
+/* ── Sub metrics ── */
+.sub-metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+.sub-metric { background: var(--c-bg); border: 1px solid var(--c-border); border-radius: var(--radius-sm); padding: 10px 12px; }
+.sub-label { font-size: 0.68rem; color: var(--c-text-muted); font-weight: 600; margin-bottom: 2px; }
+.sub-value { font-size: 0.875rem; font-weight: 700; color: var(--c-text); }
+
+/* ── Info row ── */
+.info-row {
+  display: flex; justify-content: space-between; align-items: center;
+  background: rgba(201,148,58,0.06); border: 1px solid rgba(201,148,58,0.25);
+  border-radius: var(--radius-sm); padding: 8px 12px; margin-bottom: 10px; font-size: 0.82rem;
+}
+.info-row-label { color: var(--c-text-muted); font-weight: 600; }
+.info-row-value { font-weight: 700; color: var(--c-text); }
+
+/* ── Section label ── */
+.section-label {
+  font-size: 0.72rem; font-weight: 700; color: var(--c-text-muted);
+  text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px;
+}
+.mt-16 { margin-top: 16px; }
+
+/* ── Diff box ── */
+.diff-box {
+  background: rgba(45,122,79,0.06);
+  border: 1px solid rgba(45,122,79,0.25);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  margin-bottom: 10px;
+}
+.diff-title { font-size: 0.85rem; font-weight: 700; color: var(--c-primary); margin-bottom: 10px; }
+.diff-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.diff-item { display: flex; flex-direction: column; gap: 2px; }
+.diff-label { font-size: 0.68rem; color: var(--c-text-muted); font-weight: 600; }
+.diff-value { font-size: 0.95rem; font-weight: 700; }
+.diff-value.green { color: var(--c-success); }
+
+/* ── Scenario table ── */
+.scenario-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-sm);
+  margin-bottom: 12px;
+}
+.scenario-table {
+  width: 100%; border-collapse: collapse; font-size: 0.78rem; min-width: 400px;
+}
+.scenario-table th {
+  padding: 7px 8px; background: var(--c-bg); font-weight: 700; color: var(--c-text-muted);
+  font-size: 0.68rem; text-align: right; border-bottom: 1px solid var(--c-border); white-space: nowrap;
+}
+.scenario-table th:first-child { text-align: left; }
+.scenario-table td {
+  padding: 7px 8px; text-align: right; border-bottom: 1px solid var(--c-border);
+  font-weight: 600; color: var(--c-text);
+}
+.scenario-table td:first-child { text-align: left; }
+.scenario-table tr:last-child td { border-bottom: none; }
+.row-current { background: rgba(26,74,58,0.06); }
+.row-current td { color: var(--c-primary); font-weight: 700; }
+.diff-save { color: var(--c-success); font-weight: 700; }
+.diff-zero { color: var(--c-text-muted); }
+
+/* ── Charts ── */
+.charts-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+@media (max-width: 480px) { .charts-wrap { grid-template-columns: 1fr; } }
+.chart-box {
+  background: var(--c-bg); border: 1px solid var(--c-border);
+  border-radius: var(--radius-sm); padding: 10px 8px 6px;
+}
+.chart-title { font-size: 0.68rem; font-weight: 700; color: var(--c-text-muted); margin-bottom: 6px; text-align: center; }
+.bar-chart { width: 100%; height: auto; display: block; }
+
+/* ── Result disclaimer ── */
+.result-disclaimer { font-size: 0.72rem; color: var(--c-text-muted); line-height: 1.6; }
+
+/* ── Related ── */
+.related-section { max-width: 860px; }
+.related-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 14px; margin-top: 16px;
+}
+.related-card {
+  display: block; background: var(--c-bg-card); border: 1px solid var(--c-border);
+  border-radius: var(--radius-md); padding: 18px; text-decoration: none; color: var(--c-text);
+  transition: box-shadow 0.2s, transform 0.2s, border-color 0.2s; box-shadow: var(--shadow-sm);
+}
+.related-card:hover {
+  box-shadow: var(--shadow-md); transform: translateY(-2px);
+  border-color: var(--c-primary); text-decoration: none;
+}
+.related-icon { font-size: 1.4rem; margin-bottom: 6px; }
+.related-title { font-size: 0.9rem; font-weight: 700; color: var(--c-primary); margin-bottom: 4px; }
+.related-desc { font-size: 0.78rem; color: var(--c-text-muted); line-height: 1.6; margin-bottom: 8px; }
+.related-arrow { font-size: 0.78rem; color: var(--c-primary); font-weight: 600; }
+
+/* ── Explanation ── */
+.explain-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px; margin-top: 16px;
+}
+.explain-card { background: var(--c-bg-card); border: 1px solid var(--c-border); border-radius: var(--radius-md); padding: 20px; }
+.explain-card h3 { font-size: 0.95rem; font-weight: 700; color: var(--c-primary); margin-bottom: 10px; }
+.explain-card p, .explain-card ul { font-size: 0.82rem; color: var(--c-text-muted); line-height: 1.8; }
+.explain-card ul { padding-left: 1.2em; }
+.explain-card li { margin-bottom: 4px; }
+.explain-card strong { color: var(--c-text); }
+
+/* ── FAQ ── */
+.faq-section { max-width: 760px; }
+.faq-list { margin-top: 16px; display: flex; flex-direction: column; gap: 8px; }
+.faq-item { background: var(--c-bg-card); border: 1px solid var(--c-border); border-radius: var(--radius-md); overflow: hidden; }
+.faq-q {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 14px 18px; font-size: 0.9rem; font-weight: 700; color: var(--c-primary);
+  cursor: pointer; list-style: none; gap: 12px;
+}
+.faq-q::-webkit-details-marker { display: none; }
+.faq-q::after { content: '＋'; font-size: 1.1rem; color: var(--c-primary); flex-shrink: 0; transition: transform 0.2s; }
+.faq-item[open] .faq-q::after { transform: rotate(45deg); }
+.faq-a { padding: 0 18px 16px; font-size: 0.82rem; color: var(--c-text-muted); line-height: 1.8; }
+.faq-a p + p { margin-top: 8px; }
+</style>
+
+<script>
+/* ─── Defaults ─── */
+const D = { price: 4000, down: 800, rate: 1.5, years: 35, bonus: 0, fee: 0 };
+const SCENARIO_PCTS = [0, 5, 10, 20];
+
+/* ─── Helpers ─── */
+function fmt(v: number, d = 0): string {
+  return v.toLocaleString('ja-JP', { minimumFractionDigits: d, maximumFractionDigits: d });
+}
+function fmtYen(v: number): string {
+  return Math.round(v).toLocaleString('ja-JP') + ' 円';
+}
+function getNum(id: string, fb = 0): number {
+  const el = document.getElementById(id) as HTMLInputElement | null;
+  if (!el) return fb;
+  const v = parseFloat(el.value);
+  return isNaN(v) ? fb : v;
+}
+function setText(id: string, t: string) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = t;
+}
+function clamp(v: number, a: number, b: number): number {
+  return Math.max(a, Math.min(b, v));
+}
+function updateFill(s: HTMLInputElement) {
+  const mn = parseFloat(s.min) || 0, mx = parseFloat(s.max) || 100, v = parseFloat(s.value) || 0;
+  s.style.setProperty('--pct', `${clamp((v - mn) / (mx - mn) * 100, 0, 100)}%`);
+}
+function updateDisplay(id: string, val: string) {
+  const el = document.getElementById(`${id}Display`);
+  if (el) el.textContent = val;
+}
+function hideSampleBadge() {
+  const b = document.getElementById('sampleBadge');
+  if (b) b.hidden = true;
+}
+
+/* ─── Loan Calc ─── */
+function pmt(P: number, ratePct: number, years: number): number {
+  if (P <= 0) return 0;
+  const n = years * 12;
+  if (ratePct === 0) return P / n;
+  const r = ratePct / 100 / 12;
+  const pw = Math.pow(1 + r, n);
+  return P * r * pw / (pw - 1);
+}
+
+function calcEP(P: number, ratePct: number, years: number) {
+  const m = pmt(P, ratePct, years);
+  const total = m * years * 12;
+  return { monthly: m, total, interest: Math.max(0, total - P) };
+}
+
+function calcEPR(P: number, ratePct: number, years: number) {
+  const n = years * 12, r = ratePct / 100 / 12;
+  const mp = P / n;
+  const first = mp + P * r;
+  const last  = mp + mp * r;
+  const interest = ratePct === 0 ? 0 : P * r * (n + 1) / 2;
+  return { firstMonthly: first, lastMonthly: last, total: P + interest, interest };
+}
+
+/* ─── Scenario calc ─── */
+function calcScenario(price: number, pct: number, rate: number, years: number, isEP: boolean) {
+  const down = price * pct / 100;
+  const borrow = Math.max(0, price - down);
+  if (borrow <= 0) return { pct, down, borrow: 0, monthly: 0, totalInt: 0, totalPay: 0 };
+  const ep  = calcEP(borrow, rate, years);
+  const epr = calcEPR(borrow, rate, years);
+  return {
+    pct, down, borrow,
+    monthly:  isEP ? ep.monthly : epr.firstMonthly,
+    totalInt: isEP ? ep.interest : epr.interest,
+    totalPay: isEP ? ep.total   : epr.total,
+  };
+}
+
+/* ─── SVG Bar Chart ─── */
+function drawBarChart(svgId: string, data: { label: string; subLabel: string; value: number; valueLabel: string; current: boolean }[]) {
+  const svg = document.getElementById(svgId);
+  if (!svg) return;
+  while (svg.firstChild) svg.removeChild(svg.firstChild);
+
+  const W = 280, H = 160, padT = 28, padB = 38, padL = 8, padR = 8;
+  const chartH = H - padT - padB;
+  const chartW = W - padL - padR;
+  const n = data.length;
+  const slotW = chartW / n;
+  const barW = Math.min(52, slotW * 0.62);
+  const maxVal = Math.max(...data.map(d => d.value), 0.01);
+  const ns = 'http://www.w3.org/2000/svg';
+
+  data.forEach((d, i) => {
+    const barH = Math.max((d.value / maxVal) * chartH, d.value > 0 ? 2 : 0);
+    const x = padL + i * slotW + (slotW - barW) / 2;
+    const y = padT + chartH - barH;
+    const color = d.current ? '#1a4a3a' : '#c9943a';
+
+    // Bar
+    const rect = document.createElementNS(ns, 'rect');
+    rect.setAttribute('x', String(x));
+    rect.setAttribute('y', String(y));
+    rect.setAttribute('width', String(barW));
+    rect.setAttribute('height', String(barH));
+    rect.setAttribute('rx', '3');
+    rect.setAttribute('fill', color);
+    rect.setAttribute('opacity', d.current ? '1' : '0.75');
+    svg.appendChild(rect);
+
+    // Value above bar
+    if (d.value > 0) {
+      const vt = document.createElementNS(ns, 'text');
+      vt.setAttribute('x', String(x + barW / 2));
+      vt.setAttribute('y', String(y - 4));
+      vt.setAttribute('text-anchor', 'middle');
+      vt.setAttribute('font-size', '9');
+      vt.setAttribute('fill', d.current ? '#1a4a3a' : '#444');
+      vt.setAttribute('font-weight', d.current ? '700' : '400');
+      vt.textContent = d.valueLabel;
+      svg.appendChild(vt);
+    }
+
+    // Label line 1 (%)
+    const lt = document.createElementNS(ns, 'text');
+    lt.setAttribute('x', String(x + barW / 2));
+    lt.setAttribute('y', String(padT + chartH + 14));
+    lt.setAttribute('text-anchor', 'middle');
+    lt.setAttribute('font-size', '9');
+    lt.setAttribute('fill', d.current ? '#1a4a3a' : '#6b6b6b');
+    lt.setAttribute('font-weight', d.current ? '700' : '400');
+    lt.textContent = d.label;
+    svg.appendChild(lt);
+
+    // Label line 2 (万円)
+    const ls = document.createElementNS(ns, 'text');
+    ls.setAttribute('x', String(x + barW / 2));
+    ls.setAttribute('y', String(padT + chartH + 26));
+    ls.setAttribute('text-anchor', 'middle');
+    ls.setAttribute('font-size', '8');
+    ls.setAttribute('fill', '#9b9b9b');
+    ls.textContent = d.subLabel;
+    svg.appendChild(ls);
+  });
+}
+
+/* ─── Main Calculate ─── */
+function calculate() {
+  const price = getNum('price', D.price);
+  const down  = getNum('down',  D.down);
+  const borrow = Math.max(0, price - down);
+  const rate  = getNum('rate',  D.rate);
+  const years = getNum('years', D.years);
+  const isEP  = (document.querySelector('input[name="repayType"]:checked') as HTMLInputElement | null)?.value !== 'equal-principal';
+  const bonus = getNum('bonus', D.bonus);
+  const fee   = getNum('fee',   D.fee);
+
+  // Update borrow + % displays
+  setText('borrowDisplay', fmt(borrow) + ' 万円');
+  const downPct = price > 0 ? (down / price * 100) : 0;
+  const pctEl = document.getElementById('downPctDisplay');
+  if (pctEl) pctEl.textContent = downPct.toFixed(1);
+
+  // Validate
+  const errEl = document.getElementById('errorMsg');
+  if (price <= 0 || rate < 0 || years < 1) {
+    if (errEl) { errEl.textContent = '物件価格・年利・返済年数を正しく入力してください。'; errEl.hidden = false; }
+    return;
+  }
+  if (errEl) errEl.hidden = true;
+
+  // Current scenario
+  let monthly = 0, totalInt = 0, totalPay = 0;
+  if (borrow > 0) {
+    const ep  = calcEP(borrow, rate, years);
+    const epr = calcEPR(borrow, rate, years);
+    monthly  = isEP ? ep.monthly  : epr.firstMonthly;
+    totalInt = isEP ? ep.interest : epr.interest;
+    totalPay = isEP ? ep.total    : epr.total;
+  }
+  const annualPay = monthly * 12 + bonus * 2;
+  const withFee   = monthly + fee;
+
+  setText('rMonthly',  fmt(monthly, 2) + ' 万円');
+  setText('rBorrow',   fmt(borrow)  + ' 万円');
+  setText('rTotal',    fmt(totalPay, 1) + ' 万円');
+  setText('rInterest', fmt(totalInt, 1) + ' 万円');
+  setText('rAnnual',   fmt(annualPay, 2) + ' 万円');
+  setText('rWithFee',  fmt(withFee, 2) + ' 万円');
+
+  const bonusRow = document.getElementById('bonusRow');
+  if (bonusRow) bonusRow.hidden = bonus <= 0;
+  setText('rBonusMonthly', fmt(monthly + bonus, 2) + ' 万円');
+
+  // 4 fixed scenarios
+  const scenarios = SCENARIO_PCTS.map(p => calcScenario(price, p, rate, years, isEP));
+  const base = scenarios[0]; // 頭金0%
+
+  // Diff box vs 頭金0%
+  const diffBox = document.getElementById('diffBox');
+  if (down > 0 && borrow < price) {
+    if (diffBox) diffBox.hidden = false;
+    const mDiff = base.monthly - monthly;
+    const iDiff = base.totalInt - totalInt;
+    setText('diffTitle', `頭金 ${fmt(down)} 万円（${downPct.toFixed(1)}%）を入れると…`);
+    setText('diffMonthly',  mDiff >= 0 ? `月 ${fmtYen(mDiff * 10000)} 削減` : `月 ${fmtYen(-mDiff * 10000)} 増加`);
+    setText('diffInterest', iDiff >= 0 ? `総利息 ${fmt(iDiff, 1)} 万円 削減` : `総利息 ${fmt(-iDiff, 1)} 万円 増加`);
+  } else {
+    if (diffBox) diffBox.hidden = true;
+  }
+
+  // Scenario table
+  const tbody = document.getElementById('scenarioBody');
+  if (tbody) {
+    tbody.innerHTML = scenarios.map(s => {
+      const isCurrent = Math.abs(downPct - s.pct) < 0.6;
+      const mDiff = s.monthly - base.monthly;
+      const diffStr = s.pct === 0
+        ? '<span class="diff-zero">—</span>'
+        : `<span class="diff-save">▼ ${fmtYen(-mDiff * 10000)}</span>`;
+      return `<tr class="${isCurrent ? 'row-current' : ''}">
+        <td>${fmt(Math.round(s.down))} 万円</td>
+        <td>${s.pct}%</td>
+        <td>${fmt(Math.round(s.borrow))} 万円</td>
+        <td>${fmt(s.monthly, 2)} 万円</td>
+        <td>${fmt(s.totalInt, 1)} 万円</td>
+        <td>${diffStr}</td>
+      </tr>`;
+    }).join('');
+  }
+
+  // Charts
+  const monthlyData = scenarios.map(s => ({
+    label:      `頭金${s.pct}%`,
+    subLabel:   `${fmt(Math.round(s.down))}万円`,
+    value:      s.monthly,
+    valueLabel: `${fmt(s.monthly, 1)}万`,
+    current:    Math.abs(downPct - s.pct) < 0.6,
+  }));
+  drawBarChart('chartMonthly', monthlyData);
+
+  const interestData = scenarios.map(s => ({
+    label:      `頭金${s.pct}%`,
+    subLabel:   `${fmt(Math.round(s.down))}万円`,
+    value:      s.totalInt,
+    valueLabel: `${fmt(s.totalInt, 0)}万`,
+    current:    Math.abs(downPct - s.pct) < 0.6,
+  }));
+  drawBarChart('chartInterest', interestData);
+}
+
+/* ─── Slider sync ─── */
+function syncSliderToNum(slider: HTMLInputElement) {
+  const targetId = slider.dataset.target;
+  if (!targetId) return;
+  const numEl = document.getElementById(targetId) as HTMLInputElement | null;
+  if (!numEl) return;
+  numEl.value = slider.value;
+  updateFill(slider);
+  updateDisplay(targetId, slider.value);
+}
+
+function syncNumToSlider(numEl: HTMLInputElement) {
+  const slider = document.querySelector<HTMLInputElement>(`input.range-slider[data-target="${numEl.id}"]`);
+  if (!slider) return;
+  const mn = parseFloat(slider.min) || 0, mx = parseFloat(slider.max) || 100, step = parseFloat(slider.step) || 1;
+  let v = parseFloat(numEl.value);
+  if (isNaN(v) || v < mn) v = mn;
+  if (v > mx) v = mx;
+  v = Math.round(v / step) * step;
+  numEl.value = String(v); slider.value = String(v);
+  updateFill(slider);
+  updateDisplay(numEl.id, numEl.value);
+}
+
+function updateDownMax() {
+  const price = getNum('price', D.price);
+  const downSlider = document.querySelector<HTMLInputElement>('input.range-slider[data-target="down"]');
+  const downNum    = document.getElementById('down') as HTMLInputElement | null;
+  if (!downSlider || !downNum) return;
+  downSlider.max = String(price); downNum.max = String(price);
+  const curDown = getNum('down', 0);
+  if (curDown > price) {
+    downSlider.value = String(price); downNum.value = String(price);
+    updateDisplay('down', String(price));
+  }
+  updateFill(downSlider);
+}
+
+/* ─── Init ─── */
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll<HTMLInputElement>('input.range-slider').forEach(slider => {
+    updateFill(slider);
+    slider.addEventListener('input', () => {
+      syncSliderToNum(slider);
+      if (slider.dataset.target === 'price') updateDownMax();
+      hideSampleBadge();
+      calculate();
+    });
+  });
+
+  document.querySelectorAll<HTMLInputElement>('input.field-input').forEach(numEl => {
+    numEl.addEventListener('keydown', (e: KeyboardEvent) => {
+      if (['-', 'e', 'E', '+'].includes(e.key)) e.preventDefault();
+    });
+    numEl.addEventListener('change', () => {
+      syncNumToSlider(numEl);
+      if (numEl.id === 'price') updateDownMax();
+      hideSampleBadge();
+      calculate();
+    });
+  });
+
+  document.querySelectorAll<HTMLInputElement>('input[name="repayType"]').forEach(radio => {
+    radio.addEventListener('change', () => { hideSampleBadge(); calculate(); });
+  });
+
+  calculate();
+});
+</script>
