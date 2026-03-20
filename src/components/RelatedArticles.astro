@@ -1,0 +1,74 @@
+---
+export interface ArticleLink {
+  href: string;
+  tag: string;
+  title: string;
+  desc: string;
+}
+
+interface Props {
+  articles: ArticleLink[];
+  heading?: string;
+  subheading?: string;
+}
+
+const { articles, heading = '関連記事', subheading } = Astro.props;
+---
+
+<section class="ra-section">
+  <h2 class="section-title">{heading}</h2>
+  {subheading && <p class="section-sub">{subheading}</p>}
+  <div class="ra-grid">
+    {articles.map((article) => (
+      <a href={article.href} class="ra-card">
+        <span class="ra-tag">{article.tag}</span>
+        <div class="ra-title">{article.title}</div>
+        <p class="ra-desc">{article.desc}</p>
+        <span class="ra-arrow">記事を読む →</span>
+      </a>
+    ))}
+  </div>
+</section>
+
+<style>
+.ra-section { margin-top: 56px; padding-bottom: 80px; }
+.ra-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 14px;
+  margin-top: 16px;
+}
+.ra-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background: #fff;
+  border: 1px solid var(--c-border);
+  border-left: 3px solid var(--c-accent);
+  border-radius: var(--radius-md);
+  padding: 18px 20px;
+  text-decoration: none;
+  color: var(--c-text);
+  transition: box-shadow 0.2s, transform 0.15s;
+  box-shadow: var(--shadow-sm);
+}
+.ra-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+  text-decoration: none;
+}
+.ra-tag {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--c-accent);
+}
+.ra-title { font-size: 0.88rem; font-weight: 700; color: var(--c-primary); line-height: 1.45; }
+.ra-desc { font-size: 0.78rem; color: var(--c-text-muted); line-height: 1.55; flex: 1; }
+.ra-arrow { font-size: 0.78rem; color: var(--c-primary); font-weight: 600; margin-top: 4px; }
+
+@media (max-width: 480px) {
+  .ra-grid { grid-template-columns: 1fr; }
+}
+</style>

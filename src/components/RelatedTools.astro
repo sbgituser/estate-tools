@@ -1,0 +1,71 @@
+---
+export interface ToolLink {
+  href: string;
+  icon: string;
+  title: string;
+  desc: string;
+}
+
+interface Props {
+  tools: ToolLink[];
+  heading?: string;
+  subheading?: string;
+}
+
+const { tools, heading = '関連ツール', subheading } = Astro.props;
+---
+
+<section class="rt-section">
+  <h2 class="section-title">{heading}</h2>
+  {subheading && <p class="section-sub">{subheading}</p>}
+  <div class="rt-grid">
+    {tools.map((tool) => (
+      <a href={tool.href} class="rt-card">
+        <span class="rt-icon">{tool.icon}</span>
+        <div class="rt-body">
+          <div class="rt-title">{tool.title}</div>
+          <p class="rt-desc">{tool.desc}</p>
+        </div>
+        <span class="rt-arrow">→</span>
+      </a>
+    ))}
+  </div>
+</section>
+
+<style>
+.rt-section { margin-top: 56px; }
+.rt-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+.rt-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: #fff;
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-md);
+  padding: 16px 18px;
+  text-decoration: none;
+  color: var(--c-text);
+  transition: box-shadow 0.2s, border-color 0.2s, transform 0.15s;
+  box-shadow: var(--shadow-sm);
+}
+.rt-card:hover {
+  box-shadow: var(--shadow-md);
+  border-color: var(--c-primary);
+  transform: translateY(-2px);
+  text-decoration: none;
+}
+.rt-icon { font-size: 1.75rem; flex-shrink: 0; line-height: 1; }
+.rt-body { flex: 1; min-width: 0; }
+.rt-title { font-size: 0.875rem; font-weight: 700; color: var(--c-primary); margin-bottom: 3px; }
+.rt-desc { font-size: 0.78rem; color: var(--c-text-muted); line-height: 1.5; }
+.rt-arrow { margin-left: 4px; font-size: 0.85rem; color: var(--c-primary); flex-shrink: 0; font-weight: 600; }
+
+@media (max-width: 480px) {
+  .rt-grid { grid-template-columns: 1fr; }
+}
+</style>
