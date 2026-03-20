@@ -2,6 +2,31 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
+import RelatedTools from '../../components/RelatedTools.astro';
+import RelatedArticles from '../../components/RelatedArticles.astro';
+
+const faqItems = [
+  {
+    q: 'ROIと利回りはどう違いますか？',
+    a: '利回り（表面・実質）は物件価格全体に対する収益率です。ROIは頭金＋諸費用という「実際に自分が出したお金」に対する収益率です。同じ物件でも頭金が少ない（レバレッジを効かせる）ほどROIは高くなります。利回りは物件の収益力、ROIは自己資金の効率を測る指標です。',
+  },
+  {
+    q: '不動産ROIの目安は何%ですか？',
+    a: '一般的にROI8〜15%程度が良好とされますが、借入比率によって大きく変わるため一概には言えません。フルローンに近い場合はROIが非常に高く見えますが、空室・修繕などのリスクに耐える自己資金の余裕も必要です。ROIの数値だけでなく、年間手残り額（CF）の絶対値も必ず確認してください。',
+  },
+  {
+    q: '自己資金が少ないほどROIは高くなりますか？',
+    a: 'その通りですが、注意が必要です。頭金を減らすと借入が増えローン返済額も増えるため、年間CFが減る可能性があります。またROIの「分母」が小さくなるので率としては上がりますが、CFがマイナスになればROIもマイナスです。自己資金とレバレッジのバランスをシミュレーターで複数パターン比較することをお勧めします。',
+  },
+  {
+    q: 'ROIが高い物件ほど良い投資ですか？',
+    a: '必ずしもそうではありません。ROIは高くても①空室リスクが高い立地、②修繕費が多い築古物件、③変動金利リスクが高い条件、④出口（売却）で価格が下がる物件などは総合的な収益が悪化します。ROIと同時に利回り・CF・立地・物件状態・出口戦略を総合的に判断することが重要です。',
+  },
+  {
+    q: 'ローンを使うとROIはどう変わりますか？',
+    a: 'ローンを使うと自己資金（分母）が小さくなるためROIは上がりやすくなります。ただし返済利息分だけ実質的な収益は下がります。金利が低く物件利回りが高い（スプレッドがプラス）場合はレバレッジが効きROIを高められますが、金利が物件利回りを上回るとCFはマイナスになります。このシミュレーターでローン条件を変えながら確認してみてください。',
+  },
+];
 
 const jsonLd = [
   {
@@ -16,23 +41,57 @@ const jsonLd = [
   },
   {
     '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: '不動産投資ROIの計算方法｜利回りとの違いも分かるシミュレーター付き',
+    url: 'https://estate.kuras-plus.com/calculators/roi',
+    description: '不動産投資ROIの計算方法を初心者向けに解説。利回りとの違い、自己資金ベースでの見方、注意点を整理しながらシミュレーターで試算できます。',
+    author: { '@type': 'Organization', name: '不動産ツールズ | kuras-plus' },
+    publisher: { '@type': 'Organization', name: '不動産ツールズ | kuras-plus', url: 'https://estate.kuras-plus.com' },
+  },
+  {
+    '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement: [
       { '@type': 'ListItem', position: 1, name: 'ホーム', item: 'https://estate.kuras-plus.com' },
-      { '@type': 'ListItem', position: 2, name: '不動産投資ROI計算ツール', item: 'https://estate.kuras-plus.com/calculators/roi' },
+      { '@type': 'ListItem', position: 2, name: 'ROI計算ツール', item: 'https://estate.kuras-plus.com/calculators/roi' },
     ],
   },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqItems.map(({ q, a }) => ({
+      '@type': 'Question',
+      name: q,
+      acceptedAnswer: { '@type': 'Answer', text: a },
+    })),
+  },
+];
+
+const relatedTools = [
+  { href: '/calculators/yield',              icon: '📊', title: '不動産利回り計算ツール',         desc: '表面・実質利回りをシンプルに確認' },
+  { href: '/calculators/cash-flow',          icon: '💰', title: 'CFシミュレーター',               desc: 'ローン返済後の年間手残りを長期試算' },
+  { href: '/calculators/repair-cost',        icon: '🔧', title: '修繕費シミュレーター',           desc: '築年数別の長期修繕コストを試算' },
+  { href: '/calculators/rent-vacancy-impact',icon: '📉', title: '家賃下落・空室率影響シミュレーター', desc: '2軸マトリクスで収益への影響を確認' },
+  { href: '/calculators/price-check',        icon: '🔍', title: '価格妥当性チェッカー',           desc: '購入価格が相場として適正かを確認' },
+  { href: '/calculators/down-payment',       icon: '💴', title: '頭金シミュレーター',             desc: '頭金の違いがCF・ROIに与える影響を比較' },
+];
+
+const relatedArticles = [
+  { href: '/articles/roi-vs-yield',           tag: 'ROI解説',   title: 'ROIと利回りの違い｜不動産投資2つの収益指標を徹底比較',  desc: '計算式・具体例でROIと利回りの使い分けを解説' },
+  { href: '/articles/cashflow-basics',        tag: 'CF解説',    title: '不動産投資のキャッシュフローとは｜計算方法と目安を解説', desc: '手残り収益の計算方法と目安、利回りとの違い' },
+  { href: '/articles/how-much-down-payment',  tag: '頭金',      title: '頭金はいくら必要か｜不動産投資の自己資金の目安と考え方', desc: '頭金の目安とROI・CFへの影響をわかりやすく解説' },
+  { href: '/articles/vacancy-rate',           tag: 'リスク管理', title: '空室率の目安と見込み方｜不動産投資リスク管理の基本',    desc: 'エリア別空室率の目安とシナリオ設定方法' },
 ];
 ---
 
 <BaseLayout
-  title="不動産投資ROI計算ツール"
-  description="頭金・諸費用・ローン返済を含めた実質ROI（投資収益率）を無料で即計算。表面利回りだけでは分からない、自己資金ベースの投資効率を把握できます。"
+  title="不動産投資ROIの計算方法｜利回りとの違いも分かるシミュレーター付き"
+  description="不動産投資ROIの計算方法を初心者向けに解説。利回りとの違い、自己資金ベースでの見方、注意点を整理しながらシミュレーターで試算できます。"
   jsonLd={jsonLd}
 >
   <Header slot="header" currentPath="/calculators/roi" />
 
-  <!-- Hero -->
+  <!-- ── Hero ── -->
   <section class="page-hero">
     <div class="container">
       <nav class="breadcrumb" aria-label="パンくずリスト">
@@ -40,17 +99,154 @@ const jsonLd = [
         <span>›</span>
         <span>ROI計算ツール</span>
       </nav>
-      <p class="hero-eyebrow">ROI Calculator</p>
-      <h1 class="hero-title">不動産投資ROI計算ツール</h1>
+      <p class="hero-eyebrow">ROI Calculator · 解説＋シミュレーター</p>
+      <h1 class="hero-title">不動産投資ROIの計算方法</h1>
       <p class="hero-desc">
-        頭金・諸費用・ローン返済まで考慮した<br />
-        自己資金ベースの投資収益率（ROI）を即時算出します。
+        利回りとの違い・自己資金ベースの見方を解説しながら、<br />
+        シミュレーターで実際の数値を即時確認できます。
       </p>
     </div>
   </section>
 
-  <!-- Calculator -->
-  <div class="container mt-48" style="padding-bottom: 80px;">
+  <!-- ── Article body ── -->
+  <div class="article-outer">
+    <div class="article-container">
+
+      <!-- Summary Box -->
+      <div class="summary-box">
+        <p class="sb-lead">この記事でわかること</p>
+        <ul class="sb-list">
+          <li>ROI（投資収益率）の定義と計算式</li>
+          <li>ROIと利回りの具体的な違い</li>
+          <li>自己資金・レバレッジとROIの関係</li>
+          <li>ROIだけで判断してはいけない理由</li>
+        </ul>
+      </div>
+
+      <!-- Section 1: ROIとは -->
+      <section class="art-section">
+        <h2 class="art-h2">ROI（投資収益率）とは何か</h2>
+        <p class="art-prose">
+          ROI（Return on Investment）とは、投資に使った自己資金に対してどれだけの収益を得られたかを示す指標です。
+          不動産投資では以下の式で計算します。
+        </p>
+        <div class="formula-block">
+          <div class="formula-main">ROI（%）＝ 年間手残り収益（CF） ÷ 投下自己資金 × 100</div>
+          <div class="formula-sub">
+            <span>年間手残り収益（CF）＝ 年間NOI − 年間ローン返済額</span>
+            <span>投下自己資金 ＝ 頭金 ＋ 購入時諸費用</span>
+          </div>
+        </div>
+        <p class="art-prose">
+          利回りはローン返済を考慮しませんが、ROIはローン返済後の実際の手残りを自己資金で割るため、
+          借入（レバレッジ）の効果を含んだ収益率を把握できます。
+        </p>
+      </section>
+
+      <!-- Section 2: ROIと利回りの違い -->
+      <section class="art-section">
+        <h2 class="art-h2">ROIと利回りの違い</h2>
+        <p class="art-prose">
+          3つの指標はそれぞれ「分母」が異なります。見ている観点が違うため、用途に応じて使い分けることが重要です。
+        </p>
+        <div class="compare-table-wrap">
+          <table class="compare-table">
+            <thead>
+              <tr>
+                <th></th>
+                <th>表面利回り</th>
+                <th>実質利回り</th>
+                <th class="highlight-col">ROI</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="row-label">分母</td>
+                <td>物件価格</td>
+                <td>物件価格＋諸費用</td>
+                <td class="highlight-col">頭金＋諸費用</td>
+              </tr>
+              <tr>
+                <td class="row-label">ローン返済</td>
+                <td>含まない</td>
+                <td>含まない</td>
+                <td class="highlight-col">含む</td>
+              </tr>
+              <tr>
+                <td class="row-label">レバレッジ反映</td>
+                <td>されない</td>
+                <td>されない</td>
+                <td class="highlight-col">される</td>
+              </tr>
+              <tr>
+                <td class="row-label">主な用途</td>
+                <td>物件の大まかな比較</td>
+                <td>物件収益力の評価</td>
+                <td class="highlight-col">自己資金効率の評価</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="art-prose">
+          例えば5,000万円の物件を頭金500万円（諸費用150万円）で購入し、年間CF100万円なら、<br />
+          ROI ＝ 100 ÷ 650 × 100 ≒ <strong>15.4%</strong>　←　自己資金に対してこれだけ効率よく稼いでいる
+        </p>
+      </section>
+
+      <!-- Section 3: ROIを見るメリット -->
+      <section class="art-section">
+        <h2 class="art-h2">ROIを見るメリット</h2>
+        <div class="merit-list">
+          <div class="merit-item">
+            <div class="merit-num">01</div>
+            <div class="merit-body">
+              <h3 class="merit-title">レバレッジ効果を数値で把握できる</h3>
+              <p class="merit-desc">
+                ローンを使うと少ない自己資金で大きな物件を運用できます。ROIはその効果を「自己資金ベースの収益率」として明示します。
+                利回りでは見えないこのレバレッジ効果を確認できる点がROI最大のメリットです。
+              </p>
+            </div>
+          </div>
+          <div class="merit-item">
+            <div class="merit-num">02</div>
+            <div class="merit-body">
+              <h3 class="merit-title">異なる資金調達方法を比較できる</h3>
+              <p class="merit-desc">
+                同じ物件でも「頭金20%」と「頭金30%」ではROIが変わります。
+                どの資金配分が自己資金を最も効率よく運用できるか、シミュレーターで複数パターンを試算して比較できます。
+              </p>
+            </div>
+          </div>
+          <div class="merit-item">
+            <div class="merit-num">03</div>
+            <div class="merit-body">
+              <h3 class="merit-title">他の投資との比較ができる</h3>
+              <p class="merit-desc">
+                ROIは不動産以外の投資（株式・債券など）とも共通の指標です。
+                「同じ自己資金を他の投資に回した場合と比べてどうか」という観点で判断する際にも使えます。
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CTA Banner -->
+      <div class="cta-banner">
+        <p class="cta-banner-text">
+          頭金・金利・空室率を変えるとROIがどう変わるか、<br class="sp-br" />
+          下のシミュレーターで実際に確認してみましょう。
+        </p>
+        <a href="#simulator" class="cta-banner-btn">シミュレーターを使う ↓</a>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── Calculator ── -->
+  <div class="container tool-section" id="simulator">
+    <h2 class="section-title tool-heading">🧮 ROIシミュレーター</h2>
+    <p class="tool-desc">各入力値を変更すると結果がリアルタイムで更新されます。</p>
+
     <div class="calc-layout">
 
       <!-- ── Inputs ── -->
@@ -302,83 +498,204 @@ const jsonLd = [
         </div>
       </section>
     </div>
+  </div>
 
-    <!-- ── Related tool ── -->
-    <section class="related-section mt-48">
-      <h2 class="section-title">関連ツール</h2>
-      <div class="related-grid">
-        <a href="/calculators/yield" class="related-card">
-          <div class="related-icon">📊</div>
-          <div class="related-title">不動産利回り計算ツール</div>
-          <p class="related-desc">表面・実質利回りをシンプルに確認したい場合はこちら</p>
-          <span class="related-arrow">使ってみる →</span>
-        </a>
-        <a href="/calculators/mortgage" class="related-card">
-          <div class="related-icon">🏦</div>
-          <div class="related-title">住宅ローン返済シミュレーター</div>
-          <p class="related-desc">毎月返済額・総返済額・返済負担率を即計算</p>
-          <span class="related-arrow">使ってみる →</span>
-        </a>
-        <a href="/calculators/fixed-asset-tax" class="related-card">
-          <div class="related-icon">🏛️</div>
-          <div class="related-title">固定資産税シミュレーター</div>
-          <p class="related-desc">年間固定費として計上すべき固定資産税・都市計画税の概算</p>
-          <span class="related-arrow">使ってみる →</span>
-        </a>
-      </div>
-    </section>
+  <!-- ── Post-tool article ── -->
+  <div class="article-outer">
+    <div class="article-container">
 
-    <!-- ── Explanation ── -->
-    <section class="explain mt-48">
-      <h2 class="section-title">ROIの基礎知識</h2>
-      <div class="explain-grid">
-        <div class="explain-card">
-          <h3>📌 ROIとは何か</h3>
-          <p>
-            ROI（Return on Investment）とは、投下した自己資金に対してどれだけの収益を得られたかを示す指標です。
-            不動産投資においては <strong>年間手残り収益 ÷ 投下自己資金 × 100（%）</strong> で求めます。
-            ローン返済後に実際に手元に残るキャッシュフローベースで計算するため、
-            レバレッジ効果（借入による収益率の増幅）を把握できます。
-          </p>
+      <!-- ROIだけで判断してはいけない理由 -->
+      <section class="art-section">
+        <h2 class="art-h2">ROIだけで判断してはいけない理由</h2>
+        <p class="art-prose">
+          ROIは自己資金効率を示す重要な指標ですが、これだけで投資を判断することには危険が伴います。
+        </p>
+        <div class="reason-list">
+          <div class="reason-item">
+            <div class="reason-icon">⚠️</div>
+            <div class="reason-body">
+              <h3 class="reason-title">空室リスクを過小評価しやすい</h3>
+              <p class="reason-desc">
+                ROIの計算に使う空室率の設定次第で結果は大きく変わります。
+                楽観的な空室率（3%）と現実的な空室率（10〜15%）ではROIが数ポイント変わることも。
+                <a href="/calculators/rent-vacancy-impact">空室率影響シミュレーター</a>で感度確認を。
+              </p>
+            </div>
+          </div>
+          <div class="reason-item">
+            <div class="reason-icon">🔧</div>
+            <div class="reason-body">
+              <h3 class="reason-title">修繕費が含まれていない場合がある</h3>
+              <p class="reason-desc">
+                築古物件では突発的な修繕費がCFを大きく削ります。
+                長期的な修繕積立コストを事前に見込まないと、計算上は高ROIでも実態はマイナスになりえます。
+                <a href="/calculators/repair-cost">修繕費シミュレーター</a>で長期コストを試算してください。
+              </p>
+            </div>
+          </div>
+          <div class="reason-item">
+            <div class="reason-icon">📈</div>
+            <div class="reason-body">
+              <h3 class="reason-title">金利上昇でROIが急変する</h3>
+              <p class="reason-desc">
+                変動金利でローンを組んでいる場合、金利が1%上がるだけで月々の返済額が数万円増え、
+                CFがマイナスに転じることがあります。このシミュレーターでローン金利を上げたケースも必ず確認しましょう。
+              </p>
+            </div>
+          </div>
+          <div class="reason-item">
+            <div class="reason-icon">🏷️</div>
+            <div class="reason-body">
+              <h3 class="reason-title">物件価格が割高だとROIも低くなる</h3>
+              <p class="reason-desc">
+                相場より高い価格で購入すると利回りが低くなり、ROIも下がります。
+                <a href="/calculators/price-check">価格妥当性チェッカー</a>で購入検討物件の価格が相場に対して適正かを確認しましょう。
+              </p>
+            </div>
+          </div>
         </div>
-        <div class="explain-card">
-          <h3>🔄 利回りとの違い</h3>
-          <p>
-            <strong>表面利回り・実質利回り</strong>は物件価格全体に対する収益率です。
-            一方 <strong>ROI</strong>は自己資金（頭金＋諸費用）に対する収益率です。
-            たとえばフルローンに近い形で購入すると、ROIは利回りより大幅に高くなることがあります。
-            同じ物件でも資金調達方法によってROIは変わるため、
-            利回りとROIはセットで確認することが重要です。
-          </p>
+        <p class="art-note">※ 本記事の数値はあくまで参考値です。投資判断はご自身の責任において行ってください。</p>
+      </section>
+
+      <!-- FAQ -->
+      <section class="art-section">
+        <h2 class="art-h2">よくある質問（FAQ）</h2>
+        <div class="faq-list">
+          {faqItems.map((item) => (
+            <div class="faq-item">
+              <h3 class="faq-q">{item.q}</h3>
+              <p class="faq-a">{item.a}</p>
+            </div>
+          ))}
         </div>
-        <div class="explain-card">
-          <h3>⚠️ ROIが高くても注意すべき点</h3>
-          <ul>
-            <li>空室リスク：想定空室率を超えると手残りが急減する</li>
-            <li>金利上昇リスク：変動金利の場合、返済額が増加する可能性がある</li>
-            <li>修繕リスク：築年数が古い物件は突発的な修繕費が発生しやすい</li>
-            <li>出口リスク：売却時に想定価格で売れないと総合収益が悪化する</li>
-          </ul>
-        </div>
-        <div class="explain-card">
-          <h3>📐 あわせて確認したい指標</h3>
-          <ul>
-            <li><strong>表面利回り</strong>：物件の収益力の大まかな比較に</li>
-            <li><strong>実質利回り（NOI利回り）</strong>：費用控除後の物件収益力</li>
-            <li><strong>CCR（現金収益率）</strong>：ROIに近い概念、Cash on Cash Return</li>
-            <li><strong>DSC比率</strong>：NOIがローン返済額を何倍カバーするかの安全指標</li>
-            <li><strong>IRR</strong>：将来売却を含めたトータルリターン（内部収益率）</li>
-          </ul>
-        </div>
-      </div>
-    </section>
+      </section>
+
+    </div>
+  </div>
+
+  <!-- ── Related ── -->
+  <div class="container">
+    <RelatedTools tools={relatedTools} />
+    <RelatedArticles articles={relatedArticles} />
   </div>
 
   <Footer slot="footer" />
 </BaseLayout>
 
 <style>
-/* ── Layout ── */
+/* ── Article wrapper ── */
+.article-outer { width: 100%; }
+.article-container {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 48px 24px 0;
+}
+
+/* ── Summary Box ── */
+.summary-box {
+  background: #f0f7f4;
+  border: 1px solid #c8e0d8;
+  border-left: 4px solid var(--c-primary);
+  border-radius: var(--radius-md);
+  padding: 20px 24px;
+  margin-bottom: 44px;
+}
+.sb-lead { font-size: 0.82rem; font-weight: 700; color: var(--c-primary); margin-bottom: 10px; }
+.sb-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+.sb-list li { font-size: 0.875rem; color: var(--c-text); line-height: 1.6; padding-left: 18px; position: relative; }
+.sb-list li::before { content: '✓'; position: absolute; left: 0; color: var(--c-primary); font-weight: 700; font-size: 0.75rem; top: 2px; }
+
+/* ── Article sections ── */
+.art-section { margin-bottom: 52px; }
+.art-h2 {
+  font-size: 1.2rem; font-weight: 700; color: var(--c-primary);
+  border-left: 4px solid var(--c-accent); padding-left: 14px;
+  margin-bottom: 18px; line-height: 1.4;
+}
+.art-prose { font-size: 0.9375rem; line-height: 1.85; color: var(--c-text); margin-bottom: 14px; }
+.art-note { font-size: 0.8rem; color: var(--c-text-muted); line-height: 1.6; margin-top: 16px; }
+
+/* ── Formula block ── */
+.formula-block {
+  background: #f0f7f4; border: 1px solid #c8e0d8; border-radius: var(--radius-md);
+  padding: 20px 24px; margin: 16px 0;
+}
+.formula-main {
+  font-size: 1rem; font-weight: 700; color: var(--c-primary);
+  margin-bottom: 14px; line-height: 1.5;
+}
+.formula-sub {
+  display: flex; flex-direction: column; gap: 4px;
+  border-top: 1px solid #c8e0d8; padding-top: 12px;
+}
+.formula-sub span { font-size: 0.82rem; color: var(--c-text-muted); }
+
+/* ── Compare table ── */
+.compare-table-wrap { overflow-x: auto; border-radius: var(--radius-md); border: 1px solid var(--c-border); margin: 16px 0; }
+.compare-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; background: #fff; }
+.compare-table th, .compare-table td { padding: 10px 12px; border-bottom: 1px solid var(--c-border); text-align: left; }
+.compare-table th { background: #f5f3ef; font-weight: 700; white-space: nowrap; }
+.compare-table tr:last-child td { border-bottom: none; }
+.compare-table .row-label { font-weight: 700; color: var(--c-text-muted); white-space: nowrap; }
+.compare-table .highlight-col { background: #f0f7f4; color: var(--c-primary); font-weight: 600; }
+.compare-table th.highlight-col { color: var(--c-primary); }
+
+/* ── Merit list ── */
+.merit-list { display: flex; flex-direction: column; gap: 14px; margin-top: 16px; }
+.merit-item {
+  display: flex; gap: 16px; align-items: flex-start;
+  background: #fff; border: 1px solid var(--c-border); border-radius: var(--radius-md); padding: 18px 20px;
+}
+.merit-num {
+  font-size: 1.1rem; font-weight: 800; color: var(--c-accent); flex-shrink: 0;
+  width: 32px; text-align: center; padding-top: 2px;
+}
+.merit-title { font-size: 0.9rem; font-weight: 700; color: var(--c-primary); margin-bottom: 6px; }
+.merit-desc { font-size: 0.82rem; color: var(--c-text-muted); line-height: 1.7; margin: 0; }
+
+/* ── CTA Banner ── */
+.cta-banner {
+  background: var(--c-primary); border-radius: var(--radius-md);
+  padding: 24px 28px; display: flex; align-items: center;
+  justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 0;
+}
+.cta-banner-text { font-size: 0.9rem; color: #fff; line-height: 1.7; margin: 0; }
+.cta-banner-btn {
+  background: var(--c-accent); color: #fff; font-size: 0.875rem; font-weight: 700;
+  padding: 10px 20px; border-radius: var(--radius-sm); text-decoration: none;
+  white-space: nowrap; transition: opacity 0.15s;
+}
+.cta-banner-btn:hover { opacity: 0.88; text-decoration: none; }
+.sp-br { display: none; }
+@media (max-width: 560px) {
+  .cta-banner { flex-direction: column; align-items: flex-start; }
+  .sp-br { display: inline; }
+}
+
+/* ── Tool section ── */
+.tool-section { padding-top: 56px; padding-bottom: 0; }
+.tool-heading { margin-bottom: 6px; }
+.tool-desc { font-size: 0.875rem; color: var(--c-text-muted); margin-bottom: 20px; }
+
+/* ── Reason list ── */
+.reason-list { display: flex; flex-direction: column; gap: 14px; margin: 18px 0; }
+.reason-item {
+  display: flex; gap: 14px; align-items: flex-start;
+  background: #fff; border: 1px solid var(--c-border); border-radius: var(--radius-md); padding: 16px 18px;
+}
+.reason-icon { font-size: 1.3rem; flex-shrink: 0; padding-top: 2px; }
+.reason-title { font-size: 0.9rem; font-weight: 700; color: var(--c-primary); margin-bottom: 6px; }
+.reason-desc { font-size: 0.82rem; color: var(--c-text-muted); line-height: 1.7; margin: 0; }
+.reason-desc a { color: var(--c-primary); text-decoration: underline; text-underline-offset: 2px; }
+
+/* ── FAQ ── */
+.faq-list { display: flex; flex-direction: column; gap: 0; margin-top: 16px; }
+.faq-item { padding: 20px 0; border-bottom: 1px solid var(--c-border); }
+.faq-item:first-child { border-top: 1px solid var(--c-border); }
+.faq-q { font-size: 0.95rem; font-weight: 700; color: var(--c-primary); margin-bottom: 8px; line-height: 1.5; }
+.faq-a { font-size: 0.85rem; color: var(--c-text-muted); line-height: 1.8; margin: 0; }
+
+/* ── Calculator Layout ── */
 .calc-layout {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -587,29 +904,6 @@ const jsonLd = [
 .result-table .table-roi th,
 .result-table .table-roi td { font-weight: 700; font-size: 1rem; color: var(--c-primary); border-bottom: none; }
 .result-disclaimer { font-size: 0.72rem; color: var(--c-text-muted); line-height: 1.6; }
-
-/* ── Related ── */
-.related-section { max-width: 680px; }
-.related-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; margin-top: 16px; }
-.related-card {
-  display: block; background: var(--c-bg-card); border: 1px solid var(--c-border);
-  border-radius: var(--radius-md); padding: 20px; text-decoration: none; color: var(--c-text);
-  transition: box-shadow 0.2s, transform 0.2s, border-color 0.2s; box-shadow: var(--shadow-sm);
-}
-.related-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); border-color: var(--c-primary); text-decoration: none; }
-.related-icon { font-size: 1.5rem; margin-bottom: 8px; }
-.related-title { font-size: 0.95rem; font-weight: 700; color: var(--c-primary); margin-bottom: 6px; }
-.related-desc { font-size: 0.8rem; color: var(--c-text-muted); line-height: 1.6; margin-bottom: 10px; }
-.related-arrow { font-size: 0.8rem; color: var(--c-primary); font-weight: 600; }
-
-/* ── Explanation ── */
-.explain-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; margin-top: 16px; }
-.explain-card { background: var(--c-bg-card); border: 1px solid var(--c-border); border-radius: var(--radius-md); padding: 20px; }
-.explain-card h3 { font-size: 0.95rem; font-weight: 700; color: var(--c-primary); margin-bottom: 10px; }
-.explain-card p, .explain-card ul { font-size: 0.82rem; color: var(--c-text-muted); line-height: 1.8; }
-.explain-card ul { padding-left: 1.2em; }
-.explain-card li { margin-bottom: 4px; }
-.explain-card strong { color: var(--c-text); }
 </style>
 
 <script>
