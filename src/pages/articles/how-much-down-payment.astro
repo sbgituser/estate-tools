@@ -1,0 +1,220 @@
+---
+import ArticleLayout from '../../layouts/ArticleLayout.astro';
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: '頭金はいくら必要か｜不動産投資の自己資金の目安と考え方',
+    url: 'https://estate.kuras-plus.com/articles/how-much-down-payment',
+    description: '不動産投資の頭金の目安と、頭金の多寡がROI・CFに与える影響を解説。',
+    author: { '@type': 'Organization', name: '不動産ツールズ | kuras-plus' },
+    publisher: { '@type': 'Organization', name: '不動産ツールズ | kuras-plus', url: 'https://estate.kuras-plus.com' },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'ホーム', item: 'https://estate.kuras-plus.com' },
+      { '@type': 'ListItem', position: 2, name: '記事一覧', item: 'https://estate.kuras-plus.com/articles' },
+      { '@type': 'ListItem', position: 3, name: '頭金はいくら必要か', item: 'https://estate.kuras-plus.com/articles/how-much-down-payment' },
+    ],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      {
+        '@type': 'Question',
+        name: '不動産投資の頭金はいくら必要ですか？',
+        acceptedAnswer: { '@type': 'Answer', text: '一般的には物件価格の20〜30%が目安とされます。ただし金融機関や物件種別によって異なり、フルローン（頭金0）が可能な場合もあります。頭金が多いほど月々のローン返済が軽くなりCFは安定しますが、ROIは低下します。逆に頭金が少ないとROIは高くなりますが、月々のCFが圧迫されるリスクがあります。' },
+      },
+      {
+        '@type': 'Question',
+        name: '頭金を増やすとROIはどうなりますか？',
+        acceptedAnswer: { '@type': 'Answer', text: '頭金を増やすと（1）借入が減りローン返済額が軽くなるのでCFは増え、（2）分母の自己資金が大きくなるのでROIは下がります。例えば頭金を物件価格の10%から30%に増やすと、ROIは下がるケースが多いです。CFの安定を優先するか、ROIの高さを追うかはご自身の資金状況・リスク許容度で判断してください。' },
+      },
+    ],
+  },
+];
+---
+
+<ArticleLayout
+  title="頭金はいくら必要か｜不動産投資の自己資金の目安と考え方"
+  description="不動産投資の頭金の目安（物件価格の20〜30%）と、頭金の多寡がROI・キャッシュフローに与える影響を初心者向けに解説します。"
+  eyebrow="頭金 · Down Payment Guide"
+  heroTitle="頭金はいくら必要か"
+  heroDesc="頭金の目安と、自己資金の配分がROI・キャッシュフローに与える影響を解説します。"
+  breadcrumb={[
+    { name: '記事一覧', href: '/articles' },
+    { name: '頭金はいくら必要か' },
+  ]}
+  currentPath="/articles/how-much-down-payment"
+  jsonLd={jsonLd}
+>
+  <div class="container article-body">
+
+    <section class="art-section">
+      <h2 class="art-h2">不動産投資における頭金とは</h2>
+      <p class="art-prose">
+        不動産投資の「頭金」とは、物件購入時に現金で支払う自己資金のことです。
+        購入価格からローン借入額を差し引いた部分が頭金になります。
+      </p>
+      <p class="art-prose">
+        頭金とは別に「購入時諸費用」も自己資金から支出されます。
+        主な諸費用には仲介手数料・不動産取得税・登記費用・ローン事務手数料などが含まれ、
+        物件価格の5〜10%程度が目安です。
+        <strong>ROI計算では「頭金＋諸費用」が投下自己資金になります。</strong>
+      </p>
+    </section>
+
+    <section class="art-section">
+      <h2 class="art-h2">頭金の一般的な目安</h2>
+      <p class="art-prose">物件種別や金融機関によって異なりますが、以下が一般的な参考値です。</p>
+      <div class="bench-table-wrap">
+        <table class="bench-table">
+          <thead>
+            <tr><th>物件種別・条件</th><th>一般的な頭金目安</th><th>備考</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>区分マンション（中古）</td><td>物件価格の20〜30%</td><td>金融機関によりフルローンも可</td></tr>
+            <tr><td>一棟アパート・マンション</td><td>物件価格の20〜30%</td><td>属性・物件評価による</td></tr>
+            <tr><td>新築物件</td><td>物件価格の10〜20%</td><td>担保評価が高く借入しやすい場合も</td></tr>
+            <tr><td>フルローン（頭金0）</td><td>0%</td><td>高属性・優良物件限定のケースが多い</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="art-note">※ 上記はあくまで参考値です。実際の審査条件は金融機関・物件状況によって異なります。</p>
+    </section>
+
+    <section class="art-section">
+      <h2 class="art-h2">頭金の多寡がROI・CFに与える影響</h2>
+      <p class="art-prose">
+        頭金の金額はROIとキャッシュフロー（CF）に相反する影響を与えます。
+      </p>
+      <div class="impact-grid">
+        <div class="impact-card impact-more">
+          <div class="impact-title">頭金を多くした場合</div>
+          <ul class="impact-list">
+            <li>✅ 借入が少なくなりローン返済が軽い</li>
+            <li>✅ 月々のCFが安定する</li>
+            <li>✅ 金利上昇・空室リスクへの耐性が高い</li>
+            <li>⚠️ 自己資金（分母）が増えるのでROIは下がる</li>
+            <li>⚠️ 手元に残る現金が減り流動性が低下する</li>
+          </ul>
+        </div>
+        <div class="impact-card impact-less">
+          <div class="impact-title">頭金を少なくした場合（レバレッジ活用）</div>
+          <ul class="impact-list">
+            <li>✅ 自己資金（分母）が小さくROIが高くなりやすい</li>
+            <li>✅ 手元現金を温存でき機動的に動ける</li>
+            <li>⚠️ 借入が多くローン返済が重くなる</li>
+            <li>⚠️ CFがマイナスになるリスクが高まる</li>
+            <li>⚠️ 空室・修繕などの突発コストに弱くなる</li>
+          </ul>
+        </div>
+      </div>
+      <div class="cta-tool">
+        <p>頭金の金額を変えながらROI・CFへの影響を即時確認できます。複数パターンで比較してみましょう。</p>
+        <a href="/calculators/down-payment" class="cta-link">→ 頭金シミュレーターで比較する（無料）</a>
+      </div>
+    </section>
+
+    <section class="art-section">
+      <h2 class="art-h2">頭金の判断基準：何を優先するか</h2>
+      <p class="art-prose">
+        頭金をいくらにするかは「ROIを高めたいか」「CFの安定を優先するか」「手元現金をどれだけ残したいか」によって変わります。
+      </p>
+      <ul class="art-list">
+        <li><strong>CFの安定を優先：</strong>頭金を増やしローン返済を軽くする。月々のマイナスリスクを下げたい場合。</li>
+        <li><strong>ROI最大化を優先：</strong>レバレッジを効かせ少ない自己資金で高ROIを狙う。物件の利回りが金利を大幅に上回る場合に有効。</li>
+        <li><strong>複数物件への分散を検討：</strong>1物件に多額の頭金を入れるより、複数物件に分散してリスクを下げる考え方もある。</li>
+        <li><strong>手元資金の余裕を確保：</strong>修繕・空室の緊急時に対応できる予備資金（6ヶ月分の返済額程度）を残しておくことが重要。</li>
+      </ul>
+      <p class="art-prose art-note">
+        ※ 本記事の数値はあくまで参考値です。投資判断はご自身の責任において行ってください。
+      </p>
+    </section>
+
+    <section class="art-section">
+      <h2 class="art-h2">よくある質問</h2>
+      <div class="faq-list">
+        <div class="faq-item">
+          <h3 class="faq-q">不動産投資の頭金はいくら必要ですか？</h3>
+          <p class="faq-a">一般的には物件価格の20〜30%が目安とされます。ただし金融機関や物件種別によって異なり、フルローン（頭金0）が可能な場合もあります。頭金が多いほど月々のローン返済が軽くなりCFは安定しますが、ROIは低下します。逆に頭金が少ないとROIは高くなりますが、月々のCFが圧迫されるリスクがあります。</p>
+        </div>
+        <div class="faq-item">
+          <h3 class="faq-q">頭金を増やすとROIはどうなりますか？</h3>
+          <p class="faq-a">頭金を増やすと（1）借入が減りローン返済額が軽くなるのでCFは増え、（2）分母の自己資金が大きくなるのでROIは下がります。例えば頭金を物件価格の10%から30%に増やすと、ROIは下がるケースが多いです。CFの安定を優先するか、ROIの高さを追うかはご自身の資金状況・リスク許容度で判断してください。</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="related-tools-box">
+      <p class="rtb-label">関連ツール</p>
+      <div class="rtb-links">
+        <a href="/calculators/down-payment" class="rtb-link">💴 頭金シミュレーター</a>
+        <a href="/calculators/roi" class="rtb-link">💹 ROI計算ツール</a>
+        <a href="/calculators/cash-flow" class="rtb-link">💰 CFシミュレーター</a>
+        <a href="/calculators/mortgage" class="rtb-link">🏦 ローン返済計算</a>
+      </div>
+    </div>
+
+    <div class="back-links">
+      <a href="/articles" class="back-link">← 記事一覧へ</a>
+    </div>
+  </div>
+</ArticleLayout>
+
+<style>
+.article-body { padding-top: 48px; padding-bottom: 80px; max-width: 780px; }
+.art-section { margin-bottom: 52px; }
+.art-h2 {
+  font-size: 1.2rem; font-weight: 700; color: var(--c-primary);
+  border-left: 4px solid var(--c-accent); padding-left: 14px;
+  margin-bottom: 18px; line-height: 1.4;
+}
+.art-prose { font-size: 0.9375rem; line-height: 1.85; color: var(--c-text); margin-bottom: 14px; }
+.art-note { color: var(--c-text-muted); font-size: 0.82rem; margin-top: 8px; }
+.art-list { padding-left: 1.4em; display: flex; flex-direction: column; gap: 10px; }
+.art-list li { font-size: 0.9rem; line-height: 1.7; color: var(--c-text); }
+
+/* Benchmark Table */
+.bench-table-wrap { overflow-x: auto; border-radius: var(--radius-md); border: 1px solid var(--c-border); margin: 16px 0; }
+.bench-table { width: 100%; border-collapse: collapse; font-size: 0.875rem; background: #fff; }
+.bench-table th, .bench-table td { padding: 10px 14px; border-bottom: 1px solid var(--c-border); text-align: left; }
+.bench-table th { background: #f5f3ef; font-weight: 700; white-space: nowrap; }
+.bench-table tr:last-child td { border-bottom: none; }
+
+/* Impact Grid */
+.impact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0; }
+@media (max-width: 580px) { .impact-grid { grid-template-columns: 1fr; } }
+.impact-card { background: #fff; border: 1px solid var(--c-border); border-radius: var(--radius-md); padding: 18px 20px; }
+.impact-more { border-top: 3px solid var(--c-success); }
+.impact-less { border-top: 3px solid var(--c-accent); }
+.impact-title { font-size: 0.82rem; font-weight: 700; color: var(--c-text); margin-bottom: 12px; line-height: 1.5; }
+.impact-list { list-style: none; display: flex; flex-direction: column; gap: 7px; }
+.impact-list li { font-size: 0.8rem; color: var(--c-text-muted); line-height: 1.6; }
+
+/* CTA Tool */
+.cta-tool { background: #f0f7f4; border: 1px solid #c8e0d8; border-radius: var(--radius-md); padding: 18px 22px; margin-top: 18px; }
+.cta-tool p { font-size: 0.875rem; color: var(--c-text); line-height: 1.7; margin-bottom: 10px; }
+.cta-link { font-size: 0.875rem; font-weight: 700; color: var(--c-primary); text-decoration: none; }
+.cta-link:hover { text-decoration: underline; }
+
+/* FAQ */
+.faq-list { display: flex; flex-direction: column; gap: 0; margin-top: 16px; }
+.faq-item { padding: 18px 0; border-bottom: 1px solid var(--c-border); }
+.faq-item:first-child { border-top: 1px solid var(--c-border); }
+.faq-q { font-size: 0.95rem; font-weight: 700; color: var(--c-primary); margin-bottom: 8px; line-height: 1.5; }
+.faq-a { font-size: 0.85rem; color: var(--c-text-muted); line-height: 1.8; margin: 0; }
+
+/* Related Tools Box */
+.related-tools-box { background: #f0f7f4; border: 1px solid #c8e0d8; border-radius: var(--radius-md); padding: 18px 22px; margin-bottom: 28px; }
+.rtb-label { font-size: 0.82rem; font-weight: 700; color: var(--c-primary); margin-bottom: 12px; }
+.rtb-links { display: flex; flex-wrap: wrap; gap: 10px; }
+.rtb-link { font-size: 0.875rem; font-weight: 600; color: var(--c-primary); background: #fff; border: 1px solid var(--c-border); border-radius: var(--radius-md); padding: 8px 14px; text-decoration: none; transition: border-color 0.15s; }
+.rtb-link:hover { border-color: var(--c-primary); text-decoration: none; }
+.back-links { margin-top: 8px; }
+.back-link { font-size: 0.875rem; color: var(--c-primary); }
+</style>

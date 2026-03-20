@@ -1,0 +1,204 @@
+---
+import ArticleLayout from '../../layouts/ArticleLayout.astro';
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: '空室率の目安と見込み方｜不動産投資リスク管理の基本',
+    url: 'https://estate.kuras-plus.com/articles/vacancy-rate',
+    description: '不動産投資における空室率の目安とシミュレーション時の設定方法を解説。',
+    author: { '@type': 'Organization', name: '不動産ツールズ | kuras-plus' },
+    publisher: { '@type': 'Organization', name: '不動産ツールズ | kuras-plus', url: 'https://estate.kuras-plus.com' },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'ホーム', item: 'https://estate.kuras-plus.com' },
+      { '@type': 'ListItem', position: 2, name: '記事一覧', item: 'https://estate.kuras-plus.com/articles' },
+      { '@type': 'ListItem', position: 3, name: '空室率の目安と見込み方', item: 'https://estate.kuras-plus.com/articles/vacancy-rate' },
+    ],
+  },
+];
+---
+
+<ArticleLayout
+  title="空室率の目安と見込み方｜不動産投資リスク管理の基本"
+  description="不動産投資で重要な空室率の目安（都市部・地方別）と、シミュレーション時の適切な見込み方を解説。空室率が利回りやキャッシュフローに与える影響も試算できます。"
+  eyebrow="リスク管理 · Vacancy Rate Guide"
+  heroTitle="空室率の目安と見込み方"
+  heroDesc="不動産投資のリスク管理の基本となる空室率。エリア別目安と試算時の設定方法を解説します。"
+  breadcrumb={[
+    { name: '記事一覧', href: '/articles' },
+    { name: '空室率の目安と見込み方' },
+  ]}
+  currentPath="/articles/vacancy-rate"
+  jsonLd={jsonLd}
+>
+  <div class="container article-body">
+
+    <section class="art-section">
+      <h2 class="art-h2">空室率とは何か</h2>
+      <p class="art-prose">
+        空室率とは、物件全体のうち入居者がいない部屋の割合のことです。
+        たとえば10室のアパートで1室が空室なら、空室率は10%です。
+      </p>
+      <p class="art-prose">
+        利回りの計算では「満室想定」が使われることが多いですが、
+        実際には空室期間が発生します。
+        空室率を適切に見込まないと、収益予測が楽観的になりすぎる危険があります。
+      </p>
+      <div class="impact-box">
+        <p class="impact-label">空室率が利回りに与える影響（例：表面利回り6%の場合）</p>
+        <div class="impact-table-wrap">
+          <table class="impact-table">
+            <thead>
+              <tr><th>空室率</th><th>実効収入</th><th>実質利回りへの影響</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>0%（満室）</td><td>100%</td><td>最大収入</td></tr>
+              <tr><td>5%</td><td>95%</td><td>約0.3%低下</td></tr>
+              <tr><td>10%</td><td>90%</td><td>約0.6%低下</td></tr>
+              <tr><td>20%</td><td>80%</td><td>約1.2%低下</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="impact-note">※ 費用を一定とした場合の概算。実際は管理費等も変動します。</p>
+      </div>
+    </section>
+
+    <section class="art-section">
+      <h2 class="art-h2">エリア別の空室率目安</h2>
+      <p class="art-prose">
+        空室率はエリアや物件種別によって大きく異なります。以下は参考値です。
+        実際の物件では個別の立地・築年数・設備状況によって変わります。
+      </p>
+      <div class="bench-table-wrap">
+        <table class="bench-table">
+          <thead>
+            <tr><th>エリア・条件</th><th>想定空室率（目安）</th><th>備考</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>東京23区・駅近物件</td><td>3〜5%</td><td>需要が安定している</td></tr>
+            <tr><td>東京23区・一般立地</td><td>5〜8%</td><td>築年数や管理状態による</td></tr>
+            <tr><td>大阪・名古屋中心部</td><td>5〜10%</td><td>エリアにより差が大きい</td></tr>
+            <tr><td>地方政令市</td><td>8〜15%</td><td>人口動向の確認が必要</td></tr>
+            <tr><td>地方・郊外</td><td>15〜30%以上</td><td>過疎化リスクに注意</td></tr>
+            <tr><td>築20年以上の物件</td><td>+5〜10%加算目安</td><td>設備・外観の陳腐化</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="art-note">※ 上記はあくまで参考値です。実際の数値は市況・物件状態により大きく変わります。</p>
+    </section>
+
+    <section class="art-section">
+      <h2 class="art-h2">シミュレーション時の空室率の設定方法</h2>
+      <p class="art-prose">
+        投資シミュレーションでは、楽観・標準・悲観の3シナリオで試算することをお勧めします。
+      </p>
+      <div class="scenario-list">
+        <div class="scenario-item scenario-good">
+          <div class="scenario-label">楽観シナリオ</div>
+          <div class="scenario-value">3〜5%</div>
+          <p class="scenario-desc">好立地・築浅で需要が高い場合の最小値。これだけで判断しない。</p>
+        </div>
+        <div class="scenario-item scenario-base">
+          <div class="scenario-label">標準シナリオ（推奨）</div>
+          <div class="scenario-value">8〜10%</div>
+          <p class="scenario-desc">一般的な賃貸物件での現実的な想定値。投資判断の基準にする。</p>
+        </div>
+        <div class="scenario-item scenario-bad">
+          <div class="scenario-label">悲観シナリオ</div>
+          <div class="scenario-value">15〜20%</div>
+          <p class="scenario-desc">景気悪化・競合増加・老朽化が重なった場合の下限チェック用。</p>
+        </div>
+      </div>
+      <div class="cta-tool">
+        <p>空室率と家賃下落の組み合わせが利回り・CFにどう影響するか、2軸のマトリクスで確認できます。</p>
+        <a href="/calculators/rent-vacancy-impact" class="cta-link">→ 家賃下落・空室率影響シミュレーターで試算する</a>
+      </div>
+    </section>
+
+    <section class="art-section">
+      <h2 class="art-h2">空室リスクを下げるための視点</h2>
+      <ul class="art-list">
+        <li><strong>立地の確認：</strong>最寄り駅からの徒歩分数・生活利便性・人口動向を調べる</li>
+        <li><strong>競合物件の状況：</strong>周辺の類似物件の空室状況・家賃水準を確認する</li>
+        <li><strong>設備・管理状態：</strong>オートロック・宅配ボックスなど入居者ニーズに合った設備があるか</li>
+        <li><strong>管理会社の選定：</strong>入居者募集力が高い管理会社を選ぶことで空室期間を短縮できる</li>
+      </ul>
+      <p class="art-prose art-note">
+        ※ 本記事の数値はあくまで参考値です。投資判断はご自身の責任において行ってください。
+      </p>
+    </section>
+
+    <div class="related-tools-box">
+      <p class="rtb-label">関連ツール</p>
+      <div class="rtb-links">
+        <a href="/calculators/rent-vacancy-impact" class="rtb-link">📉 家賃下落・空室率影響シミュレーター</a>
+        <a href="/calculators/yield" class="rtb-link">📊 利回り計算ツール</a>
+        <a href="/calculators/cash-flow" class="rtb-link">💰 CFシミュレーター</a>
+      </div>
+    </div>
+
+    <div class="back-links">
+      <a href="/articles" class="back-link">← 記事一覧へ</a>
+    </div>
+  </div>
+</ArticleLayout>
+
+<style>
+.article-body { padding-top: 48px; padding-bottom: 80px; max-width: 780px; }
+.art-section { margin-bottom: 52px; }
+.art-h2 {
+  font-size: 1.2rem; font-weight: 700; color: var(--c-primary);
+  border-left: 4px solid var(--c-accent); padding-left: 14px;
+  margin-bottom: 18px; line-height: 1.4;
+}
+.art-prose { font-size: 0.9375rem; line-height: 1.85; color: var(--c-text); margin-bottom: 14px; }
+.art-note { color: var(--c-text-muted); font-size: 0.82rem; margin-top: 8px; }
+.art-list { padding-left: 1.4em; display: flex; flex-direction: column; gap: 10px; }
+.art-list li { font-size: 0.9rem; line-height: 1.7; color: var(--c-text); }
+
+/* Impact Box */
+.impact-box { background: #fff; border: 1px solid var(--c-border); border-radius: var(--radius-md); padding: 18px 20px; margin-top: 16px; }
+.impact-label { font-size: 0.82rem; font-weight: 700; color: var(--c-primary); margin-bottom: 12px; }
+.impact-table-wrap { overflow-x: auto; }
+.impact-table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+.impact-table th, .impact-table td { padding: 8px 12px; border-bottom: 1px solid var(--c-border); text-align: left; }
+.impact-table th { font-weight: 700; color: var(--c-text-muted); }
+.impact-table tr:last-child td { border-bottom: none; }
+.impact-note { font-size: 0.75rem; color: var(--c-text-muted); margin-top: 10px; }
+
+/* Benchmark Table */
+.bench-table-wrap { overflow-x: auto; border-radius: var(--radius-md); border: 1px solid var(--c-border); margin: 16px 0; }
+.bench-table { width: 100%; border-collapse: collapse; font-size: 0.875rem; background: #fff; }
+.bench-table th, .bench-table td { padding: 10px 14px; border-bottom: 1px solid var(--c-border); text-align: left; }
+.bench-table th { background: #f5f3ef; font-weight: 700; white-space: nowrap; }
+.bench-table tr:last-child td { border-bottom: none; }
+
+/* Scenario List */
+.scenario-list { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 16px 0; }
+@media (max-width: 580px) { .scenario-list { grid-template-columns: 1fr; } }
+.scenario-item { background: #fff; border: 1px solid var(--c-border); border-radius: var(--radius-md); padding: 16px 18px; }
+.scenario-good { border-top: 3px solid var(--c-success); }
+.scenario-base { border-top: 3px solid var(--c-accent); }
+.scenario-bad  { border-top: 3px solid var(--c-danger); }
+.scenario-label { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--c-text-muted); margin-bottom: 6px; }
+.scenario-value { font-size: 1.3rem; font-weight: 700; color: var(--c-primary); margin-bottom: 8px; }
+.scenario-desc { font-size: 0.78rem; color: var(--c-text-muted); line-height: 1.55; margin: 0; }
+
+.cta-tool { background: #f0f7f4; border: 1px solid #c8e0d8; border-radius: var(--radius-md); padding: 18px 22px; margin-top: 18px; }
+.cta-tool p { font-size: 0.875rem; color: var(--c-text); line-height: 1.7; margin-bottom: 10px; }
+.cta-link { font-size: 0.875rem; font-weight: 700; color: var(--c-primary); text-decoration: none; }
+.cta-link:hover { text-decoration: underline; }
+
+.related-tools-box { background: #f0f7f4; border: 1px solid #c8e0d8; border-radius: var(--radius-md); padding: 18px 22px; margin-bottom: 28px; }
+.rtb-label { font-size: 0.82rem; font-weight: 700; color: var(--c-primary); margin-bottom: 12px; }
+.rtb-links { display: flex; flex-wrap: wrap; gap: 10px; }
+.rtb-link { font-size: 0.875rem; font-weight: 600; color: var(--c-primary); background: #fff; border: 1px solid var(--c-border); border-radius: var(--radius-md); padding: 8px 14px; text-decoration: none; transition: border-color 0.15s; }
+.rtb-link:hover { border-color: var(--c-primary); text-decoration: none; }
+.back-links { margin-top: 8px; }
+.back-link { font-size: 0.875rem; color: var(--c-primary); }
+</style>

@@ -1,0 +1,126 @@
+---
+import ArticleLayout from '../../layouts/ArticleLayout.astro';
+
+const articles = [
+  {
+    href: '/articles/real-estate-investment-basics',
+    tag: '基礎知識',
+    title: '不動産投資の基礎知識｜利回り・ROI・CFで何を見ればよいか',
+    desc: '投資判断に必要な3指標の違いと使い方を初心者向けに解説します。',
+  },
+  {
+    href: '/articles/gross-vs-net-yield',
+    tag: '利回り',
+    title: '表面利回りと実質利回りの違い｜計算式と投資判断への使い方',
+    desc: '2種類の利回りを正確に理解し、実態に近い収益性を把握する方法を解説します。',
+  },
+  {
+    href: '/articles/cashflow-basics',
+    tag: 'CF',
+    title: '不動産投資のキャッシュフローとは｜計算方法と目安を解説',
+    desc: 'ローン返済後の実態収支「手残り」の考え方を分かりやすく解説します。',
+  },
+  {
+    href: '/articles/vacancy-rate',
+    tag: 'リスク',
+    title: '空室率の目安と見込み方｜不動産投資リスク管理の基本',
+    desc: 'エリア別の空室率目安とシミュレーション時の適切な設定方法を解説します。',
+  },
+];
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: '不動産投資 解説記事一覧',
+  url: 'https://estate.kuras-plus.com/articles',
+  description: '不動産投資の意思決定に役立つ解説記事。利回り・ROI・CF・空室率など、投資判断に必要な知識をまとめています。',
+};
+---
+
+<ArticleLayout
+  title="不動産投資 解説記事一覧 | 不動産ツールズ"
+  description="不動産投資の意思決定に役立つ解説記事一覧。利回り・ROI・キャッシュフロー・空室率など、投資判断に必要な知識を初心者向けに解説します。"
+  eyebrow="Articles"
+  heroTitle="不動産投資 解説記事一覧"
+  heroDesc="各種計算ツールと合わせて読みたい、不動産投資の基礎知識を解説した記事をまとめています。"
+  breadcrumb={[{ name: '記事一覧' }]}
+  currentPath="/articles"
+  jsonLd={jsonLd}
+>
+  <div class="container" style="padding-top: 48px; padding-bottom: 80px;">
+    <div class="articles-grid">
+      {articles.map((article) => (
+        <a href={article.href} class="article-card">
+          <span class="article-tag">{article.tag}</span>
+          <div class="article-title">{article.title}</div>
+          <p class="article-desc">{article.desc}</p>
+          <span class="article-arrow">記事を読む →</span>
+        </a>
+      ))}
+    </div>
+
+    <div class="back-link-wrap">
+      <a href="/" class="back-link">← ツール一覧に戻る</a>
+    </div>
+  </div>
+</ArticleLayout>
+
+<style>
+.articles-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+  max-width: 900px;
+}
+.article-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: #fff;
+  border: 1px solid var(--c-border);
+  border-left: 4px solid var(--c-accent);
+  border-radius: var(--radius-md);
+  padding: 22px 24px;
+  text-decoration: none;
+  color: var(--c-text);
+  transition: box-shadow 0.2s, transform 0.15s;
+  box-shadow: var(--shadow-sm);
+}
+.article-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+  text-decoration: none;
+}
+.article-tag {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--c-accent);
+}
+.article-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--c-primary);
+  line-height: 1.45;
+}
+.article-desc {
+  font-size: 0.875rem;
+  color: var(--c-text-muted);
+  line-height: 1.6;
+  flex: 1;
+}
+.article-arrow {
+  font-size: 0.8rem;
+  color: var(--c-primary);
+  font-weight: 600;
+  margin-top: 4px;
+}
+.back-link-wrap {
+  margin-top: 48px;
+}
+.back-link {
+  font-size: 0.875rem;
+  color: var(--c-primary);
+}
+</style>

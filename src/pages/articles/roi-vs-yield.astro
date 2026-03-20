@@ -1,0 +1,254 @@
+---
+import ArticleLayout from '../../layouts/ArticleLayout.astro';
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: 'ROIと利回りの違い｜不動産投資2つの収益指標を徹底比較',
+    url: 'https://estate.kuras-plus.com/articles/roi-vs-yield',
+    description: '不動産投資のROIと利回りの違いを計算式・具体例・使い分けの観点から解説。',
+    author: { '@type': 'Organization', name: '不動産ツールズ | kuras-plus' },
+    publisher: { '@type': 'Organization', name: '不動産ツールズ | kuras-plus', url: 'https://estate.kuras-plus.com' },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'ホーム', item: 'https://estate.kuras-plus.com' },
+      { '@type': 'ListItem', position: 2, name: '記事一覧', item: 'https://estate.kuras-plus.com/articles' },
+      { '@type': 'ListItem', position: 3, name: 'ROIと利回りの違い', item: 'https://estate.kuras-plus.com/articles/roi-vs-yield' },
+    ],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      {
+        '@type': 'Question',
+        name: 'ROIと利回りはどちらを重視すべきですか？',
+        acceptedAnswer: { '@type': 'Answer', text: '用途が異なります。利回りは物件の収益力を大まかに比較するためのスクリーニング指標、ROIは実際の資金調達方法（頭金・ローン）を含めた自己資金の効率を測る指標です。物件の収益力を比較したいときは利回り、自己資金をどれだけ効率よく使えるかを確認するときはROIを使います。両方確認するのが理想です。' },
+      },
+      {
+        '@type': 'Question',
+        name: '利回りが高くてもROIが低いことはありますか？',
+        acceptedAnswer: { '@type': 'Answer', text: 'あります。頭金を多く入れると借入が減りローン返済が軽くなりますが、自己資金（分母）が増えるためROIは下がります。逆に頭金が少ないとROIは高くなりますが、ローン返済が重くなりCFがマイナスになるリスクも高まります。利回りとROIはトレードオフの関係を持つ場合があるため、両方の数値を確認することが重要です。' },
+      },
+    ],
+  },
+];
+---
+
+<ArticleLayout
+  title="ROIと利回りの違い｜不動産投資2つの収益指標を徹底比較"
+  description="不動産投資のROIと利回りの違いを計算式・具体例・使い分けの観点から初心者向けに解説します。どちらをどう使うべきかが分かります。"
+  eyebrow="ROI解説 · ROI vs Yield"
+  heroTitle="ROIと利回りの違い"
+  heroDesc="同じ物件でも見方が変わる2つの収益指標。計算式と具体例で使い分けを解説します。"
+  breadcrumb={[
+    { name: '記事一覧', href: '/articles' },
+    { name: 'ROIと利回りの違い' },
+  ]}
+  currentPath="/articles/roi-vs-yield"
+  jsonLd={jsonLd}
+>
+  <div class="container article-body">
+
+    <section class="art-section">
+      <h2 class="art-h2">そもそも何が違うのか</h2>
+      <p class="art-prose">
+        不動産投資では「利回り」と「ROI」という2つの収益指標がよく使われます。
+        どちらも「%」で表しますが、見ている「分母」が根本的に異なります。
+      </p>
+      <div class="diff-cards">
+        <div class="diff-card">
+          <div class="diff-label">利回り（表面・実質）</div>
+          <div class="diff-formula">年間収益 ÷ <strong>物件価格</strong> × 100</div>
+          <p class="diff-note">物件そのものの収益力を示す。ローン返済・レバレッジは考慮しない。</p>
+        </div>
+        <div class="diff-card diff-card--main">
+          <div class="diff-label">ROI（投資収益率）</div>
+          <div class="diff-formula">年間手残り（CF） ÷ <strong>自己資金</strong> × 100</div>
+          <p class="diff-note">自己資金（頭金＋諸費用）に対する収益率。ローン返済・レバレッジを含む。</p>
+        </div>
+      </div>
+      <p class="art-prose">
+        利回りは「物件がどれだけ稼げるか」、ROIは「自分が出したお金に対してどれだけ稼げるか」を表します。
+        同じ物件でも頭金の金額によってROIは大きく変わります。
+      </p>
+    </section>
+
+    <section class="art-section">
+      <h2 class="art-h2">具体例で見る違い</h2>
+      <p class="art-prose">
+        3,000万円の物件、月額家賃12万円、頭金600万円（諸費用120万円）、金利1.5%・35年ローンを例に比較します。
+      </p>
+      <div class="example-box">
+        <div class="example-row">
+          <span class="ex-label">年間家賃収入（満室）</span>
+          <span class="ex-val">144万円（12万×12ヶ月）</span>
+        </div>
+        <div class="example-row">
+          <span class="ex-label">表面利回り</span>
+          <span class="ex-val highlight">144 ÷ 3,000 × 100 ＝ <strong>4.8%</strong></span>
+        </div>
+        <div class="example-row">
+          <span class="ex-label">年間ローン返済額（概算）</span>
+          <span class="ex-val">約92万円（借入2,400万円・金利1.5%・35年）</span>
+        </div>
+        <div class="example-row">
+          <span class="ex-label">年間CF（管理費・修繕費等考慮後）</span>
+          <span class="ex-val">約30万円（概算）</span>
+        </div>
+        <div class="example-row">
+          <span class="ex-label">投下自己資金</span>
+          <span class="ex-val">720万円（頭金600＋諸費用120）</span>
+        </div>
+        <div class="example-row">
+          <span class="ex-label">ROI</span>
+          <span class="ex-val highlight">30 ÷ 720 × 100 ＝ <strong>約4.2%</strong></span>
+        </div>
+      </div>
+      <p class="art-prose">
+        この例では表面利回り4.8%に対してROIは約4.2%です。
+        もし頭金を300万円に減らすと借入が増えてローン返済も増えますが、分母の自己資金も600万円（＋諸費用）と小さくなるため、
+        CFが確保できればROIは上昇します。
+      </p>
+    </section>
+
+    <section class="art-section">
+      <h2 class="art-h2">利回りとROIの使い分け</h2>
+      <div class="use-table-wrap">
+        <table class="use-table">
+          <thead>
+            <tr><th>確認したいこと</th><th>使う指標</th><th>理由</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>複数物件の収益力を大まかに比較したい</td>
+              <td class="tag-yield">利回り</td>
+              <td>ローン条件が異なっても物件自体の収益力を同条件で比較できる</td>
+            </tr>
+            <tr>
+              <td>自己資金の効率（レバレッジ効果）を確認したい</td>
+              <td class="tag-roi">ROI</td>
+              <td>頭金を変えたときの収益率の変化を確認できる</td>
+            </tr>
+            <tr>
+              <td>毎月・毎年の手残りを把握したい</td>
+              <td>CF（額）</td>
+              <td>ROIは率なので絶対額はCFで確認する</td>
+            </tr>
+            <tr>
+              <td>投資全体の判断をしたい</td>
+              <td>3つ全部</td>
+              <td>1つだけでは見えない側面がある</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="cta-tool">
+        <p>ROIと利回りの両方をシミュレーターで同時に確認できます。頭金・金利を変えながら比較してみましょう。</p>
+        <a href="/calculators/roi" class="cta-link">→ ROIシミュレーターで試算する（無料）</a>
+      </div>
+    </section>
+
+    <section class="art-section">
+      <h2 class="art-h2">よくある質問</h2>
+      <div class="faq-list">
+        <div class="faq-item">
+          <h3 class="faq-q">ROIと利回りはどちらを重視すべきですか？</h3>
+          <p class="faq-a">用途が異なります。利回りは物件の収益力を大まかに比較するためのスクリーニング指標、ROIは実際の資金調達方法（頭金・ローン）を含めた自己資金の効率を測る指標です。物件の収益力を比較したいときは利回り、自己資金をどれだけ効率よく使えるかを確認するときはROIを使います。両方確認するのが理想です。</p>
+        </div>
+        <div class="faq-item">
+          <h3 class="faq-q">利回りが高くてもROIが低いことはありますか？</h3>
+          <p class="faq-a">あります。頭金を多く入れると借入が減りローン返済が軽くなりますが、自己資金（分母）が増えるためROIは下がります。逆に頭金が少ないとROIは高くなりますが、ローン返済が重くなりCFがマイナスになるリスクも高まります。利回りとROIはトレードオフの関係を持つ場合があるため、両方の数値を確認することが重要です。</p>
+        </div>
+      </div>
+      <p class="art-prose art-note">
+        ※ 本記事の数値はあくまで参考値です。投資判断はご自身の責任において行ってください。
+      </p>
+    </section>
+
+    <div class="related-tools-box">
+      <p class="rtb-label">関連ツール</p>
+      <div class="rtb-links">
+        <a href="/calculators/roi" class="rtb-link">💹 ROI計算ツール</a>
+        <a href="/calculators/yield" class="rtb-link">📊 利回り計算ツール</a>
+        <a href="/calculators/cash-flow" class="rtb-link">💰 CFシミュレーター</a>
+        <a href="/calculators/down-payment" class="rtb-link">💴 頭金シミュレーター</a>
+      </div>
+    </div>
+
+    <div class="back-links">
+      <a href="/articles" class="back-link">← 記事一覧へ</a>
+    </div>
+  </div>
+</ArticleLayout>
+
+<style>
+.article-body { padding-top: 48px; padding-bottom: 80px; max-width: 780px; }
+.art-section { margin-bottom: 52px; }
+.art-h2 {
+  font-size: 1.2rem; font-weight: 700; color: var(--c-primary);
+  border-left: 4px solid var(--c-accent); padding-left: 14px;
+  margin-bottom: 18px; line-height: 1.4;
+}
+.art-prose { font-size: 0.9375rem; line-height: 1.85; color: var(--c-text); margin-bottom: 14px; }
+.art-note { color: var(--c-text-muted); font-size: 0.82rem; margin-top: 8px; }
+
+/* Diff Cards */
+.diff-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0; }
+@media (max-width: 560px) { .diff-cards { grid-template-columns: 1fr; } }
+.diff-card { background: #fff; border: 1px solid var(--c-border); border-radius: var(--radius-md); padding: 18px 20px; }
+.diff-card--main { border-color: var(--c-primary); background: #f0f7f4; }
+.diff-label { font-size: 0.75rem; font-weight: 700; color: var(--c-text-muted); margin-bottom: 8px; }
+.diff-card--main .diff-label { color: var(--c-primary); }
+.diff-formula { font-size: 0.9rem; font-weight: 700; color: var(--c-text); line-height: 1.6; margin-bottom: 8px; }
+.diff-note { font-size: 0.78rem; color: var(--c-text-muted); line-height: 1.6; margin: 0; }
+
+/* Example Box */
+.example-box {
+  background: #fff; border: 1px solid var(--c-border); border-radius: var(--radius-md);
+  padding: 18px 20px; margin: 16px 0; display: flex; flex-direction: column; gap: 0;
+}
+.example-row {
+  display: flex; justify-content: space-between; align-items: baseline; gap: 12px;
+  padding: 9px 0; border-bottom: 1px solid var(--c-border); font-size: 0.85rem;
+}
+.example-row:last-child { border-bottom: none; }
+.ex-label { color: var(--c-text-muted); flex-shrink: 0; }
+.ex-val { color: var(--c-text); font-weight: 600; text-align: right; }
+.ex-val.highlight { color: var(--c-primary); }
+
+/* Use Table */
+.use-table-wrap { overflow-x: auto; border-radius: var(--radius-md); border: 1px solid var(--c-border); margin: 16px 0; }
+.use-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; background: #fff; }
+.use-table th, .use-table td { padding: 10px 12px; border-bottom: 1px solid var(--c-border); text-align: left; vertical-align: top; }
+.use-table th { background: #f5f3ef; font-weight: 700; white-space: nowrap; }
+.use-table tr:last-child td { border-bottom: none; }
+.tag-yield { font-weight: 700; color: var(--c-accent); white-space: nowrap; }
+.tag-roi { font-weight: 700; color: var(--c-primary); white-space: nowrap; }
+
+/* CTA Tool */
+.cta-tool { background: #f0f7f4; border: 1px solid #c8e0d8; border-radius: var(--radius-md); padding: 18px 22px; margin-top: 18px; }
+.cta-tool p { font-size: 0.875rem; color: var(--c-text); line-height: 1.7; margin-bottom: 10px; }
+.cta-link { font-size: 0.875rem; font-weight: 700; color: var(--c-primary); text-decoration: none; }
+.cta-link:hover { text-decoration: underline; }
+
+/* FAQ */
+.faq-list { display: flex; flex-direction: column; gap: 0; margin-top: 16px; }
+.faq-item { padding: 18px 0; border-bottom: 1px solid var(--c-border); }
+.faq-item:first-child { border-top: 1px solid var(--c-border); }
+.faq-q { font-size: 0.95rem; font-weight: 700; color: var(--c-primary); margin-bottom: 8px; line-height: 1.5; }
+.faq-a { font-size: 0.85rem; color: var(--c-text-muted); line-height: 1.8; margin: 0; }
+
+/* Related Tools Box */
+.related-tools-box { background: #f0f7f4; border: 1px solid #c8e0d8; border-radius: var(--radius-md); padding: 18px 22px; margin-bottom: 28px; }
+.rtb-label { font-size: 0.82rem; font-weight: 700; color: var(--c-primary); margin-bottom: 12px; }
+.rtb-links { display: flex; flex-wrap: wrap; gap: 10px; }
+.rtb-link { font-size: 0.875rem; font-weight: 600; color: var(--c-primary); background: #fff; border: 1px solid var(--c-border); border-radius: var(--radius-md); padding: 8px 14px; text-decoration: none; transition: border-color 0.15s; }
+.rtb-link:hover { border-color: var(--c-primary); text-decoration: none; }
+.back-links { margin-top: 8px; }
+.back-link { font-size: 0.875rem; color: var(--c-primary); }
+</style>

@@ -1,0 +1,167 @@
+---
+import ArticleLayout from '../../layouts/ArticleLayout.astro';
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: '不動産投資のキャッシュフローとは｜計算方法と目安を解説',
+    url: 'https://estate.kuras-plus.com/articles/cashflow-basics',
+    description: '不動産投資のキャッシュフロー（CF）の計算方法・目安・利回りとの違いを解説。',
+    author: { '@type': 'Organization', name: '不動産ツールズ | kuras-plus' },
+    publisher: { '@type': 'Organization', name: '不動産ツールズ | kuras-plus', url: 'https://estate.kuras-plus.com' },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'ホーム', item: 'https://estate.kuras-plus.com' },
+      { '@type': 'ListItem', position: 2, name: '記事一覧', item: 'https://estate.kuras-plus.com/articles' },
+      { '@type': 'ListItem', position: 3, name: 'キャッシュフローとは', item: 'https://estate.kuras-plus.com/articles/cashflow-basics' },
+    ],
+  },
+];
+---
+
+<ArticleLayout
+  title="不動産投資のキャッシュフローとは｜計算方法と目安を解説"
+  description="不動産投資のキャッシュフロー（手残り収益）の計算方法と目安を解説。利回りとの違い、ローン返済後の実態収支の確認方法を無料シミュレーターと合わせて紹介します。"
+  eyebrow="CF解説 · Cash Flow Guide"
+  heroTitle="不動産投資のキャッシュフローとは"
+  heroDesc="ローン返済後の「実際の手残り」を正確に把握する方法と、確認すべき目安を解説します。"
+  breadcrumb={[
+    { name: '記事一覧', href: '/articles' },
+    { name: 'キャッシュフローとは' },
+  ]}
+  currentPath="/articles/cashflow-basics"
+  jsonLd={jsonLd}
+>
+  <div class="container article-body">
+
+    <section class="art-section">
+      <h2 class="art-h2">キャッシュフロー（CF）とは何か</h2>
+      <p class="art-prose">
+        不動産投資における「キャッシュフロー（CF）」とは、
+        家賃収入からすべての支出を差し引いた後に実際に手元に残る金額のことです。
+      </p>
+      <div class="cf-formula">
+        <div class="cf-formula-inner">
+          CF = 家賃収入 − 管理費 − 修繕費 − 固定費 − <strong>ローン返済額</strong>
+        </div>
+      </div>
+      <p class="art-prose">
+        利回りはローン返済を考慮しませんが、CFはローン返済後の手残りを示します。
+        「利回りが高いのに手元にお金が残らない」という状況は、
+        ローン返済額が大きいためにCFがマイナスになっているケースが多いです。
+      </p>
+    </section>
+
+    <section class="art-section">
+      <h2 class="art-h2">利回りとキャッシュフローの違い</h2>
+      <div class="diff-table-wrap">
+        <table class="diff-table">
+          <thead>
+            <tr><th></th><th>利回り</th><th>CF（キャッシュフロー）</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>ローン返済</td><td class="no">含まない</td><td class="yes">含む</td></tr>
+            <tr><td>管理費・修繕費</td><td class="no">任意</td><td class="yes">含む</td></tr>
+            <tr><td>表示形式</td><td>%（率）</td><td>万円（額）</td></tr>
+            <tr><td>主な用途</td><td>物件収益力の比較</td><td>毎年の実態収支確認</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="art-prose">
+        同じ物件でも、フルローンと自己資金50%ではCFが大きく変わります。
+        利回りは「物件自体の収益力」、CFは「その資金調達方法での実際の手残り」を表します。
+      </p>
+    </section>
+
+    <section class="art-section">
+      <h2 class="art-h2">CFの目安はどのくらいか</h2>
+      <p class="art-prose">
+        投資用不動産のCF目安はケースバイケースですが、以下が一般的な参考値です。
+      </p>
+      <ul class="art-list">
+        <li><strong>区分マンション（1室）：</strong>月2〜5万円の手残りが確保できれば良好とされる</li>
+        <li><strong>一棟アパート（6〜8室）：</strong>月10〜30万円が目安（ローン残債・規模による）</li>
+        <li><strong>CF≒0（トントン）：</strong>節税目的や資産形成目的なら許容されることもある</li>
+        <li><strong>CF恒常的マイナス：</strong>長期保有は資金繰りリスクが高い。購入前に試算が必須</li>
+      </ul>
+      <div class="cta-tool">
+        <p>CFはローン条件・家賃下落率・空室率によって変わります。シミュレーターで長期収支を確認してみましょう。</p>
+        <a href="/calculators/cash-flow" class="cta-link">→ CFシミュレーターで試算する（無料）</a>
+      </div>
+    </section>
+
+    <section class="art-section">
+      <h2 class="art-h2">CFを改善するには</h2>
+      <p class="art-prose">CFが思うように出ない場合、以下の観点を確認してください。</p>
+      <ul class="art-list">
+        <li><strong>頭金を増やす：</strong>借入額が減り、毎月のローン返済が軽くなる → <a href="/calculators/down-payment">頭金シミュレーター</a>で比較</li>
+        <li><strong>金利を下げる：</strong>0.5%の違いで返済額が大きく変わる → <a href="/calculators/mortgage">ローン返済シミュレーター</a>で確認</li>
+        <li><strong>物件価格の妥当性確認：</strong>相場より高い価格では利回りが低く、CFも悪化する → <a href="/calculators/price-check">価格妥当性チェッカー</a>で確認</li>
+        <li><strong>長期修繕費の見込み：</strong>突発修繕費はCFの大敵 → <a href="/calculators/repair-cost">修繕費シミュレーター</a>で長期費用を試算</li>
+      </ul>
+      <p class="art-prose art-note">
+        ※ 本記事の数値はあくまで参考値です。投資判断はご自身の責任において行ってください。
+      </p>
+    </section>
+
+    <div class="related-tools-box">
+      <p class="rtb-label">関連ツール</p>
+      <div class="rtb-links">
+        <a href="/calculators/cash-flow" class="rtb-link">💰 CFシミュレーター</a>
+        <a href="/calculators/roi" class="rtb-link">💹 ROI計算ツール</a>
+        <a href="/calculators/mortgage" class="rtb-link">🏦 ローン返済計算</a>
+        <a href="/calculators/down-payment" class="rtb-link">💴 頭金シミュレーター</a>
+      </div>
+    </div>
+
+    <div class="back-links">
+      <a href="/articles" class="back-link">← 記事一覧へ</a>
+    </div>
+  </div>
+</ArticleLayout>
+
+<style>
+.article-body { padding-top: 48px; padding-bottom: 80px; max-width: 780px; }
+.art-section { margin-bottom: 52px; }
+.art-h2 {
+  font-size: 1.2rem; font-weight: 700; color: var(--c-primary);
+  border-left: 4px solid var(--c-accent); padding-left: 14px;
+  margin-bottom: 18px; line-height: 1.4;
+}
+.art-prose { font-size: 0.9375rem; line-height: 1.85; color: var(--c-text); margin-bottom: 14px; }
+.art-note { color: var(--c-text-muted); font-size: 0.82rem; }
+.art-list { padding-left: 1.4em; display: flex; flex-direction: column; gap: 10px; }
+.art-list li { font-size: 0.9rem; line-height: 1.7; color: var(--c-text); }
+.art-list a { color: var(--c-primary); text-decoration: underline; text-underline-offset: 2px; }
+
+.cf-formula { margin: 16px 0; }
+.cf-formula-inner {
+  background: #f0f7f4; border: 1px solid #c8e0d8; border-radius: var(--radius-md);
+  padding: 16px 20px; font-size: 0.9rem; font-weight: 600; color: var(--c-text); line-height: 1.6;
+}
+
+.diff-table-wrap { overflow-x: auto; border-radius: var(--radius-md); border: 1px solid var(--c-border); margin: 16px 0; }
+.diff-table { width: 100%; border-collapse: collapse; font-size: 0.875rem; background: #fff; }
+.diff-table th, .diff-table td { padding: 10px 14px; border-bottom: 1px solid var(--c-border); text-align: left; }
+.diff-table th { background: #f5f3ef; font-weight: 700; white-space: nowrap; }
+.diff-table tr:last-child td { border-bottom: none; }
+.yes { color: var(--c-success); font-weight: 600; }
+.no { color: var(--c-text-muted); }
+
+.cta-tool { background: #f0f7f4; border: 1px solid #c8e0d8; border-radius: var(--radius-md); padding: 18px 22px; margin-top: 18px; }
+.cta-tool p { font-size: 0.875rem; color: var(--c-text); line-height: 1.7; margin-bottom: 10px; }
+.cta-link { font-size: 0.875rem; font-weight: 700; color: var(--c-primary); text-decoration: none; }
+.cta-link:hover { text-decoration: underline; }
+
+.related-tools-box { background: #f0f7f4; border: 1px solid #c8e0d8; border-radius: var(--radius-md); padding: 18px 22px; margin-bottom: 28px; }
+.rtb-label { font-size: 0.82rem; font-weight: 700; color: var(--c-primary); margin-bottom: 12px; }
+.rtb-links { display: flex; flex-wrap: wrap; gap: 10px; }
+.rtb-link { font-size: 0.875rem; font-weight: 600; color: var(--c-primary); background: #fff; border: 1px solid var(--c-border); border-radius: var(--radius-md); padding: 8px 14px; text-decoration: none; transition: border-color 0.15s; }
+.rtb-link:hover { border-color: var(--c-primary); text-decoration: none; }
+.back-links { margin-top: 8px; }
+.back-link { font-size: 0.875rem; color: var(--c-primary); }
+</style>

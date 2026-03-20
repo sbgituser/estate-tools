@@ -1,0 +1,237 @@
+---
+import ArticleLayout from '../../layouts/ArticleLayout.astro';
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: '不動産投資の基礎知識｜利回り・ROI・CFで何を見ればよいか',
+    url: 'https://estate.kuras-plus.com/articles/real-estate-investment-basics',
+    description: '投資判断に必要な利回り・ROI・キャッシュフローの違いと使い方を初心者向けに解説。',
+    author: { '@type': 'Organization', name: '不動産ツールズ | kuras-plus' },
+    publisher: { '@type': 'Organization', name: '不動産ツールズ | kuras-plus', url: 'https://estate.kuras-plus.com' },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'ホーム', item: 'https://estate.kuras-plus.com' },
+      { '@type': 'ListItem', position: 2, name: '記事一覧', item: 'https://estate.kuras-plus.com/articles' },
+      { '@type': 'ListItem', position: 3, name: '不動産投資の基礎知識', item: 'https://estate.kuras-plus.com/articles/real-estate-investment-basics' },
+    ],
+  },
+];
+---
+
+<ArticleLayout
+  title="不動産投資の基礎知識｜利回り・ROI・CFで何を見ればよいか"
+  description="不動産投資を始める前に知っておきたい基礎知識。利回り・ROI・キャッシュフローの違いと使い方を初心者向けに分かりやすく解説します。"
+  eyebrow="基礎知識 · Real Estate Basics"
+  heroTitle="不動産投資の基礎知識｜利回り・ROI・CFで何を見ればよいか"
+  heroDesc="投資判断に必要な3つの指標の違いと、確認すべき順番を解説します。"
+  breadcrumb={[
+    { name: '記事一覧', href: '/articles' },
+    { name: '不動産投資の基礎知識' },
+  ]}
+  currentPath="/articles/real-estate-investment-basics"
+  jsonLd={jsonLd}
+>
+  <div class="container article-body">
+
+    <section class="art-section">
+      <h2 class="art-h2">不動産投資で見るべき3つの指標</h2>
+      <p class="art-prose">
+        不動産投資の収益性を判断するための主な指標は3つあります。
+        それぞれが異なる側面を示しており、1つだけを見ると判断を誤る可能性があります。
+      </p>
+      <div class="metric-cards">
+        <div class="metric-card">
+          <div class="metric-icon">📊</div>
+          <h3 class="metric-title">利回り</h3>
+          <p class="metric-desc">物件価格に対する年間家賃収入の割合。収益力の「第一印象」として使う。</p>
+          <a href="/calculators/yield" class="metric-link">利回り計算ツール →</a>
+        </div>
+        <div class="metric-card">
+          <div class="metric-icon">💹</div>
+          <h3 class="metric-title">ROI（投資収益率）</h3>
+          <p class="metric-desc">自己資金（頭金＋諸費用）に対する年間手残りの割合。レバレッジ効果を含む実態収益率。</p>
+          <a href="/calculators/roi" class="metric-link">ROI計算ツール →</a>
+        </div>
+        <div class="metric-card">
+          <div class="metric-icon">💰</div>
+          <h3 class="metric-title">キャッシュフロー（CF）</h3>
+          <p class="metric-desc">家賃収入からローン返済・費用を差し引いた「実際の手残り額」。年間で黒字か赤字かを示す。</p>
+          <a href="/calculators/cash-flow" class="metric-link">CFシミュレーター →</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="art-section">
+      <h2 class="art-h2">3つの指標の違いと確認する順番</h2>
+      <p class="art-prose">
+        これら3つは似ているようで、見ている「分母」が異なります。
+      </p>
+      <div class="comparison-list">
+        <div class="comp-item">
+          <span class="comp-label">利回り</span>
+          <span class="comp-eq">年間家賃収入 ÷ <strong>物件価格</strong> × 100</span>
+        </div>
+        <div class="comp-item">
+          <span class="comp-label">ROI</span>
+          <span class="comp-eq">年間手残り ÷ <strong>自己資金</strong> × 100</span>
+        </div>
+        <div class="comp-item">
+          <span class="comp-label">CF（年間）</span>
+          <span class="comp-eq">年間家賃収入 − 費用 − <strong>ローン返済</strong></span>
+        </div>
+      </div>
+      <p class="art-prose">
+        確認する順番は「利回りで物件を絞り込む → ROIで自己資金効率を確認する → CFで年間収支の実態を把握する」が基本です。
+        3つすべてを確認することで、投資判断の精度が大きく上がります。
+      </p>
+    </section>
+
+    <section class="art-section">
+      <h2 class="art-h2">指標以外に確認すべきこと</h2>
+      <p class="art-prose">数値指標に加えて、以下も必ず確認してください。</p>
+      <ul class="art-list">
+        <li><strong>物件価格の妥当性：</strong>周辺相場より割高な価格では利回りが低くなる。<a href="/calculators/price-check">価格妥当性チェッカー</a>で確認。</li>
+        <li><strong>修繕費の見込み：</strong>築年数が古いほど修繕費が増加。<a href="/calculators/repair-cost">修繕費シミュレーター</a>で長期コストを試算。</li>
+        <li><strong>空室リスク：</strong>満室想定のみで計算しない。<a href="/calculators/rent-vacancy-impact">空室率影響シミュレーター</a>でリスク感度を把握。</li>
+        <li><strong>出口戦略：</strong>売却時の手取りも事前に試算する。<a href="/calculators/sale-profit">売却益シミュレーター</a>を活用。</li>
+      </ul>
+    </section>
+
+    <section class="art-section">
+      <h2 class="art-h2">まとめ：利回りは入口、CFが出口</h2>
+      <p class="art-prose">
+        不動産投資の収益は「利回り」という入口から始まり、最終的には「毎月・毎年いくら手元に残るか（CF）」という出口で判断します。
+        どの指標も単独では不完全です。複数の指標を組み合わせ、シミュレーターで複数のシナリオを試算することが、失敗しない投資判断の基本です。
+      </p>
+      <p class="art-prose art-note">
+        ※ 本記事の内容はあくまで参考情報です。投資判断はご自身の責任において行ってください。
+      </p>
+    </section>
+
+    <div class="related-tools-box">
+      <p class="rtb-label">この記事で紹介したツール</p>
+      <div class="rtb-links">
+        <a href="/calculators/yield" class="rtb-link">📊 利回り計算ツール</a>
+        <a href="/calculators/roi" class="rtb-link">💹 ROI計算ツール</a>
+        <a href="/calculators/cash-flow" class="rtb-link">💰 CFシミュレーター</a>
+        <a href="/calculators/price-check" class="rtb-link">🔍 価格妥当性チェッカー</a>
+      </div>
+    </div>
+
+    <div class="back-links">
+      <a href="/articles" class="back-link">← 記事一覧へ</a>
+    </div>
+  </div>
+</ArticleLayout>
+
+<style>
+.article-body {
+  padding-top: 48px;
+  padding-bottom: 80px;
+  max-width: 780px;
+}
+.art-section { margin-bottom: 52px; }
+.art-h2 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--c-primary);
+  border-left: 4px solid var(--c-accent);
+  padding-left: 14px;
+  margin-bottom: 18px;
+  line-height: 1.4;
+}
+.art-prose {
+  font-size: 0.9375rem;
+  line-height: 1.85;
+  color: var(--c-text);
+  margin-bottom: 14px;
+}
+.art-note { color: var(--c-text-muted); font-size: 0.82rem; }
+.art-list {
+  padding-left: 1.4em;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.art-list li {
+  font-size: 0.9rem;
+  line-height: 1.7;
+  color: var(--c-text);
+}
+.art-list a { color: var(--c-primary); text-decoration: underline; text-underline-offset: 2px; }
+
+/* Metric Cards */
+.metric-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 14px;
+  margin-top: 16px;
+}
+.metric-card {
+  background: #fff;
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-md);
+  padding: 20px;
+}
+.metric-icon { font-size: 1.5rem; margin-bottom: 10px; }
+.metric-title { font-size: 0.95rem; font-weight: 700; color: var(--c-primary); margin-bottom: 8px; }
+.metric-desc { font-size: 0.82rem; color: var(--c-text-muted); line-height: 1.6; margin-bottom: 12px; }
+.metric-link { font-size: 0.8rem; color: var(--c-primary); font-weight: 600; text-decoration: none; }
+.metric-link:hover { text-decoration: underline; }
+
+/* Comparison List */
+.comparison-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 16px 0;
+}
+.comp-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: #fff;
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-md);
+  padding: 12px 18px;
+  font-size: 0.875rem;
+}
+.comp-label {
+  font-weight: 700;
+  color: var(--c-primary);
+  min-width: 90px;
+  flex-shrink: 0;
+}
+.comp-eq { color: var(--c-text); }
+
+/* Related Tools Box */
+.related-tools-box {
+  background: #f0f7f4;
+  border: 1px solid #c8e0d8;
+  border-radius: var(--radius-md);
+  padding: 20px 24px;
+  margin-bottom: 32px;
+}
+.rtb-label { font-size: 0.82rem; font-weight: 700; color: var(--c-primary); margin-bottom: 14px; }
+.rtb-links { display: flex; flex-wrap: wrap; gap: 10px; }
+.rtb-link {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--c-primary);
+  background: #fff;
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-md);
+  padding: 8px 14px;
+  text-decoration: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.rtb-link:hover { border-color: var(--c-primary); box-shadow: var(--shadow-sm); text-decoration: none; }
+
+.back-links { margin-top: 16px; }
+.back-link { font-size: 0.875rem; color: var(--c-primary); }
+</style>

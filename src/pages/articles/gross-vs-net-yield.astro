@@ -1,0 +1,199 @@
+---
+import ArticleLayout from '../../layouts/ArticleLayout.astro';
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: '表面利回りと実質利回りの違い｜計算式と投資判断への使い方',
+    url: 'https://estate.kuras-plus.com/articles/gross-vs-net-yield',
+    description: '不動産投資の表面利回りと実質利回りの違いを計算式・費用・判断基準から解説。',
+    author: { '@type': 'Organization', name: '不動産ツールズ | kuras-plus' },
+    publisher: { '@type': 'Organization', name: '不動産ツールズ | kuras-plus', url: 'https://estate.kuras-plus.com' },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'ホーム', item: 'https://estate.kuras-plus.com' },
+      { '@type': 'ListItem', position: 2, name: '記事一覧', item: 'https://estate.kuras-plus.com/articles' },
+      { '@type': 'ListItem', position: 3, name: '表面利回りと実質利回りの違い', item: 'https://estate.kuras-plus.com/articles/gross-vs-net-yield' },
+    ],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      {
+        '@type': 'Question',
+        name: '表面利回りと実質利回りはどちらを見ればよいですか？',
+        acceptedAnswer: { '@type': 'Answer', text: '投資判断では実質利回りを重視してください。表面利回りは費用を考慮しないため実態より高く見えます。まず表面利回りで物件を絞り込み、候補が絞れたら実質利回りで詳細判断するという使い分けが有効です。' },
+      },
+      {
+        '@type': 'Question',
+        name: '実質利回りの計算に含める費用は何ですか？',
+        acceptedAnswer: { '@type': 'Answer', text: '年間経費として管理費（家賃収入の5〜10%）・修繕費・固定資産税・保険料などが含まれます。購入時諸費用（仲介手数料・登記費用・ローン事務手数料など）は分母に加算します。物件価格の5〜10%程度が目安です。' },
+      },
+    ],
+  },
+];
+---
+
+<ArticleLayout
+  title="表面利回りと実質利回りの違い｜計算式と投資判断への使い方"
+  description="不動産投資における表面利回りと実質利回りの違いを、計算式・費用の考え方・判断基準の観点から初心者向けに解説します。シミュレーターで実際に計算することもできます。"
+  eyebrow="利回り解説 · Yield Guide"
+  heroTitle="表面利回りと実質利回りの違い"
+  heroDesc="計算式から費用の扱い方まで、2つの利回りを正確に理解して投資判断に活かす方法を解説します。"
+  breadcrumb={[
+    { name: '記事一覧', href: '/articles' },
+    { name: '表面利回りと実質利回りの違い' },
+  ]}
+  currentPath="/articles/gross-vs-net-yield"
+  jsonLd={jsonLd}
+>
+  <div class="container article-body">
+
+    <section class="art-section">
+      <h2 class="art-h2">2つの利回りの計算式</h2>
+      <p class="art-prose">
+        不動産投資で使われる利回りには「表面利回り」と「実質利回り」の2種類があります。
+        どちらも「%」で表しますが、分子・分母に含まれる内容が異なります。
+      </p>
+      <div class="formula-cards">
+        <div class="fc">
+          <div class="fc-label">表面利回り（グロス利回り）</div>
+          <div class="fc-formula">年間家賃収入（満室）÷ 物件価格 × 100</div>
+          <p class="fc-note">費用を一切考慮しない。計算が簡単で、物件の大まかな比較に使う。</p>
+        </div>
+        <div class="fc fc--main">
+          <div class="fc-label">実質利回り（ネット利回り）</div>
+          <div class="fc-formula">(年間家賃収入 − 年間経費) ÷ (物件価格 + 購入時諸費用) × 100</div>
+          <p class="fc-note">費用・空室・諸費用を考慮した実態に近い数値。投資判断に使う。</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="art-section">
+      <h2 class="art-h2">実質利回りに含める費用</h2>
+      <p class="art-prose">実質利回りの計算では、以下を含めます。</p>
+      <div class="cost-list">
+        <div class="cost-group">
+          <h3 class="cost-group-title">年間経費（分子から引く）</h3>
+          <ul class="cost-items">
+            <li>管理費：家賃収入の5〜10%（管理会社手数料）</li>
+            <li>修繕費：物件規模・築年数による（年10〜30万円程度が目安）</li>
+            <li>固定資産税・都市計画税：物件評価額の1.4〜1.7%程度</li>
+            <li>空室損失：想定空室率（5〜10%が目安）を家賃収入に掛けて計算</li>
+            <li>火災保険・地震保険：年数万円程度</li>
+          </ul>
+        </div>
+        <div class="cost-group">
+          <h3 class="cost-group-title">購入時諸費用（分母に加える）</h3>
+          <ul class="cost-items">
+            <li>仲介手数料：売買価格×3%＋6万円（税別）</li>
+            <li>不動産取得税：評価額の3〜4%</li>
+            <li>登記費用：数十万円程度</li>
+            <li>ローン事務手数料・保証料</li>
+            <li>合計：物件価格の5〜10%が目安</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="art-section">
+      <h2 class="art-h2">表面利回りと実質利回りの差はどれくらいか</h2>
+      <p class="art-prose">
+        一般的に、実質利回りは表面利回りより<strong>1〜2ポイント程度低く</strong>なります。
+        たとえば表面利回り6%の物件でも、費用を考慮すると実質利回りは4〜5%程度になることがあります。
+      </p>
+      <p class="art-prose">
+        差が小さい（1%以内）場合は費用が少ない優良物件の可能性がありますが、
+        差が大きい（2〜3%以上）場合は修繕費や管理コストが高い物件の可能性があります。
+      </p>
+      <div class="cta-tool">
+        <p>実際の物件で試算してみましょう。シミュレーターで表面・実質両方を即計算できます。</p>
+        <a href="/calculators/yield" class="cta-link">→ 利回りシミュレーターで試算する（無料）</a>
+      </div>
+    </section>
+
+    <section class="art-section">
+      <h2 class="art-h2">よくある質問</h2>
+      <div class="faq-list">
+        <div class="faq-item">
+          <h3 class="faq-q">表面利回りと実質利回りはどちらを見ればよいですか？</h3>
+          <p class="faq-a">投資判断では実質利回りを重視してください。表面利回りは費用を考慮しないため実態より高く見えます。まず表面利回りで物件を絞り込み、候補が絞れたら実質利回りで詳細判断するという使い分けが有効です。</p>
+        </div>
+        <div class="faq-item">
+          <h3 class="faq-q">実質利回りの計算に含める費用は何ですか？</h3>
+          <p class="faq-a">年間経費として管理費（家賃収入の5〜10%）・修繕費・固定資産税・保険料などが含まれます。購入時諸費用（仲介手数料・登記費用・ローン事務手数料など）は分母に加算します。物件価格の5〜10%程度が目安です。</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="related-tools-box">
+      <p class="rtb-label">関連ツール</p>
+      <div class="rtb-links">
+        <a href="/calculators/yield" class="rtb-link">📊 利回り計算ツール</a>
+        <a href="/calculators/roi" class="rtb-link">💹 ROI計算ツール</a>
+        <a href="/calculators/fixed-asset-tax" class="rtb-link">🏛️ 固定資産税シミュレーター</a>
+      </div>
+    </div>
+
+    <div class="back-links">
+      <a href="/articles" class="back-link">← 記事一覧へ</a>
+    </div>
+  </div>
+</ArticleLayout>
+
+<style>
+.article-body { padding-top: 48px; padding-bottom: 80px; max-width: 780px; }
+.art-section { margin-bottom: 52px; }
+.art-h2 {
+  font-size: 1.2rem; font-weight: 700; color: var(--c-primary);
+  border-left: 4px solid var(--c-accent); padding-left: 14px;
+  margin-bottom: 18px; line-height: 1.4;
+}
+.art-prose { font-size: 0.9375rem; line-height: 1.85; color: var(--c-text); margin-bottom: 14px; }
+
+/* Formula Cards */
+.formula-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
+@media (max-width: 580px) { .formula-cards { grid-template-columns: 1fr; } }
+.fc { background: #fff; border: 1px solid var(--c-border); border-radius: var(--radius-md); padding: 18px 20px; }
+.fc--main { border-color: var(--c-primary); background: #f0f7f4; }
+.fc-label { font-size: 0.75rem; font-weight: 700; color: var(--c-text-muted); margin-bottom: 8px; }
+.fc--main .fc-label { color: var(--c-primary); }
+.fc-formula { font-size: 0.875rem; font-weight: 700; color: var(--c-text); line-height: 1.6; margin-bottom: 8px; word-break: break-all; }
+.fc-note { font-size: 0.78rem; color: var(--c-text-muted); line-height: 1.6; margin: 0; }
+
+/* Cost List */
+.cost-list { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
+@media (max-width: 580px) { .cost-list { grid-template-columns: 1fr; } }
+.cost-group { background: #fff; border: 1px solid var(--c-border); border-radius: var(--radius-md); padding: 18px 20px; }
+.cost-group-title { font-size: 0.875rem; font-weight: 700; color: var(--c-primary); margin-bottom: 12px; }
+.cost-items { list-style: none; display: flex; flex-direction: column; gap: 7px; }
+.cost-items li { font-size: 0.82rem; color: var(--c-text-muted); line-height: 1.6; padding-left: 16px; position: relative; }
+.cost-items li::before { content: '·'; position: absolute; left: 4px; color: var(--c-accent); font-weight: 700; font-size: 1.1rem; line-height: 1.3; }
+
+/* CTA Tool */
+.cta-tool { background: #f0f7f4; border: 1px solid #c8e0d8; border-radius: var(--radius-md); padding: 18px 22px; margin-top: 20px; }
+.cta-tool p { font-size: 0.875rem; color: var(--c-text); line-height: 1.7; margin-bottom: 10px; }
+.cta-link { font-size: 0.875rem; font-weight: 700; color: var(--c-primary); text-decoration: none; }
+.cta-link:hover { text-decoration: underline; }
+
+/* FAQ */
+.faq-list { display: flex; flex-direction: column; gap: 0; margin-top: 16px; }
+.faq-item { padding: 18px 0; border-bottom: 1px solid var(--c-border); }
+.faq-item:first-child { border-top: 1px solid var(--c-border); }
+.faq-q { font-size: 0.95rem; font-weight: 700; color: var(--c-primary); margin-bottom: 8px; line-height: 1.5; }
+.faq-a { font-size: 0.85rem; color: var(--c-text-muted); line-height: 1.8; margin: 0; }
+
+/* Related Tools Box */
+.related-tools-box { background: #f0f7f4; border: 1px solid #c8e0d8; border-radius: var(--radius-md); padding: 18px 22px; margin-bottom: 28px; }
+.rtb-label { font-size: 0.82rem; font-weight: 700; color: var(--c-primary); margin-bottom: 12px; }
+.rtb-links { display: flex; flex-wrap: wrap; gap: 10px; }
+.rtb-link { font-size: 0.875rem; font-weight: 600; color: var(--c-primary); background: #fff; border: 1px solid var(--c-border); border-radius: var(--radius-md); padding: 8px 14px; text-decoration: none; transition: border-color 0.15s; }
+.rtb-link:hover { border-color: var(--c-primary); text-decoration: none; }
+.back-links { margin-top: 8px; }
+.back-link { font-size: 0.875rem; color: var(--c-primary); }
+</style>
