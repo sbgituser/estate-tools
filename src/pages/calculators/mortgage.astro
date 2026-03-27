@@ -2,6 +2,13 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
+import RelatedArticles from '../../components/RelatedArticles.astro';
+
+const relatedArticles = [
+  { href: '/articles/how-much-down-payment', tag: '頭金', title: '不動産投資の頭金はいくら必要？｜物件価格別の目安', desc: '物件価格帯別の頭金シミュレーションと準備の考え方' },
+  { href: '/articles/real-estate-investment-basics', tag: '基礎知識', title: '不動産投資の基礎知識｜利回り・ROI・CFで何を見ればよいか', desc: '投資判断に必要な3指標の違いと使い方を初心者向けに解説' },
+  { href: '/articles/cashflow-basics', tag: 'CF', title: '不動産投資のキャッシュフローとは｜計算方法と目安を解説', desc: 'ローン返済後の実態収支「手残り」の考え方を分かりやすく解説' },
+];
 
 const jsonLd = [
   {
@@ -13,6 +20,19 @@ const jsonLd = [
     applicationCategory: 'FinanceApplication',
     operatingSystem: 'All',
     offers: { '@type': 'Offer', price: '0', priceCurrency: 'JPY' },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: '住宅ローン返済シミュレーター｜毎月返済額・総返済額を無料計算',
+    url: 'https://estate.kuras-plus.com/calculators/mortgage',
+    description: '借入額・金利・返済年数を入力するだけで毎月の返済額・総返済額・返済負担率を即計算。元利均等と元金均等の比較、返済スケジュール表示にも対応した無料住宅ローンシミュレーターです。',
+    author: { '@type': 'Organization', name: '不動産ツールズ | kuras-plus' },
+    publisher: {
+      '@type': 'Organization',
+      name: '不動産ツールズ | kuras-plus',
+      url: 'https://estate.kuras-plus.com',
+    },
   },
   {
     '@context': 'https://schema.org',
@@ -49,11 +69,116 @@ const jsonLd = [
     </div>
   </section>
 
-  <!-- Calculator -->
-  <div class="container mt-48" style="padding-bottom: 80px;">
-    <div class="calc-layout">
+  <!-- Article Body -->
+  <div class="article-outer">
+    <div class="container article-container">
 
-      <!-- ── Inputs ── -->
+      <!-- Summary Box -->
+      <div class="summary-box">
+        <p class="summary-title">このページで分かること</p>
+        <ul class="summary-list">
+          <li>住宅ローンの月々返済額と総返済額の計算方法</li>
+          <li>元利均等返済と元金均等返済の違い</li>
+          <li>返済期間・金利による支払い総額の変化</li>
+          <li>返済負担率（年収に対する返済割合）の目安</li>
+        </ul>
+      </div>
+
+      <!-- Section 1: 返済方式の基本 -->
+      <section class="article-section" id="repayment-methods">
+        <h2 class="article-h2">住宅ローン返済の基本 — 元利均等と元金均等の違い</h2>
+        <p class="prose">
+          住宅ローンの返済方式は主に「元利均等返済」と「元金均等返済」の2つです。
+          どちらを選ぶかで、毎月の返済額・総返済額・総利息が大きく変わります。
+        </p>
+
+        <div class="formula-wrap">
+          <div class="formula-card">
+            <div class="formula-type">元利均等返済</div>
+            <div class="formula-eq">毎月返済額 = 借入額 × 月利 × (1+月利)^n ÷ {(1+月利)^n − 1}</div>
+            <p class="formula-note">毎月の返済額が一定で家計管理しやすい。返済初期は利息の割合が高い。</p>
+          </div>
+          <div class="formula-card formula-card--main">
+            <div class="formula-type">元金均等返済</div>
+            <div class="formula-eq">毎月返済額 = 借入額÷返済月数 + 残高×月利</div>
+            <p class="formula-note">元金が毎月一定額減少し総利息は少なくなるが、返済初期の負担が大きい。</p>
+          </div>
+        </div>
+
+        <div class="point-box">
+          <p class="point-label">返済方式を選ぶときのポイント</p>
+          <ul class="point-list">
+            <li><strong>元利均等</strong>：毎月の支出が一定で、家計管理がしやすい。サラリーマンなど給与が安定している方向け</li>
+            <li><strong>元金均等</strong>：総利息が少なく済む。返済初期に余裕があり、生涯収入が見込める方向け</li>
+            <li>どちらを選ぶべきかは、現在と将来の収支状況で判断することが重要</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Section 2: 返済負担率の目安 -->
+      <section class="article-section" id="repayment-ratio">
+        <h2 class="article-h2">返済負担率の目安と安全水準</h2>
+        <p class="prose">
+          返済負担率とは、年収に対する年間ローン返済額の割合のことです。
+          金融機関の審査基準とは別に、実際の生活に無理が生じない水準を理解することが重要です。
+        </p>
+
+        <div class="table-wrap">
+          <table class="benchmark-table">
+            <thead>
+              <tr>
+                <th>返済負担率</th>
+                <th>判定</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>20%以下</strong></td>
+                <td class="cell-yes">余裕あり</td>
+                <td>教育費・貯蓄・予備費など、他の支出に余裕が持てる水準</td>
+              </tr>
+              <tr>
+                <td><strong>20〜25%</strong></td>
+                <td class="cell-yes">適正範囲</td>
+                <td>生活に無理がなく、ローン返済を継続できる目安</td>
+              </tr>
+              <tr>
+                <td><strong>25〜30%</strong></td>
+                <td class="cell-ok">やや負担大</td>
+                <td>生活費を圧迫する可能性。将来の金利上昇時に要注意</td>
+              </tr>
+              <tr>
+                <td><strong>30%超</strong></td>
+                <td class="cell-no">要注意</td>
+                <td>金融機関が審査基準としている水準。生活に支障が出やすい</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="note-box">
+          <p><strong>重要：</strong>返済負担率は<strong>手取り年収</strong>をベースに計算してください。税引前の年収ではなく、実際に手元に残る金額で判断することが無理のない資金計画につながります。</p>
+        </div>
+      </section>
+
+      <!-- CTA Banner -->
+      <div class="cta-banner">
+        <p class="cta-text">返済方式と負担率の目安が分かったところで、実際の条件で試算してみましょう。</p>
+        <a href="#calculator" class="cta-btn">↓ シミュレーターで今すぐ試算する（無料）</a>
+      </div>
+
+      <!-- Section 3: Calculator -->
+      <section class="tool-section" id="calculator">
+        <h2 class="article-h2">🧮 住宅ローン返済シミュレーター（無料）</h2>
+        <p class="tool-section-desc">
+          借入額・金利・返済年数を入力するだけで、毎月返済額・総返済額・返済負担率を即計算します。
+          元利均等・元金均等の比較も可能です。登録不要・完全無料でご利用いただけます。
+        </p>
+
+        <div class="calc-layout">
+
+          <!-- ── Inputs ── -->
       <section class="card" aria-label="入力フォーム">
         <h2 class="card-heading">ローン条件を入力</h2>
 
@@ -289,6 +414,63 @@ const jsonLd = [
         </p>
       </section>
     </div>
+      </section>
+
+      <!-- Section 4: 見落としがちなポイント -->
+      <section class="article-section" id="important-points">
+        <h2 class="article-h2">住宅ローンで見落としがちな4つのポイント</h2>
+        <p class="prose">
+          ローン返済額の計算だけでなく、以下のポイントを総合的に検討することが重要です。
+        </p>
+
+        <div class="reason-list">
+          <div class="reason-item">
+            <div class="reason-num">01</div>
+            <div class="reason-body">
+              <h3 class="reason-title">金利タイプ選びで総額が大きく変わる</h3>
+              <p class="reason-desc">
+                変動金利・固定10年・フラット35など、金利タイプの選択で総返済額が数百万円単位で変わります。
+                現在は低金利が続いていますが、将来の金利上昇リスクも考慮した上で選択することが重要です。
+                3年以上の長期保有を予定している場合、固定金利の安心感も検討値です。
+              </p>
+            </div>
+          </div>
+          <div class="reason-item">
+            <div class="reason-num">02</div>
+            <div class="reason-body">
+              <h3 class="reason-title">繰り上げ返済の効果は早期ほど大きい</h3>
+              <p class="reason-desc">
+                余剰資金で繰り上げ返済を行うと、返済期間短縮と利息削減の両方の効果が得られます。
+                ただし、繰り上げ返済のタイミングが早いほど効果が大きいため、
+                税制優遇（住宅ローン減税）が終わる13年目以降の実行を計画することが一般的です。
+              </p>
+            </div>
+          </div>
+          <div class="reason-item">
+            <div class="reason-num">03</div>
+            <div class="reason-body">
+              <h3 class="reason-title">返済負担率は手取りベースで考える</h3>
+              <p class="reason-desc">
+                返済負担率は<strong>税引後の手取り年収</strong>をベースに計算してください。
+                年収600万円でも、手取りは450万円程度です。
+                見かけの年収で判断すると、実生活で支払い負担が重くのしかかります。
+              </p>
+            </div>
+          </div>
+          <div class="reason-item">
+            <div class="reason-num">04</div>
+            <div class="reason-body">
+              <h3 class="reason-title">諸費用（税金・手数料）を忘れない</h3>
+              <p class="reason-desc">
+                物件価格以外に、仲介手数料・登記費用・ローン事務手数料・火災保険料など、
+                物件価格の5〜10%程度の諸費用がかかります。
+                資金計画には物件価格だけでなく、これらの隠れコストを必ず含めましょう。
+                詳しくは<a href="/calculators/fixed-asset-tax">固定資産税シミュレーター</a>で税額を確認することをお勧めします。
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
 
     <!-- ── Related tools ── -->
     <section class="related-section mt-48">
@@ -448,9 +630,44 @@ const jsonLd = [
           </div>
         </details>
 
+        <details class="faq-item">
+          <summary class="faq-q">変動金利と固定金利、どちらを選ぶべきですか？</summary>
+          <div class="faq-a">
+            <p>
+              <strong>変動金利</strong>は現在、固定金利より低い金利が提供されていますが、
+              将来的に金利が上昇するリスクがあります。返済額が増える可能性を受け入れられる方向けです。
+              一方<strong>固定金利</strong>（フラット35など）は金利が固定されるため、
+              将来の金利上昇から守られます。ローン期間が長い（25年以上）場合や、
+              金利上昇に備えたい場合は固定金利の安心感が大きいメリットです。
+              一般的には「返済期間が長いほど固定金利」「返済期間が短いほど変動金利」という判断が目安になります。
+            </p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary class="faq-q">繰り上げ返済はいつ行うのが最も効果的ですか？</summary>
+          <div class="faq-a">
+            <p>
+              繰り上げ返済のタイミングは、<strong>住宅ローン減税の終了時点（通常13年目以降）</strong>が効果的です。
+              住宅ローン減税の期間中は、年間40万円程度の減税メリットがあるため、
+              余剰資金でローンを返済するより、減税効果を享受する方がお得です。
+              減税終了後の繰り上げ返済で、以後の利息負担を大きく削減できます。
+              ただし、緊急時の資金確保として最低3〜6ヶ月分の生活費は手元に残すことを推奨します。
+            </p>
+          </div>
+        </details>
+
       </div>
     </section>
 
+    <!-- ─── Related Articles ─── -->
+    <RelatedArticles
+      articles={relatedArticles}
+      heading="関連記事"
+      subheading="住宅ローン返済に関連する重要な知識をまとめました"
+    />
+
+    </div>
   </div>
 
   <Footer slot="footer" />
@@ -857,6 +1074,298 @@ const jsonLd = [
   line-height: 1.8;
 }
 .faq-a p + p { margin-top: 8px; }
+
+/* ─── Article Outer & Container ─── */
+.article-outer {
+  background: var(--c-bg);
+  padding: 48px 0 0;
+}
+.article-container {
+  max-width: 820px;
+}
+
+/* ─── Summary Box ─── */
+.summary-box {
+  background: #fff;
+  border: 1px solid var(--c-border);
+  border-left: 4px solid var(--c-primary);
+  border-radius: var(--radius-md);
+  padding: 20px 24px;
+  margin-bottom: 48px;
+}
+.summary-title {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--c-primary);
+  margin-bottom: 12px;
+  letter-spacing: 0.02em;
+}
+.summary-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.summary-list li {
+  font-size: 0.875rem;
+  color: var(--c-text);
+  padding-left: 20px;
+  position: relative;
+}
+.summary-list li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  color: var(--c-success);
+  font-weight: 700;
+}
+
+/* ─── Article Section ─── */
+.article-section {
+  margin-bottom: 56px;
+}
+.article-h2 {
+  font-size: clamp(1.1rem, 2.5vw, 1.35rem);
+  font-weight: 700;
+  color: var(--c-primary);
+  border-left: 4px solid var(--c-accent);
+  padding-left: 14px;
+  margin-bottom: 20px;
+  line-height: 1.4;
+}
+
+/* ─── Prose ─── */
+.prose {
+  font-size: 0.9375rem;
+  line-height: 1.85;
+  color: var(--c-text);
+  margin-bottom: 16px;
+}
+.prose strong { color: var(--c-text); }
+
+/* ─── Formula Cards ─── */
+.formula-wrap {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin: 24px 0;
+}
+@media (max-width: 640px) {
+  .formula-wrap { grid-template-columns: 1fr; }
+}
+.formula-card {
+  background: #f9f9f9;
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  text-align: center;
+}
+.formula-card--main {
+  background: rgba(26,74,58,0.06);
+  border: 2px solid var(--c-primary);
+}
+.formula-type {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--c-primary);
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.formula-eq {
+  font-family: 'Courier New', monospace;
+  font-size: 0.82rem;
+  color: var(--c-text);
+  background: white;
+  padding: 12px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 12px;
+  line-height: 1.6;
+  word-break: break-word;
+}
+.formula-note {
+  font-size: 0.75rem;
+  color: var(--c-text-muted);
+  line-height: 1.6;
+}
+
+/* ─── Point Box ─── */
+.point-box {
+  background: #f0f7f4;
+  border: 1px solid #c8e0d8;
+  border-radius: var(--radius-md);
+  padding: 16px 20px;
+  margin-top: 16px;
+}
+.point-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--c-primary);
+  margin-bottom: 10px;
+}
+.point-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-left: 0;
+}
+.point-list li {
+  font-size: 0.82rem;
+  color: var(--c-text-muted);
+  padding-left: 18px;
+  position: relative;
+  line-height: 1.6;
+}
+.point-list li::before {
+  content: '•';
+  position: absolute;
+  left: 6px;
+  color: var(--c-primary);
+  font-weight: 700;
+}
+
+/* ─── Table Wrap ─── */
+.table-wrap {
+  overflow-x: auto;
+  margin: 24px 0;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--c-border);
+}
+.benchmark-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+.benchmark-table th, .benchmark-table td {
+  padding: 12px;
+  border-bottom: 1px solid var(--c-border);
+  text-align: left;
+}
+.benchmark-table th {
+  font-weight: 700;
+  color: var(--c-text);
+  background: rgba(26,74,58,0.04);
+}
+.benchmark-table tbody tr:last-child td { border-bottom: none; }
+.benchmark-table td:first-child { font-weight: 600; color: var(--c-primary); }
+.cell-yes { color: var(--c-success); font-weight: 600; }
+.cell-ok { color: var(--c-warning); font-weight: 600; }
+.cell-no { color: var(--c-danger); font-weight: 600; }
+
+/* ─── Note Box ─── */
+.note-box {
+  background: rgba(201,148,58,0.08);
+  border: 1px solid rgba(201,148,58,0.25);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  margin-top: 16px;
+  font-size: 0.82rem;
+  color: var(--c-text-muted);
+  line-height: 1.6;
+}
+.note-box p { margin-bottom: 0; }
+.note-box p + p { margin-top: 8px; }
+.note-box strong { color: var(--c-text); }
+
+/* ─── CTA Banner ─── */
+.cta-banner {
+  background: linear-gradient(135deg, rgba(26,74,58,0.08) 0%, rgba(26,74,58,0.04) 100%);
+  border: 2px solid var(--c-primary);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  margin: 48px 0;
+  text-align: center;
+}
+.cta-text {
+  font-size: 0.95rem;
+  color: var(--c-text);
+  margin-bottom: 14px;
+  font-weight: 500;
+}
+.cta-btn {
+  display: inline-block;
+  background: var(--c-primary);
+  color: white;
+  padding: 12px 28px;
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: background 0.2s, transform 0.2s;
+}
+.cta-btn:hover {
+  background: var(--c-primary-hover);
+  transform: translateY(-2px);
+}
+
+/* ─── Tool Section ─── */
+.tool-section {
+  margin-bottom: 56px;
+}
+.tool-section-desc {
+  font-size: 0.9375rem;
+  color: var(--c-text-muted);
+  margin-bottom: 28px;
+  line-height: 1.7;
+}
+
+/* ─── Reason Items ─── */
+.reason-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 28px;
+  margin: 32px 0;
+}
+.reason-item {
+  display: grid;
+  grid-template-columns: 60px 1fr;
+  gap: 20px;
+  padding: 20px;
+  background: var(--c-bg-card);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-md);
+}
+.reason-num {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--c-primary);
+  line-height: 1;
+  display: flex;
+  align-items: flex-start;
+}
+.reason-body { display: flex; flex-direction: column; gap: 8px; }
+.reason-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--c-primary);
+  margin: 0;
+}
+.reason-desc {
+  font-size: 0.82rem;
+  color: var(--c-text-muted);
+  line-height: 1.7;
+  margin: 0;
+}
+.reason-desc a {
+  color: var(--c-primary);
+  text-decoration: none;
+  font-weight: 600;
+}
+.reason-desc a:hover { text-decoration: underline; }
+
+/* ─── MT utility ─── */
+.mt-48 { margin-top: 48px; }
+
+/* ─── Section label ─── */
+.section-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--c-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 8px;
+}
 </style>
 
 <script>
