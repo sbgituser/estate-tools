@@ -1,0 +1,321 @@
+---
+import ArticleLayout from '../../layouts/ArticleLayout.astro';
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: 'ワンルーム投資の利回り目安｜東京・大阪・地方別の相場',
+    url: 'https://estate.kuras-plus.com/articles/one-room-yield-benchmark',
+    description: 'ワンルームマンション投資の利回り目安を東京・大阪・地方別に解説。築年数・駅距離・新築vs中古の違いも詳しく説明します。',
+    author: { '@type': 'Organization', name: '不動産ツールズ | kuras-plus' },
+    publisher: { '@type': 'Organization', name: '不動産ツールズ | kuras-plus', url: 'https://estate.kuras-plus.com' },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'ホーム', item: 'https://estate.kuras-plus.com' },
+      { '@type': 'ListItem', position: 2, name: '記事一覧', item: 'https://estate.kuras-plus.com/articles' },
+      { '@type': 'ListItem', position: 3, name: 'ワンルーム投資の利回り目安', item: 'https://estate.kuras-plus.com/articles/one-room-yield-benchmark' },
+    ],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      {
+        '@type': 'Question',
+        name: '東京のワンルームマンション投資の利回り目安は何%ですか？',
+        acceptedAnswer: { '@type': 'Answer', text: '東京23区の区分ワンルームマンション（中古）の表面利回りは一般的に4〜7%程度、実質利回りは3〜5%程度が目安です。都心3区（港・渋谷・千代田）ではさらに低く3〜4%前後になることもあります。ただし市況や物件条件によって大きく変動するため、必ず最新データでご確認ください。' },
+      },
+      {
+        '@type': 'Question',
+        name: 'ワンルーム投資で新築と中古はどちらが利回りが高いですか？',
+        acceptedAnswer: { '@type': 'Answer', text: '一般的に中古の方が表面利回りは高くなります。新築は物件価格に「新築プレミアム」が含まれるため利回りが低くなりやすく（3〜5%程度）、中古は価格が抑えられる分、利回りは高く見えます（5〜8%程度）。ただし中古は修繕費・設備更新費が増加するため、実質利回りで比較することが重要です。' },
+      },
+    ],
+  },
+];
+---
+
+<ArticleLayout
+  title="ワンルーム投資の利回り目安｜東京・大阪・地方別の相場"
+  description="ワンルームマンション投資の利回り目安を東京・大阪・地方別に解説。築年数・駅距離・新築vs中古の影響も詳しく紹介。実際の物件試算にはシミュレーターをご活用ください。"
+  eyebrow="地域別利回り相場 · Regional Yield"
+  heroTitle="ワンルーム投資の利回り目安"
+  heroDesc="東京・大阪・地方別の利回り相場と、築年数・駅距離・新築vs中古の違いを解説します。"
+  breadcrumb={[
+    { name: '記事一覧', href: '/articles' },
+    { name: 'ワンルーム投資の利回り目安' },
+  ]}
+  currentPath="/articles/one-room-yield-benchmark"
+  jsonLd={jsonLd}
+>
+  <div class="container article-body">
+
+    <section class="art-section">
+      <h2 class="art-h2">ワンルーム投資における利回りの考え方</h2>
+      <p class="art-prose">
+        ワンルームマンション（区分マンション）投資において、利回りは物件選びの重要な指標のひとつです。
+        しかし利回りの「高い・低い」は地域によって大きく異なります。
+        東京都心で表面利回り5%は十分な水準ですが、地方では10%を超えても成立が難しい物件もあります。
+      </p>
+      <p class="art-prose">
+        本記事では東京・大阪・地方別の利回り相場目安を紹介します。
+        なお以下の数値はあくまで参考値です。実際の物件投資にあたっては、最新の市況データをご自身で確認いただいた上で判断してください。
+      </p>
+      <div class="notice-box">
+        <p>📌 利回りには「表面利回り」と「実質利回り」があります。費用を考慮した実質利回りで比較することをおすすめします。<a href="/articles/yield-calculation-guide" class="inline-link">→ 利回り計算の詳細はこちら</a></p>
+      </div>
+    </section>
+
+    <section class="art-section">
+      <h2 class="art-h2">エリア別ワンルーム投資の利回り相場（参考値）</h2>
+      <p class="art-prose">
+        以下は区分ワンルームマンション（主に中古）の利回り参考値です。
+        新築・築年数・駅距離によって変動があります。数値はあくまでも一般的な目安として参照してください。
+      </p>
+      <div class="table-wrap">
+        <table class="benchmark-table">
+          <thead>
+            <tr>
+              <th>エリア</th>
+              <th>表面利回り（参考）</th>
+              <th>実質利回り（参考）</th>
+              <th>特徴</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>東京都心3区<br /><span class="td-note">港・渋谷・千代田</span></td>
+              <td>3〜5%</td>
+              <td>2〜3.5%</td>
+              <td>高流動性・高資産性、空室リスク低</td>
+            </tr>
+            <tr>
+              <td>東京23区（中堅）<br /><span class="td-note">新宿・豊島・板橋等</span></td>
+              <td>4〜7%</td>
+              <td>3〜5%</td>
+              <td>バランス型、賃貸需要安定</td>
+            </tr>
+            <tr>
+              <td>東京郊外・神奈川・埼玉</td>
+              <td>5〜9%</td>
+              <td>4〜6%</td>
+              <td>価格帯が広い、駅距離で差が大きい</td>
+            </tr>
+            <tr>
+              <td>大阪中心部<br /><span class="td-note">中央・北・浪速区等</span></td>
+              <td>5〜8%</td>
+              <td>4〜6%</td>
+              <td>インバウンド需要あり、流動性高め</td>
+            </tr>
+            <tr>
+              <td>名古屋・福岡中心部</td>
+              <td>6〜9%</td>
+              <td>4〜7%</td>
+              <td>政令市のため賃貸需要は比較的安定</td>
+            </tr>
+            <tr>
+              <td>地方政令市（仙台・広島等）</td>
+              <td>7〜11%</td>
+              <td>5〜8%</td>
+              <td>利回りは高いが空室リスク・流動性に注意</td>
+            </tr>
+            <tr>
+              <td>地方・郊外</td>
+              <td>10〜15%以上</td>
+              <td>7〜10%</td>
+              <td>高利回りだが空室・売却リスクが高い</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="small-note">※ 上記はあくまで一般的な参考値です。物件の個別条件・市況・金利環境によって大きく変動します。最新データは健美家・楽待等の不動産投資情報サイトでご確認ください。</p>
+    </section>
+
+    <section class="art-section">
+      <h2 class="art-h2">築年数・駅距離による利回りの変動</h2>
+      <p class="art-prose">
+        同一エリアでも、築年数と駅からの距離は利回りに大きな影響を与えます。
+      </p>
+      <div class="factor-grid">
+        <div class="factor-card">
+          <div class="factor-title">築年数の影響</div>
+          <ul class="factor-list">
+            <li><strong>新築〜築5年：</strong>利回り低め（3〜5%）だが修繕費少・空室リスク低</li>
+            <li><strong>築6〜15年：</strong>価格下落が落ち着き利回りが上昇（4〜7%）</li>
+            <li><strong>築16〜25年：</strong>利回りはやや高め（6〜9%）だが設備更新費に注意</li>
+            <li><strong>築26年以上：</strong>利回りは高く見えるが（8〜12%）修繕費・空室増加に注意</li>
+          </ul>
+        </div>
+        <div class="factor-card">
+          <div class="factor-title">駅距離の影響</div>
+          <ul class="factor-list">
+            <li><strong>駅徒歩5分以内：</strong>家賃が高く空室リスク低。利回りは低め</li>
+            <li><strong>駅徒歩6〜10分：</strong>バランス型。賃貸需要は概ね安定</li>
+            <li><strong>駅徒歩11〜15分：</strong>家賃設定が難しくなり空室率が上昇しやすい</li>
+            <li><strong>駅徒歩16分以上：</strong>表面利回りは高くなりやすいが空室リスクが高い</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="art-section">
+      <h2 class="art-h2">新築vs中古の利回り比較</h2>
+      <p class="art-prose">
+        ワンルーム投資において、新築と中古では利回りの水準・リスクプロファイルが大きく異なります。
+      </p>
+      <div class="compare-cards">
+        <div class="compare-card compare-card--new">
+          <div class="compare-title">新築ワンルーム</div>
+          <div class="compare-yield">表面利回り：3〜5%程度</div>
+          <ul class="compare-list">
+            <li>✅ 修繕費が少ない（当面）</li>
+            <li>✅ 入居者を集めやすい</li>
+            <li>✅ 設備保証が受けやすい</li>
+            <li>⚠️ 購入価格が高く利回りが低め</li>
+            <li>⚠️ 竣工後に資産価値が大きく下落</li>
+            <li>⚠️ デベロッパーの営業価格が含まれる</li>
+          </ul>
+        </div>
+        <div class="compare-card compare-card--used">
+          <div class="compare-title">中古ワンルーム</div>
+          <div class="compare-yield">表面利回り：5〜10%程度（条件による）</div>
+          <ul class="compare-list">
+            <li>✅ 購入価格が抑えられ利回りが高め</li>
+            <li>✅ 価格下落が緩やか（築古ほど）</li>
+            <li>✅ 実績・賃料履歴を確認できる</li>
+            <li>⚠️ 修繕費・設備更新費がかかる</li>
+            <li>⚠️ 築古は融資が付きにくい場合も</li>
+            <li>⚠️ 物件状態の見極めが重要</li>
+          </ul>
+        </div>
+      </div>
+      <p class="art-prose" style="margin-top: 20px;">
+        新築は「安定性重視」、中古は「収益性重視」という傾向があります。
+        ただし中古は修繕費を実質利回りに正しく反映させないと収益性が過大評価されやすいため、注意が必要です。
+      </p>
+
+      <div class="cta-tool">
+        <p>シミュレーターで新築・中古の利回りを実際に比較してみましょう。</p>
+        <a href="/calculators/yield" class="cta-link">→ 利回りシミュレーターで今すぐ試算する（無料）</a>
+      </div>
+    </section>
+
+    <section class="art-section">
+      <h2 class="art-h2">よくある質問</h2>
+      <div class="faq-list">
+        <div class="faq-item">
+          <h3 class="faq-q">東京のワンルームマンション投資で利回りは何%が目安ですか？</h3>
+          <p class="faq-a">東京23区の中古区分ワンルームでは表面利回り4〜7%、実質利回り3〜5%程度が参考値です。ただし都心3区では3〜4%台が多く、郊外では7〜9%の物件も見られます。利回りの高さは必ずしも良い物件を意味しないため、空室リスクや修繕費を含めた実質利回りで判断してください。</p>
+        </div>
+        <div class="faq-item">
+          <h3 class="faq-q">利回りが高い地方物件と低い都市部物件、どちらが有利ですか？</h3>
+          <p class="faq-a">一概には言えません。地方物件は利回りが高い一方で空室リスク・流動性の低さ・人口減少リスクも高い傾向があります。都市部は利回りが低いですが賃貸需要が安定しており、売却時の流動性も高い傾向があります。リスク許容度と投資目的に合わせて選ぶことが重要です。</p>
+        </div>
+        <div class="faq-item">
+          <h3 class="faq-q">ワンルームで新築と中古はどちらが利回りが高いですか？</h3>
+          <p class="faq-a">表面利回りは一般的に中古の方が高くなります。新築は物件価格に新築プレミアムが上乗せされているため利回りが低め（3〜5%）になります。中古は価格が抑えられ利回りは高め（5〜10%）ですが、修繕費・設備更新費が増加する点を考慮した実質利回りで比較することをお勧めします。</p>
+        </div>
+      </div>
+    </section>
+
+    <p class="disclaimer">
+      ※ 本記事の数値はあくまで一般的な参考値です。利回り相場は市況・物件条件・金利環境によって大きく変動します。
+      最新のデータは健美家・楽待等の不動産投資情報サイトでご確認ください。
+      不動産投資には空室・価格下落等のリスクが伴います。投資判断は自己責任でお願いします。
+    </p>
+
+    <div class="related-tools-box">
+      <p class="rtb-label">関連ツール</p>
+      <div class="rtb-links">
+        <a href="/calculators/yield" class="rtb-link">📊 利回り計算ツール</a>
+        <a href="/calculators/rent-vacancy-impact" class="rtb-link">📉 空室率影響シミュレーター</a>
+        <a href="/calculators/price-check" class="rtb-link">🔍 価格妥当性チェッカー</a>
+      </div>
+    </div>
+
+    <div class="related-articles-box">
+      <p class="rtb-label">関連記事</p>
+      <div class="rtb-links">
+        <a href="/articles/yield-calculation-guide" class="rtb-link">📖 利回り計算完全ガイド</a>
+        <a href="/articles/initial-cost-simulation" class="rtb-link">💴 初期費用シミュレーション</a>
+        <a href="/articles/gross-vs-net-yield" class="rtb-link">📊 表面・実質利回りの違い</a>
+      </div>
+    </div>
+
+    <div class="back-links">
+      <a href="/articles" class="back-link">← 記事一覧へ</a>
+    </div>
+  </div>
+</ArticleLayout>
+
+<style>
+.article-body { padding-top: 48px; padding-bottom: 80px; max-width: 780px; }
+.art-section { margin-bottom: 52px; }
+.art-h2 {
+  font-size: 1.2rem; font-weight: 700; color: var(--c-primary);
+  border-left: 4px solid var(--c-accent); padding-left: 14px;
+  margin-bottom: 18px; line-height: 1.4;
+}
+.art-prose { font-size: 0.9375rem; line-height: 1.85; color: var(--c-text); margin-bottom: 14px; }
+
+/* Notice Box */
+.notice-box { background: #f0f7f4; border: 1px solid #c8e0d8; border-radius: var(--radius-md); padding: 14px 18px; margin-top: 16px; font-size: 0.875rem; color: var(--c-text); line-height: 1.7; }
+.inline-link { color: var(--c-primary); font-weight: 600; }
+
+/* Table */
+.table-wrap { overflow-x: auto; margin-top: 16px; }
+.benchmark-table { width: 100%; border-collapse: collapse; font-size: 0.83rem; }
+.benchmark-table th { background: var(--c-primary); color: #fff; padding: 10px 12px; text-align: left; font-size: 0.8rem; font-weight: 700; }
+.benchmark-table td { padding: 10px 12px; border-bottom: 1px solid var(--c-border); vertical-align: top; line-height: 1.5; }
+.benchmark-table tr:nth-child(even) td { background: #faf9f7; }
+.td-note { font-size: 0.73rem; color: var(--c-text-muted); }
+.small-note { font-size: 0.76rem; color: var(--c-text-muted); line-height: 1.7; margin-top: 10px; }
+
+/* Factor Grid */
+.factor-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
+@media (max-width: 580px) { .factor-grid { grid-template-columns: 1fr; } }
+.factor-card { background: #fff; border: 1px solid var(--c-border); border-radius: var(--radius-md); padding: 18px 20px; }
+.factor-title { font-size: 0.875rem; font-weight: 700; color: var(--c-primary); margin-bottom: 12px; }
+.factor-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.factor-list li { font-size: 0.82rem; color: var(--c-text-muted); line-height: 1.6; }
+
+/* Compare Cards */
+.compare-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
+@media (max-width: 580px) { .compare-cards { grid-template-columns: 1fr; } }
+.compare-card { background: #fff; border: 1px solid var(--c-border); border-radius: var(--radius-md); padding: 18px 20px; }
+.compare-card--new { border-top: 3px solid var(--c-accent); }
+.compare-card--used { border-top: 3px solid var(--c-primary); }
+.compare-title { font-size: 0.875rem; font-weight: 700; color: var(--c-primary); margin-bottom: 6px; }
+.compare-yield { font-size: 0.82rem; font-weight: 700; color: var(--c-accent); margin-bottom: 12px; }
+.compare-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+.compare-list li { font-size: 0.8rem; color: var(--c-text-muted); line-height: 1.6; }
+
+/* CTA Tool */
+.cta-tool { background: #f0f7f4; border: 1px solid #c8e0d8; border-radius: var(--radius-md); padding: 18px 22px; margin-top: 20px; }
+.cta-tool p { font-size: 0.875rem; color: var(--c-text); line-height: 1.7; margin-bottom: 10px; }
+.cta-link { font-size: 0.875rem; font-weight: 700; color: var(--c-primary); text-decoration: none; }
+.cta-link:hover { text-decoration: underline; }
+
+/* FAQ */
+.faq-list { display: flex; flex-direction: column; gap: 0; margin-top: 16px; }
+.faq-item { padding: 18px 0; border-bottom: 1px solid var(--c-border); }
+.faq-item:first-child { border-top: 1px solid var(--c-border); }
+.faq-q { font-size: 0.95rem; font-weight: 700; color: var(--c-primary); margin-bottom: 8px; line-height: 1.5; }
+.faq-a { font-size: 0.85rem; color: var(--c-text-muted); line-height: 1.8; margin: 0; }
+
+/* Disclaimer */
+.disclaimer { font-size: 0.78rem; color: var(--c-text-muted); line-height: 1.7; background: #faf9f7; border: 1px solid var(--c-border); border-radius: var(--radius-md); padding: 14px 18px; margin-bottom: 28px; }
+
+/* Related Tools/Articles Box */
+.related-tools-box, .related-articles-box { background: #f0f7f4; border: 1px solid #c8e0d8; border-radius: var(--radius-md); padding: 18px 22px; margin-bottom: 16px; }
+.rtb-label { font-size: 0.82rem; font-weight: 700; color: var(--c-primary); margin-bottom: 12px; }
+.rtb-links { display: flex; flex-wrap: wrap; gap: 10px; }
+.rtb-link { font-size: 0.875rem; font-weight: 600; color: var(--c-primary); background: #fff; border: 1px solid var(--c-border); border-radius: var(--radius-md); padding: 8px 14px; text-decoration: none; transition: border-color 0.15s; }
+.rtb-link:hover { border-color: var(--c-primary); text-decoration: none; }
+.back-links { margin-top: 16px; }
+.back-link { font-size: 0.875rem; color: var(--c-primary); }
+</style>

@@ -1,0 +1,351 @@
+---
+import ArticleLayout from '../../layouts/ArticleLayout.astro';
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: '不動産投資の初期費用シミュレーション｜利回りへの影響を解説',
+    url: 'https://estate.kuras-plus.com/articles/initial-cost-simulation',
+    description: '不動産投資の初期費用（登記・仲介手数料・取得税等）の内訳と、実質利回りへの影響をシミュレーション例で解説します。',
+    author: { '@type': 'Organization', name: '不動産ツールズ | kuras-plus' },
+    publisher: { '@type': 'Organization', name: '不動産ツールズ | kuras-plus', url: 'https://estate.kuras-plus.com' },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'ホーム', item: 'https://estate.kuras-plus.com' },
+      { '@type': 'ListItem', position: 2, name: '記事一覧', item: 'https://estate.kuras-plus.com/articles' },
+      { '@type': 'ListItem', position: 3, name: '不動産投資の初期費用シミュレーション', item: 'https://estate.kuras-plus.com/articles/initial-cost-simulation' },
+    ],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      {
+        '@type': 'Question',
+        name: '不動産投資の初期費用はどれくらいかかりますか？',
+        acceptedAnswer: { '@type': 'Answer', text: '一般的に物件価格の5〜10%程度が目安です。主な内訳は仲介手数料（売買価格×3%＋6万円が上限、税別）・不動産取得税（評価額の3〜4%）・登記費用（数十万円）・ローン事務手数料・火災保険などです。フルローンでも初期費用は現金で用意する必要があります。' },
+      },
+      {
+        '@type': 'Question',
+        name: '初期費用を含めると実質利回りはどのくらい下がりますか？',
+        acceptedAnswer: { '@type': 'Answer', text: '初期費用を購入時諸費用として分母に加えると、実質利回りは表面利回りより1〜2%程度低くなります。例えば3,000万円の物件で諸費用210万円（7%）の場合、分母が3,210万円になるため、それだけで利回りが約0.3〜0.5%低下します。さらに年間経費も考慮すると合計で1.5〜2.5%程度の差が生じます。' },
+      },
+    ],
+  },
+];
+---
+
+<ArticleLayout
+  title="不動産投資の初期費用シミュレーション｜利回りへの影響を解説"
+  description="不動産投資の初期費用（仲介手数料・登記費用・取得税・火災保険等）の内訳と合計目安を解説。初期費用込みの実質利回り計算シミュレーション例も紹介します。"
+  eyebrow="初期費用シミュレーション · Initial Cost"
+  heroTitle="不動産投資の初期費用シミュレーション"
+  heroDesc="初期費用の内訳・合計目安と、実質利回りへの影響をシミュレーション例で解説します。"
+  breadcrumb={[
+    { name: '記事一覧', href: '/articles' },
+    { name: '初期費用シミュレーション' },
+  ]}
+  currentPath="/articles/initial-cost-simulation"
+  jsonLd={jsonLd}
+>
+  <div class="container article-body">
+
+    <section class="art-section">
+      <h2 class="art-h2">初期費用を把握することが実質利回り計算の基本</h2>
+      <p class="art-prose">
+        不動産投資の収益を正確に計算するには、物件価格だけでなく<strong>購入時にかかる初期費用（諸費用）</strong>も把握することが重要です。
+        初期費用は実質利回りの分母に加算されるため、実際の投資効率を大きく左右します。
+      </p>
+      <p class="art-prose">
+        一般的に初期費用は物件価格の<strong>5〜10%程度</strong>が目安です。
+        フルローン（自己資金ゼロ）で購入する場合でも、この初期費用は原則として現金で用意する必要があります。
+        本記事では初期費用の内訳と、実質利回りへの影響をシミュレーションで解説します。
+      </p>
+    </section>
+
+    <section class="art-section">
+      <h2 class="art-h2">不動産投資の初期費用内訳</h2>
+      <p class="art-prose">
+        初期費用の主な項目は以下の通りです。物件の種類・価格・ローンの有無によって変動します。
+      </p>
+      <div class="cost-table-wrap">
+        <table class="cost-table">
+          <thead>
+            <tr>
+              <th>費用項目</th>
+              <th>概算（目安）</th>
+              <th>備考</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>仲介手数料</td>
+              <td>売買価格×3%＋6万円（税別）が上限</td>
+              <td>売主直販・新築デベ物件はかからない場合も</td>
+            </tr>
+            <tr>
+              <td>不動産取得税</td>
+              <td>評価額×3〜4%（土地・建物それぞれ）</td>
+              <td>取得後3〜6ヶ月で一括納付。軽減措置あり</td>
+            </tr>
+            <tr>
+              <td>登記費用<br />（所有権移転・抵当権設定）</td>
+              <td>数十万円程度（司法書士報酬含む）</td>
+              <td>物件価格・ローン額により変動</td>
+            </tr>
+            <tr>
+              <td>ローン事務手数料</td>
+              <td>融資額の1〜2%、または定額（数万〜数十万円）</td>
+              <td>金融機関・商品によって大きく差がある</td>
+            </tr>
+            <tr>
+              <td>ローン保証料</td>
+              <td>融資額の0.5〜2%程度</td>
+              <td>保証会社不要の金融機関もある</td>
+            </tr>
+            <tr>
+              <td>火災保険・地震保険</td>
+              <td>長期一括払いで数万〜十数万円程度</td>
+              <td>建物構造・補償内容によって異なる</td>
+            </tr>
+            <tr>
+              <td>固定資産税・都市計画税（日割精算）</td>
+              <td>物件価格の1〜2%程度（年額の日割）</td>
+              <td>引渡し日以降分を買主が負担</td>
+            </tr>
+            <tr>
+              <td>管理費・修繕積立金（精算）</td>
+              <td>月額の日割精算</td>
+              <td>区分マンションで発生</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="small-note">※ 上記はあくまで一般的な参考値です。実際の費用は金融機関・物件・司法書士等によって異なります。事前に見積もりを取得してください。</p>
+    </section>
+
+    <section class="art-section">
+      <h2 class="art-h2">初期費用シミュレーション例</h2>
+      <p class="art-prose">
+        3,000万円のワンルームマンション（中古・区分）を例に、初期費用の合計と実質利回りへの影響を試算します。
+      </p>
+      <div class="sim-card">
+        <div class="sim-label">シミュレーション条件</div>
+        <ul class="sim-conditions">
+          <li>物件価格：3,000万円</li>
+          <li>月額家賃（満室）：12万円（年間144万円）</li>
+          <li>ローン：全額融資（フルローン想定）</li>
+        </ul>
+      </div>
+
+      <div class="sim-breakdown">
+        <h3 class="sim-section-title">初期費用の内訳試算</h3>
+        <div class="table-wrap">
+          <table class="breakdown-table">
+            <thead>
+              <tr><th>費用項目</th><th>試算額（参考）</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>仲介手数料（3%＋6万円、税込）</td><td>約103万円</td></tr>
+              <tr><td>不動産取得税（評価額の3%）</td><td>約30〜45万円</td></tr>
+              <tr><td>登記費用（司法書士報酬含む）</td><td>約25〜35万円</td></tr>
+              <tr><td>ローン事務手数料（融資額の2%）</td><td>約60万円</td></tr>
+              <tr><td>火災保険（長期一括）</td><td>約5〜10万円</td></tr>
+              <tr><td>その他（固定資産税精算等）</td><td>約10〜15万円</td></tr>
+              <tr class="total-row"><td><strong>合計（概算）</strong></td><td><strong>約230〜270万円（物件価格の約7.5〜9%）</strong></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="sim-breakdown" style="margin-top: 24px;">
+        <h3 class="sim-section-title">実質利回りへの影響（年間経費込みで試算）</h3>
+        <div class="table-wrap">
+          <table class="breakdown-table">
+            <thead>
+              <tr><th>項目</th><th>諸費用なし</th><th>諸費用あり（250万円）</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>年間家賃収入（空室率5%考慮）</td>
+                <td>約136.8万円</td>
+                <td>約136.8万円</td>
+              </tr>
+              <tr>
+                <td>年間経費合計（管理費5%＋修繕20万円等）</td>
+                <td>約33万円</td>
+                <td>約33万円</td>
+              </tr>
+              <tr>
+                <td>年間純収益</td>
+                <td>約103.8万円</td>
+                <td>約103.8万円</td>
+              </tr>
+              <tr>
+                <td>分母（投資総額）</td>
+                <td>3,000万円</td>
+                <td>3,250万円</td>
+              </tr>
+              <tr class="total-row">
+                <td><strong>実質利回り</strong></td>
+                <td><strong>約3.46%</strong></td>
+                <td><strong>約3.19%</strong></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="sim-note">→ 初期費用250万円を加えると実質利回りが約<strong>0.27%低下</strong>します。表面利回り4.8%と比べると、実質利回りは約1.6ポイント低くなります。</p>
+      </div>
+
+      <div class="cta-tool">
+        <p>ご自身の物件条件で初期費用込みの実質利回りを計算してみましょう。</p>
+        <a href="/calculators/yield" class="cta-link">→ 利回りシミュレーターで今すぐ試算する（無料）</a>
+      </div>
+    </section>
+
+    <section class="art-section">
+      <h2 class="art-h2">初期費用を抑えるポイント</h2>
+      <p class="art-prose">初期費用は以下の点を工夫することで多少抑えられる場合があります。</p>
+      <div class="tips-list">
+        <div class="tip-item">
+          <div class="tip-icon">💡</div>
+          <div class="tip-body">
+            <strong>売主直販・新築デベロッパーからの購入</strong>
+            <p>仲介手数料（最大103万円）がかからない場合があります。ただし物件価格自体が割高な場合もあるため総合的に比較が必要です。</p>
+          </div>
+        </div>
+        <div class="tip-item">
+          <div class="tip-icon">💡</div>
+          <div class="tip-body">
+            <strong>ローン事務手数料の低い金融機関を選ぶ</strong>
+            <p>ネット銀行や信用金庫では手数料が比較的低い場合があります。複数の金融機関で事前審査を行い、総コストを比較することをおすすめします。</p>
+          </div>
+        </div>
+        <div class="tip-item">
+          <div class="tip-icon">💡</div>
+          <div class="tip-body">
+            <strong>不動産取得税の軽減措置を確認する</strong>
+            <p>一定の条件を満たす住宅用物件（新築・一定築年数以内）では軽減措置が適用される場合があります。都道府県の税務窓口や専門家に確認してください。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="art-section">
+      <h2 class="art-h2">よくある質問</h2>
+      <div class="faq-list">
+        <div class="faq-item">
+          <h3 class="faq-q">不動産投資の初期費用はどれくらいかかりますか？</h3>
+          <p class="faq-a">一般的に物件価格の5〜10%程度が目安です。仲介手数料・不動産取得税・登記費用・ローン事務手数料・保険料などが主な内訳です。3,000万円の物件であれば150〜300万円程度の現金を用意しておくことを想定してください。</p>
+        </div>
+        <div class="faq-item">
+          <h3 class="faq-q">初期費用を含めると実質利回りはどのくらい変わりますか？</h3>
+          <p class="faq-a">初期費用を分母に加算すると、実質利回りは0.2〜0.5%程度低下します。表面利回りとの差は年間経費も加えると合計1.5〜2.5%程度になることが多いため、表面利回りだけで投資判断しないことが重要です。</p>
+        </div>
+        <div class="faq-item">
+          <h3 class="faq-q">フルローンでも初期費用は現金が必要ですか？</h3>
+          <p class="faq-a">はい、フルローン（物件価格全額融資）の場合でも、仲介手数料・取得税・登記費用などの諸費用は原則として現金で用意する必要があります。一部の金融機関では「諸費用ローン」を扱っていますが、借入コストが増加する点に注意が必要です。</p>
+        </div>
+      </div>
+    </section>
+
+    <p class="disclaimer">
+      ※ 本記事の数値はあくまで参考・概算です。実際の費用は物件条件・金融機関・司法書士等によって異なります。
+      最終的な費用は各専門家や金融機関にご確認ください。
+      不動産投資には元本割れ・空室等のリスクが伴います。投資判断は自己責任でお願いします。
+    </p>
+
+    <div class="related-tools-box">
+      <p class="rtb-label">関連ツール</p>
+      <div class="rtb-links">
+        <a href="/calculators/yield" class="rtb-link">📊 利回り計算ツール</a>
+        <a href="/calculators/cash-flow" class="rtb-link">💰 CFシミュレーター</a>
+        <a href="/calculators/real-estate-acquisition-tax" class="rtb-link">🏛️ 不動産取得税シミュレーター</a>
+      </div>
+    </div>
+
+    <div class="related-articles-box">
+      <p class="rtb-label">関連記事</p>
+      <div class="rtb-links">
+        <a href="/articles/yield-calculation-guide" class="rtb-link">📖 利回り計算完全ガイド</a>
+        <a href="/articles/one-room-yield-benchmark" class="rtb-link">🏢 ワンルーム投資の利回り目安</a>
+        <a href="/articles/gross-vs-net-yield" class="rtb-link">📊 表面・実質利回りの違い</a>
+      </div>
+    </div>
+
+    <div class="back-links">
+      <a href="/articles" class="back-link">← 記事一覧へ</a>
+    </div>
+  </div>
+</ArticleLayout>
+
+<style>
+.article-body { padding-top: 48px; padding-bottom: 80px; max-width: 780px; }
+.art-section { margin-bottom: 52px; }
+.art-h2 {
+  font-size: 1.2rem; font-weight: 700; color: var(--c-primary);
+  border-left: 4px solid var(--c-accent); padding-left: 14px;
+  margin-bottom: 18px; line-height: 1.4;
+}
+.art-prose { font-size: 0.9375rem; line-height: 1.85; color: var(--c-text); margin-bottom: 14px; }
+
+/* Cost Table */
+.cost-table-wrap { overflow-x: auto; margin-top: 16px; }
+.cost-table { width: 100%; border-collapse: collapse; font-size: 0.83rem; }
+.cost-table th { background: var(--c-primary); color: #fff; padding: 10px 12px; text-align: left; font-size: 0.8rem; font-weight: 700; }
+.cost-table td { padding: 10px 12px; border-bottom: 1px solid var(--c-border); vertical-align: top; line-height: 1.5; }
+.cost-table tr:nth-child(even) td { background: #faf9f7; }
+.small-note { font-size: 0.76rem; color: var(--c-text-muted); line-height: 1.7; margin-top: 10px; }
+
+/* Simulation */
+.sim-card { background: #f0f7f4; border: 1px solid #c8e0d8; border-radius: var(--radius-md); padding: 16px 20px; margin-bottom: 24px; }
+.sim-label { font-size: 0.75rem; font-weight: 700; color: var(--c-primary); margin-bottom: 10px; }
+.sim-conditions { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+.sim-conditions li { font-size: 0.875rem; color: var(--c-text); line-height: 1.6; padding-left: 14px; position: relative; }
+.sim-conditions li::before { content: '·'; position: absolute; left: 2px; color: var(--c-accent); font-weight: 700; font-size: 1.1rem; line-height: 1.3; }
+
+.sim-breakdown { background: #fff; border: 1px solid var(--c-border); border-radius: var(--radius-md); padding: 18px 20px; }
+.sim-section-title { font-size: 0.875rem; font-weight: 700; color: var(--c-primary); margin-bottom: 14px; }
+.table-wrap { overflow-x: auto; }
+.breakdown-table { width: 100%; border-collapse: collapse; font-size: 0.83rem; }
+.breakdown-table th { background: var(--c-primary); color: #fff; padding: 8px 12px; text-align: left; font-size: 0.78rem; }
+.breakdown-table td { padding: 9px 12px; border-bottom: 1px solid var(--c-border); vertical-align: top; line-height: 1.5; }
+.breakdown-table .total-row td { background: #f0f7f4; }
+.sim-note { font-size: 0.82rem; color: var(--c-text-muted); line-height: 1.7; margin-top: 12px; margin-bottom: 0; }
+
+/* Tips */
+.tips-list { display: flex; flex-direction: column; gap: 14px; margin-top: 16px; }
+.tip-item { display: flex; gap: 14px; background: #fff; border: 1px solid var(--c-border); border-radius: var(--radius-md); padding: 16px 18px; }
+.tip-icon { font-size: 1.3rem; flex-shrink: 0; margin-top: 2px; }
+.tip-body strong { font-size: 0.9rem; font-weight: 700; color: var(--c-primary); display: block; margin-bottom: 6px; }
+.tip-body p { font-size: 0.82rem; color: var(--c-text-muted); line-height: 1.7; margin: 0; }
+
+/* CTA Tool */
+.cta-tool { background: #f0f7f4; border: 1px solid #c8e0d8; border-radius: var(--radius-md); padding: 18px 22px; margin-top: 20px; }
+.cta-tool p { font-size: 0.875rem; color: var(--c-text); line-height: 1.7; margin-bottom: 10px; }
+.cta-link { font-size: 0.875rem; font-weight: 700; color: var(--c-primary); text-decoration: none; }
+.cta-link:hover { text-decoration: underline; }
+
+/* FAQ */
+.faq-list { display: flex; flex-direction: column; gap: 0; margin-top: 16px; }
+.faq-item { padding: 18px 0; border-bottom: 1px solid var(--c-border); }
+.faq-item:first-child { border-top: 1px solid var(--c-border); }
+.faq-q { font-size: 0.95rem; font-weight: 700; color: var(--c-primary); margin-bottom: 8px; line-height: 1.5; }
+.faq-a { font-size: 0.85rem; color: var(--c-text-muted); line-height: 1.8; margin: 0; }
+
+/* Disclaimer */
+.disclaimer { font-size: 0.78rem; color: var(--c-text-muted); line-height: 1.7; background: #faf9f7; border: 1px solid var(--c-border); border-radius: var(--radius-md); padding: 14px 18px; margin-bottom: 28px; }
+
+/* Related Tools/Articles Box */
+.related-tools-box, .related-articles-box { background: #f0f7f4; border: 1px solid #c8e0d8; border-radius: var(--radius-md); padding: 18px 22px; margin-bottom: 16px; }
+.rtb-label { font-size: 0.82rem; font-weight: 700; color: var(--c-primary); margin-bottom: 12px; }
+.rtb-links { display: flex; flex-wrap: wrap; gap: 10px; }
+.rtb-link { font-size: 0.875rem; font-weight: 600; color: var(--c-primary); background: #fff; border: 1px solid var(--c-border); border-radius: var(--radius-md); padding: 8px 14px; text-decoration: none; transition: border-color 0.15s; }
+.rtb-link:hover { border-color: var(--c-primary); text-decoration: none; }
+.back-links { margin-top: 16px; }
+.back-link { font-size: 0.875rem; color: var(--c-primary); }
+</style>
