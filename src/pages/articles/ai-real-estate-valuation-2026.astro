@@ -1,0 +1,451 @@
+---
+import ArticleLayout from '../../layouts/ArticleLayout.astro';
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: 'AI不動産査定の仕組みと精度を徹底解説｜2026年最新ツール比較',
+    url: 'https://estate.kuras-plus.com/articles/ai-real-estate-valuation-2026',
+    description: 'AI不動産査定の仕組み・精度・限界を解説。SRE AI、HOME4U、イエウールなど主要サービスを比較し、投資判断への活用方法を紹介します。',
+    author: { '@type': 'Organization', name: '不動産ツールズ | kuras-plus' },
+    publisher: { '@type': 'Organization', name: '不動産ツールズ | kuras-plus', url: 'https://estate.kuras-plus.com' },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'ホーム', item: 'https://estate.kuras-plus.com' },
+      { '@type': 'ListItem', position: 2, name: '記事一覧', item: 'https://estate.kuras-plus.com/articles' },
+      { '@type': 'ListItem', position: 3, name: 'AI不動産査定の仕組みと精度を徹底解説', item: 'https://estate.kuras-plus.com/articles/ai-real-estate-valuation-2026' },
+    ],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      {
+        '@type': 'Question',
+        name: 'AI不動産査定とは何ですか？従来の査定とどう違いますか？',
+        acceptedAnswer: { '@type': 'Answer', text: 'AI不動産査定は、機械学習アルゴリズムが過去の取引データ・地価情報・物件属性などを分析し、自動で不動産価格を推定する手法です。従来の不動産鑑定士による査定が数日〜数週間かかるのに対し、AI査定は数秒〜数分で結果が得られます。ただしAIは現地の状態や周辺環境の微細な要因を完全には反映できないため、最終的な売買判断では人的確認との併用が推奨されます。' },
+      },
+      {
+        '@type': 'Question',
+        name: 'AI査定の精度はどの程度ですか？',
+        acceptedAnswer: { '@type': 'Answer', text: '主要サービスの誤差率は概ね5〜15%程度です。マンションなど同一条件の比較対象が多い物件では誤差5〜8%と高精度ですが、一戸建てや地方の物件では10〜15%以上の誤差が出ることがあります。取引事例の少ないエリアや特殊用途の物件はAI査定の苦手分野です。' },
+      },
+      {
+        '@type': 'Question',
+        name: 'AI査定は無料で利用できますか？',
+        acceptedAnswer: { '@type': 'Answer', text: 'SRE AI査定、HOME4U、イエウールなど主要サービスは無料で利用できます。ただし査定依頼後に不動産会社から連絡が来るサービスもあるため、利用規約を確認してください。純粋にAI査定のみを提供するサービスと、一括査定の入口としてAI査定を活用するサービスがあります。' },
+      },
+      {
+        '@type': 'Question',
+        name: 'AI査定結果を不動産投資の判断にどう活かせますか？',
+        acceptedAnswer: { '@type': 'Answer', text: 'AI査定価格を利回り計算の「物件取得価格」として使うことで、購入前のスクリーニングが効率化できます。複数のAI査定サービスで価格帯を確認し、売出価格との乖離を見ることで割安・割高の判断材料にもなります。ただし最終的な投資判断は実質利回り計算やキャッシュフロー分析と組み合わせて行うことが重要です。' },
+      },
+      {
+        '@type': 'Question',
+        name: 'AI査定が苦手な物件タイプはありますか？',
+        acceptedAnswer: { '@type': 'Answer', text: '①取引事例が少ない地方エリアの物件、②特殊用途（店舗・倉庫・工場等）の物件、③築年数が極端に古いまたは大規模リフォーム済みの物件、④土地形状が不整形な物件はAI査定の精度が下がりやすい傾向があります。これらの物件では不動産鑑定士の評価との併用を推奨します。' },
+      },
+    ],
+  },
+];
+---
+
+<ArticleLayout
+  title="AI不動産査定の仕組みと精度を徹底解説｜2026年最新ツール比較"
+  description="AI不動産査定の仕組み・精度・限界を徹底解説。SRE AI、HOME4U、イエウールなど主要AI査定サービスを比較し、投資判断への活用方法を紹介します。"
+  eyebrow="不動産テック特集 · PropTech 2026"
+  heroTitle="AI不動産査定の仕組みと精度を徹底解説"
+  heroDesc="AI査定の仕組み・精度・限界を解説し、2026年の主要サービスを比較。投資判断への活用法も紹介します。"
+  breadcrumb={[
+    { name: '記事一覧', href: '/articles' },
+    { name: 'AI不動産査定の仕組みと精度' },
+  ]}
+  currentPath="/articles/ai-real-estate-valuation-2026"
+  jsonLd={jsonLd}
+  updatedDate="2026-04-04"
+>
+  <div class="container article-body">
+
+    <section class="art-section">
+      <h2 class="art-h2">AI不動産査定とは</h2>
+      <p class="art-prose">
+        AI不動産査定とは、<strong>機械学習アルゴリズムが膨大な不動産取引データを分析し、物件の推定価格を自動算出する技術</strong>です。
+        従来、不動産の価格査定は不動産鑑定士や不動産会社の担当者が、取引事例比較法・原価法・収益還元法などを用いて数日〜数週間かけて行うものでした。
+      </p>
+      <p class="art-prose">
+        AI査定はこのプロセスを自動化し、物件情報を入力するだけで<strong>数秒〜数分で査定結果</strong>が得られます。
+        2025年のPropTech世界市場は167億ドル（前年比+67.9%）に達し、AI査定はその中核技術の一つとなっています。
+        日本でもSRE AI査定をはじめ複数のサービスが実用化されており、不動産投資家の物件スクリーニングツールとして急速に普及しています。
+      </p>
+    </section>
+
+    <section class="art-section">
+      <h2 class="art-h2">従来の査定方法との違い</h2>
+      <p class="art-prose">
+        従来の査定方法とAI査定には、それぞれ明確な強み・弱みがあります。以下に主要な違いを比較します。
+      </p>
+      <div class="comparison-table-wrap">
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th>比較項目</th>
+              <th>従来の査定</th>
+              <th>AI査定</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>所要時間</td><td>数日〜数週間</td><td>数秒〜数分</td></tr>
+            <tr><td>コスト</td><td>鑑定費用5〜30万円</td><td>多くは無料</td></tr>
+            <tr><td>客観性</td><td>鑑定士の経験に依存</td><td>データドリブンで再現性が高い</td></tr>
+            <tr><td>現地要因の反映</td><td>内見・周辺環境を詳細に反映</td><td>データ化されていない要因は反映困難</td></tr>
+            <tr><td>対応物件の幅</td><td>特殊物件にも対応可能</td><td>取引事例が少ない物件は精度低下</td></tr>
+            <tr><td>活用場面</td><td>最終的な売買・融資判断</td><td>物件スクリーニング・市場調査</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="art-prose">
+        AI査定は「速さ」と「手軽さ」で圧倒的に優れていますが、現地確認が必要な細かい状態（内装の劣化度、日当たり、近隣の騒音等）を反映するのは苦手です。
+        そのため、<strong>AI査定でスクリーニング → 絞り込んだ物件を人的に詳細査定</strong>という2段階プロセスが最も効率的とされています。
+      </p>
+    </section>
+
+    <section class="art-section">
+      <h2 class="art-h2">AI査定の仕組み：機械学習モデルと使用データ</h2>
+      <p class="art-prose">
+        AI不動産査定の核心は、<strong>大量の取引データから物件価格に影響する要因（特徴量）を学習する機械学習モデル</strong>にあります。
+        代表的な手法とデータソースを解説します。
+      </p>
+
+      <div class="cost-list">
+        <div class="cost-group">
+          <h3 class="cost-group-title">主な機械学習手法</h3>
+          <ul class="cost-items">
+            <li>回帰分析（Ridge/Lasso）：基本的な線形モデル。解釈性が高い</li>
+            <li>勾配ブースティング（XGBoost/LightGBM）：精度が高く、現在の主流</li>
+            <li>ディープラーニング（NN）：画像データも処理可能。大規模データで威力を発揮</li>
+            <li>アンサンブル手法：複数モデルの予測を統合し精度を向上</li>
+          </ul>
+        </div>
+        <div class="cost-group">
+          <h3 class="cost-group-title">使用される主なデータ</h3>
+          <ul class="cost-items">
+            <li>過去の取引価格（REINS・登記情報・国土交通省データ）</li>
+            <li>物件属性（築年数、面積、構造、階数、方角等）</li>
+            <li>立地情報（最寄駅距離、駅乗降客数、用途地域）</li>
+            <li>地価公示・路線価データ</li>
+            <li>周辺施設情報（学校・病院・商業施設の距離）</li>
+            <li>人口動態・世帯数データ</li>
+          </ul>
+        </div>
+      </div>
+
+      <p class="art-prose">
+        最新のAI査定サービスでは、これらの構造化データに加えて<strong>物件写真の画像解析</strong>や<strong>周辺のストリートビュー分析</strong>を取り入れ、
+        内装状態や街並みといった非構造データも評価に反映する動きが進んでいます。
+        日本では国土交通省の「不動産取引価格情報」が重要なデータソースとなっており、これが年間約30万件の取引事例を提供しています。
+      </p>
+    </section>
+
+    <section class="art-section">
+      <h2 class="art-h2">主要AI査定サービス比較（2026年版）</h2>
+      <p class="art-prose">
+        日本で利用可能な主要AI査定サービスを比較します。各サービスの特徴を理解し、目的に応じて使い分けることが重要です。
+      </p>
+
+      <div class="service-cards">
+        <div class="service-card">
+          <h3 class="service-name">SRE AI査定（SREホールディングス）</h3>
+          <p class="service-desc">ソニーグループ発のAI査定。独自の機械学習モデルで高精度を実現。マンション・一戸建てに対応し、査定根拠の透明性が高い。プロ投資家の利用も多い。</p>
+          <div class="service-tags">
+            <span class="service-tag">マンション得意</span>
+            <span class="service-tag">根拠表示あり</span>
+            <span class="service-tag">無料</span>
+          </div>
+        </div>
+        <div class="service-card">
+          <h3 class="service-name">HOME4U（NTTデータ）</h3>
+          <p class="service-desc">NTTデータ運営の老舗一括査定サイト。AI査定とあわせて最大6社からの査定結果を比較可能。豊富な取引データが強み。</p>
+          <div class="service-tags">
+            <span class="service-tag">一括査定連携</span>
+            <span class="service-tag">データ量豊富</span>
+            <span class="service-tag">無料</span>
+          </div>
+        </div>
+        <div class="service-card">
+          <h3 class="service-name">イエウール</h3>
+          <p class="service-desc">提携不動産会社2,000社超の大規模プラットフォーム。AI査定で概算を即座に取得後、詳細査定を依頼可能。地方物件のカバー率が高い。</p>
+          <div class="service-tags">
+            <span class="service-tag">地方にも強い</span>
+            <span class="service-tag">提携社数最大級</span>
+            <span class="service-tag">無料</span>
+          </div>
+        </div>
+        <div class="service-card">
+          <h3 class="service-name">LIFULL HOME'S プライスマップ</h3>
+          <p class="service-desc">地図上で周辺物件の推定価格をビジュアル確認できるツール。マンション特化で、相場感の把握に最適。会員登録不要で手軽に使える。</p>
+          <div class="service-tags">
+            <span class="service-tag">マップ表示</span>
+            <span class="service-tag">登録不要</span>
+            <span class="service-tag">無料</span>
+          </div>
+        </div>
+      </div>
+
+      <p class="art-prose">
+        投資目的では、<strong>複数のAI査定サービスで価格帯を確認し、乖離が大きい場合は現地確認を行う</strong>というアプローチが有効です。
+        1つのサービスの結果だけを鵜呑みにせず、クロスチェックすることで判断精度が高まります。
+      </p>
+    </section>
+
+    <section class="art-section">
+      <h2 class="art-h2">AI査定の精度と限界</h2>
+      <p class="art-prose">
+        AI査定の精度は物件タイプとエリアによって大きく異なります。以下に物件タイプ別の一般的な誤差率の目安を示します。
+      </p>
+
+      <div class="formula-cards">
+        <div class="fc fc--main">
+          <div class="fc-label">物件タイプ別の誤差率目安</div>
+          <div class="fc-formula">都市部マンション：5〜8% ／ 郊外マンション：8〜12% ／ 一戸建て：10〜15% ／ 地方・特殊物件：15%超</div>
+          <p class="fc-note">上記は主要サービスの平均的な目安。築年数・取引事例数によっても変動します。</p>
+        </div>
+      </div>
+
+      <div class="mistake-list">
+        <div class="mistake-item">
+          <div class="mistake-no">①</div>
+          <div class="mistake-body">
+            <strong>取引事例が少ないエリアでは精度が低下</strong>
+            <p>AIは過去の取引データから学習するため、事例数が少ない地方エリアや新興住宅地では予測精度が大幅に低下します。目安として直近5年の取引事例が50件未満のエリアは要注意です。</p>
+          </div>
+        </div>
+        <div class="mistake-item">
+          <div class="mistake-no">②</div>
+          <div class="mistake-body">
+            <strong>内装・設備の状態は反映しにくい</strong>
+            <p>フルリノベーション済みの物件と原状のままの物件では実際の価値に大きな差がありますが、内装状態を数値化するのはAIの苦手分野です。画像解析を導入するサービスも増えていますが、まだ発展途上です。</p>
+          </div>
+        </div>
+        <div class="mistake-item">
+          <div class="mistake-no">③</div>
+          <div class="mistake-body">
+            <strong>急激な市況変動への追従にタイムラグがある</strong>
+            <p>AIモデルは過去のデータで学習するため、金利急変・再開発計画の発表・災害など急激な価格変動要因への反映には数ヶ月のタイムラグが生じることがあります。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="art-section">
+      <h2 class="art-h2">投資判断への活用方法</h2>
+      <p class="art-prose">
+        AI査定は投資判断のプロセスにおいて、特に<strong>初期スクリーニング段階</strong>で大きな威力を発揮します。
+        以下のフローで活用することで、効率的な投資判断が可能になります。
+      </p>
+
+      <div class="flow-steps">
+        <div class="flow-step">
+          <span class="flow-no">STEP 1</span>
+          <div class="flow-body">
+            <strong>AI査定で市場価格を把握</strong>
+            <p>複数のAI査定サービスで対象物件の推定価格帯を確認。売出価格との乖離率を算出します。</p>
+          </div>
+        </div>
+        <div class="flow-step">
+          <span class="flow-no">STEP 2</span>
+          <div class="flow-body">
+            <strong>利回りシミュレーション</strong>
+            <p>AI査定価格を物件取得価格として利回り計算ツールに入力。想定家賃・経費から実質利回りを試算します。</p>
+          </div>
+        </div>
+        <div class="flow-step">
+          <span class="flow-no">STEP 3</span>
+          <div class="flow-body">
+            <strong>キャッシュフロー分析</strong>
+            <p>ローン条件を入れたキャッシュフローシミュレーションで、月々の手残りと投資回収期間を確認します。</p>
+          </div>
+        </div>
+        <div class="flow-step">
+          <span class="flow-no">STEP 4</span>
+          <div class="flow-body">
+            <strong>候補物件の現地確認・詳細査定</strong>
+            <p>AI査定+利回り分析で有望と判断した物件について、内見・不動産鑑定士の詳細査定を行い最終判断します。</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="cta-tool">
+        <p>AI査定で把握した価格をもとに、表面・実質利回りを即計算してみましょう。</p>
+        <a href="/calculators/yield" class="cta-link">→ 利回りシミュレーターで今すぐ試算する（無料）</a>
+      </div>
+    </section>
+
+    <section class="art-section">
+      <h2 class="art-h2">利回り計算ツールとの併用ガイド</h2>
+      <p class="art-prose">
+        AI査定単体では「物件がいくらか」しかわかりません。投資としての魅力を判断するには、<strong>利回り計算ツールとの併用</strong>が不可欠です。
+      </p>
+      <div class="example-box">
+        <p class="example-label">AI査定 × 利回り計算の具体例</p>
+        <ul class="example-list">
+          <li>AI査定価格：2,500万円（売出価格2,800万円→割高の可能性あり）</li>
+          <li>周辺相場家賃：月8.5万円（年間102万円）</li>
+          <li>表面利回り（AI査定価格ベース）：102万÷2,500万×100＝<strong>4.08%</strong></li>
+          <li>表面利回り（売出価格ベース）：102万÷2,800万×100＝<strong>3.64%</strong></li>
+          <li>差分：0.44ポイント → 価格交渉の根拠データに活用</li>
+        </ul>
+      </div>
+      <p class="art-prose">
+        このようにAI査定価格と売出価格の両方で利回りを計算することで、<strong>物件の割安・割高の判断材料</strong>が得られます。
+        AI査定価格ベースの利回りが投資基準を満たしていれば、価格交渉次第で十分な投資対象になり得ます。
+      </p>
+    </section>
+
+    <section class="art-section">
+      <h2 class="art-h2">よくある質問</h2>
+      <div class="faq-list">
+        <div class="faq-item">
+          <h3 class="faq-q">AI不動産査定とは何ですか？従来の査定とどう違いますか？</h3>
+          <p class="faq-a">AI不動産査定は、機械学習アルゴリズムが過去の取引データ・地価情報・物件属性などを分析し、自動で不動産価格を推定する手法です。従来の不動産鑑定士による査定が数日〜数週間かかるのに対し、AI査定は数秒〜数分で結果が得られます。ただし現地の状態や周辺環境の微細な要因を完全には反映できないため、最終的な売買判断では人的確認との併用が推奨されます。</p>
+        </div>
+        <div class="faq-item">
+          <h3 class="faq-q">AI査定の精度はどの程度ですか？</h3>
+          <p class="faq-a">主要サービスの誤差率は概ね5〜15%程度です。マンションなど同一条件の比較対象が多い物件では誤差5〜8%と高精度ですが、一戸建てや地方の物件では10〜15%以上の誤差が出ることがあります。取引事例の少ないエリアや特殊用途の物件はAI査定の苦手分野です。</p>
+        </div>
+        <div class="faq-item">
+          <h3 class="faq-q">AI査定は無料で利用できますか？</h3>
+          <p class="faq-a">SRE AI査定、HOME4U、イエウールなど主要サービスは無料で利用できます。ただし査定依頼後に不動産会社から連絡が来るサービスもあるため、利用規約を確認してください。純粋にAI査定のみを提供するサービスと、一括査定の入口としてAI査定を活用するサービスがあります。</p>
+        </div>
+        <div class="faq-item">
+          <h3 class="faq-q">AI査定結果を不動産投資の判断にどう活かせますか？</h3>
+          <p class="faq-a">AI査定価格を利回り計算の「物件取得価格」として使うことで、購入前のスクリーニングが効率化できます。複数のAI査定サービスで価格帯を確認し、売出価格との乖離を見ることで割安・割高の判断材料にもなります。最終的な投資判断は実質利回り計算やキャッシュフロー分析と組み合わせて行うことが重要です。</p>
+        </div>
+        <div class="faq-item">
+          <h3 class="faq-q">AI査定が苦手な物件タイプはありますか？</h3>
+          <p class="faq-a">取引事例が少ない地方エリアの物件、特殊用途（店舗・倉庫・工場等）の物件、築年数が極端に古いまたは大規模リフォーム済みの物件、土地形状が不整形な物件はAI査定の精度が下がりやすい傾向があります。これらの物件では不動産鑑定士の評価との併用を推奨します。</p>
+        </div>
+      </div>
+    </section>
+
+    <p class="disclaimer">
+      ※ 本記事の情報は2026年4月時点のものです。AI査定サービスの内容・精度は各社のアップデートにより変更される場合があります。
+      実際の投資判断は最新の情報をもとにご自身でご確認ください。不動産投資には価格変動・空室等のリスクが伴います。
+    </p>
+
+    <div class="related-tools-box">
+      <p class="rtb-label">関連ツール</p>
+      <div class="rtb-links">
+        <a href="/calculators/yield" class="rtb-link">📊 利回り計算ツール</a>
+        <a href="/calculators/cash-flow" class="rtb-link">💰 CFシミュレーター</a>
+        <a href="/calculators/roi" class="rtb-link">💹 ROI計算ツール</a>
+      </div>
+    </div>
+
+    <div class="related-articles-box">
+      <p class="rtb-label">関連記事</p>
+      <div class="rtb-links">
+        <a href="/articles/smart-building-technology-guide" class="rtb-link">🏢 スマートビル技術入門</a>
+        <a href="/articles/proptech-investment-trends-2026" class="rtb-link">📈 PropTech投資トレンド2026</a>
+        <a href="/articles/yield-calculation-guide" class="rtb-link">📖 利回り計算完全ガイド</a>
+        <a href="/articles/initial-cost-simulation" class="rtb-link">💴 初期費用シミュレーション</a>
+      </div>
+    </div>
+
+    <div class="back-links">
+      <a href="/articles" class="back-link">← 記事一覧へ</a>
+    </div>
+  </div>
+</ArticleLayout>
+
+<style>
+.article-body { padding-top: 48px; padding-bottom: 80px; max-width: 780px; }
+.art-section { margin-bottom: 52px; }
+.art-h2 {
+  font-size: 1.2rem; font-weight: 700; color: var(--c-primary);
+  border-left: 4px solid var(--c-accent); padding-left: 14px;
+  margin-bottom: 18px; line-height: 1.4;
+}
+.art-prose { font-size: 0.9375rem; line-height: 1.85; color: var(--c-text); margin-bottom: 14px; }
+
+/* Formula Cards */
+.formula-cards { display: grid; gap: 16px; margin-top: 16px; }
+.fc { background: #fff; border: 1px solid var(--c-border); border-radius: var(--radius-md); padding: 18px 20px; }
+.fc--main { border-color: var(--c-primary); background: #f0f7f4; }
+.fc-label { font-size: 0.75rem; font-weight: 700; color: var(--c-primary); margin-bottom: 8px; }
+.fc-formula { font-size: 0.875rem; font-weight: 700; color: var(--c-text); line-height: 1.6; margin-bottom: 8px; word-break: break-all; }
+.fc-note { font-size: 0.78rem; color: var(--c-text-muted); line-height: 1.6; margin: 0; }
+
+/* Example Box */
+.example-box { background: #fff; border: 1px solid var(--c-border); border-radius: var(--radius-md); padding: 18px 20px; margin-top: 16px; }
+.example-label { font-size: 0.75rem; font-weight: 700; color: var(--c-accent); margin-bottom: 10px; }
+.example-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+.example-list li { font-size: 0.875rem; color: var(--c-text); line-height: 1.6; padding-left: 16px; position: relative; }
+.example-list li::before { content: '·'; position: absolute; left: 4px; color: var(--c-accent); font-weight: 700; font-size: 1.1rem; line-height: 1.3; }
+
+/* Cost List */
+.cost-list { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
+@media (max-width: 580px) { .cost-list { grid-template-columns: 1fr; } }
+.cost-group { background: #fff; border: 1px solid var(--c-border); border-radius: var(--radius-md); padding: 18px 20px; }
+.cost-group-title { font-size: 0.875rem; font-weight: 700; color: var(--c-primary); margin-bottom: 12px; }
+.cost-items { list-style: none; display: flex; flex-direction: column; gap: 7px; }
+.cost-items li { font-size: 0.82rem; color: var(--c-text-muted); line-height: 1.6; padding-left: 16px; position: relative; }
+.cost-items li::before { content: '·'; position: absolute; left: 4px; color: var(--c-accent); font-weight: 700; font-size: 1.1rem; line-height: 1.3; }
+
+/* Comparison Table */
+.comparison-table-wrap { margin-top: 16px; overflow-x: auto; }
+.comparison-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+.comparison-table th { background: var(--c-primary); color: #fff; padding: 10px 14px; text-align: left; font-weight: 700; font-size: 0.8rem; }
+.comparison-table td { padding: 10px 14px; border-bottom: 1px solid var(--c-border); color: var(--c-text); line-height: 1.6; }
+.comparison-table tr:nth-child(even) td { background: #faf9f7; }
+
+/* Service Cards */
+.service-cards { display: flex; flex-direction: column; gap: 14px; margin-top: 16px; }
+.service-card { background: #fff; border: 1px solid var(--c-border); border-radius: var(--radius-md); padding: 18px 20px; }
+.service-name { font-size: 0.95rem; font-weight: 700; color: var(--c-primary); margin-bottom: 8px; }
+.service-desc { font-size: 0.85rem; color: var(--c-text-muted); line-height: 1.7; margin-bottom: 10px; }
+.service-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.service-tag { font-size: 0.7rem; font-weight: 600; color: var(--c-accent); background: #fdf8f0; border: 1px solid #e8d5b0; border-radius: 20px; padding: 3px 10px; }
+
+/* Flow Steps */
+.flow-steps { display: flex; flex-direction: column; gap: 14px; margin-top: 16px; }
+.flow-step { display: flex; gap: 14px; background: #fff; border: 1px solid var(--c-border); border-radius: var(--radius-md); padding: 16px 18px; }
+.flow-no { font-size: 0.72rem; font-weight: 700; color: #fff; background: var(--c-primary); border-radius: var(--radius-sm); padding: 3px 8px; flex-shrink: 0; height: fit-content; white-space: nowrap; }
+.flow-body strong { font-size: 0.9rem; font-weight: 700; color: var(--c-primary); display: block; margin-bottom: 6px; }
+.flow-body p { font-size: 0.82rem; color: var(--c-text-muted); line-height: 1.7; margin: 0; }
+
+/* Mistake List */
+.mistake-list { display: flex; flex-direction: column; gap: 14px; margin-top: 16px; }
+.mistake-item { display: flex; gap: 14px; background: #fff; border: 1px solid var(--c-border); border-radius: var(--radius-md); padding: 16px 18px; }
+.mistake-no { font-size: 1.1rem; font-weight: 700; color: var(--c-accent); flex-shrink: 0; margin-top: 2px; }
+.mistake-body strong { font-size: 0.9rem; font-weight: 700; color: var(--c-primary); display: block; margin-bottom: 6px; }
+.mistake-body p { font-size: 0.82rem; color: var(--c-text-muted); line-height: 1.7; margin: 0; }
+
+/* CTA Tool */
+.cta-tool { background: #f0f7f4; border: 1px solid #c8e0d8; border-radius: var(--radius-md); padding: 18px 22px; margin-top: 20px; }
+.cta-tool p { font-size: 0.875rem; color: var(--c-text); line-height: 1.7; margin-bottom: 10px; }
+.cta-link { font-size: 0.875rem; font-weight: 700; color: var(--c-primary); text-decoration: none; }
+.cta-link:hover { text-decoration: underline; }
+
+/* FAQ */
+.faq-list { display: flex; flex-direction: column; gap: 0; margin-top: 16px; }
+.faq-item { padding: 18px 0; border-bottom: 1px solid var(--c-border); }
+.faq-item:first-child { border-top: 1px solid var(--c-border); }
+.faq-q { font-size: 0.95rem; font-weight: 700; color: var(--c-primary); margin-bottom: 8px; line-height: 1.5; }
+.faq-a { font-size: 0.85rem; color: var(--c-text-muted); line-height: 1.8; margin: 0; }
+
+/* Disclaimer */
+.disclaimer { font-size: 0.78rem; color: var(--c-text-muted); line-height: 1.7; background: #faf9f7; border: 1px solid var(--c-border); border-radius: var(--radius-md); padding: 14px 18px; margin-bottom: 28px; }
+
+/* Related Tools/Articles Box */
+.related-tools-box, .related-articles-box { background: #f0f7f4; border: 1px solid #c8e0d8; border-radius: var(--radius-md); padding: 18px 22px; margin-bottom: 16px; }
+.rtb-label { font-size: 0.82rem; font-weight: 700; color: var(--c-primary); margin-bottom: 12px; }
+.rtb-links { display: flex; flex-wrap: wrap; gap: 10px; }
+.rtb-link { font-size: 0.875rem; font-weight: 600; color: var(--c-primary); background: #fff; border: 1px solid var(--c-border); border-radius: var(--radius-md); padding: 8px 14px; text-decoration: none; transition: border-color 0.15s; }
+.rtb-link:hover { border-color: var(--c-primary); text-decoration: none; }
+.back-links { margin-top: 16px; }
+.back-link { font-size: 0.875rem; color: var(--c-primary); }
+</style>

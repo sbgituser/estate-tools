@@ -1,0 +1,449 @@
+---
+import ArticleLayout from '../../layouts/ArticleLayout.astro';
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: 'PropTech投資トレンド2026｜不動産テック市場167億ドルの注目領域と日本の動向',
+    url: 'https://estate.kuras-plus.com/articles/proptech-investment-trends-2026',
+    description: '2026年のPropTech（不動産テック）投資トレンドを解説。世界市場167億ドルの注目領域、日本のスタートアップ動向、不動産投資家が注目すべきポイントを紹介。',
+    author: { '@type': 'Organization', name: '不動産ツールズ | kuras-plus' },
+    publisher: { '@type': 'Organization', name: '不動産ツールズ | kuras-plus', url: 'https://estate.kuras-plus.com' },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'ホーム', item: 'https://estate.kuras-plus.com' },
+      { '@type': 'ListItem', position: 2, name: '記事一覧', item: 'https://estate.kuras-plus.com/articles' },
+      { '@type': 'ListItem', position: 3, name: 'PropTech投資トレンド2026', item: 'https://estate.kuras-plus.com/articles/proptech-investment-trends-2026' },
+    ],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      {
+        '@type': 'Question',
+        name: 'PropTech（不動産テック）とは何ですか？',
+        acceptedAnswer: { '@type': 'Answer', text: 'PropTech（Property Technology）とは、不動産業界にテクノロジーを適用して業務効率化・新サービス創出・投資判断の高度化などを実現する技術やサービスの総称です。AI査定、VR内見、ブロックチェーンによる不動産トークン化、IoTスマートビル、不動産クラウドファンディングなどが代表的な領域です。' },
+      },
+      {
+        '@type': 'Question',
+        name: '不動産トークン化とは何ですか？個人投資家でも参加できますか？',
+        acceptedAnswer: { '@type': 'Answer', text: '不動産トークン化とは、不動産の所有権をブロックチェーン上のデジタルトークンとして分割・発行し、小口から投資可能にする仕組みです。日本では2020年の不動産特定共同事業法の改正により法的枠組みが整備され、1万円〜数十万円単位での不動産投資が可能になっています。個人投資家でもセキュリティトークン取引所を通じて参加できます。' },
+      },
+      {
+        '@type': 'Question',
+        name: '日本のPropTech市場は世界と比べてどの程度の規模ですか？',
+        acceptedAnswer: { '@type': 'Answer', text: '日本のPropTech市場は世界全体の中ではまだ小規模ですが、成長率は高い水準にあります。不動産業界のDX化が他業界に比べて遅れていた分、伸びしろが大きいとされています。政府のDX推進政策や不動産IDの整備も追い風となり、今後数年でさらなる成長が見込まれています。' },
+      },
+    ],
+  },
+];
+---
+
+<ArticleLayout
+  title="PropTech投資トレンド2026｜不動産テック市場167億ドルの注目領域と日本の動向"
+  description="2026年のPropTech（不動産テック）投資トレンドを徹底解説。世界市場167億ドルの5大注目領域、日本のスタートアップ動向、不動産投資家が注目すべきポイントを紹介します。"
+  eyebrow="不動産テック特集 · PropTech 2026"
+  heroTitle="PropTech投資トレンド2026"
+  heroDesc="不動産テック市場167億ドルの注目領域と日本の動向。投資家が知るべき5大トレンドを解説します。"
+  breadcrumb={[
+    { name: '記事一覧', href: '/articles' },
+    { name: 'PropTech投資トレンド2026' },
+  ]}
+  currentPath="/articles/proptech-investment-trends-2026"
+  jsonLd={jsonLd}
+  updatedDate="2026-04-04"
+>
+  <div class="container article-body">
+
+    <section class="art-section">
+      <h2 class="art-h2">PropTech世界市場概況</h2>
+      <p class="art-prose">
+        PropTech（Property Technology）世界市場は2025年に<strong>投資額167億ドル（約2.5兆円）、前年比+67.9%</strong>という記録的な成長を遂げました。
+        不動産業界はこれまでデジタル化が遅れていた分野でしたが、コロナ禍以降のDX加速と生成AIの実用化により、一気に変革のフェーズに入っています。
+      </p>
+      <div class="formula-cards">
+        <div class="fc fc--main">
+          <div class="fc-label">PropTech世界市場の成長</div>
+          <div class="fc-formula">2024年：約99億ドル → 2025年：167億ドル（前年比+67.9%）→ 2026年予測：220〜250億ドル</div>
+          <p class="fc-note">VCファンディング・M&A・戦略投資を含む。AI関連スタートアップへの投資が特に急伸。</p>
+        </div>
+      </div>
+      <p class="art-prose">
+        この成長を牽引しているのが、<strong>生成AI/AI活用</strong>と<strong>ブロックチェーン/トークン化</strong>の2大領域です。
+        従来型の不動産ポータルサイトや管理ソフトウェアからから、AIエージェントによる提案型サービスや分散型の所有権管理へとパラダイムシフトが進んでいます。
+        以下では2026年に特に注目すべき5大トレンドを解説します。
+      </p>
+    </section>
+
+    <section class="art-section">
+      <h2 class="art-h2">トレンド1：生成AI/AI提案支援</h2>
+      <p class="art-prose">
+        2026年のPropTech最大のトレンドは<strong>生成AIの不動産業務への本格導入</strong>です。
+        物件レコメンド、査定、契約書作成、市場分析など幅広い領域でAIが活用されています。
+      </p>
+      <div class="cost-list">
+        <div class="cost-group">
+          <h3 class="cost-group-title">AI活用が進む領域</h3>
+          <ul class="cost-items">
+            <li>AI不動産査定（自動価格推定、精度5〜15%）</li>
+            <li>AIチャットボット（物件問い合わせ対応、24時間稼働）</li>
+            <li>市場分析AI（エリア別の価格予測・需給分析）</li>
+            <li>契約書AI（重要事項説明書の自動生成・チェック）</li>
+          </ul>
+        </div>
+        <div class="cost-group">
+          <h3 class="cost-group-title">投資家向けAIツール</h3>
+          <ul class="cost-items">
+            <li>投資物件スクリーニングAI（条件に合う物件を自動抽出）</li>
+            <li>キャッシュフロー予測AI（複数シナリオの自動生成）</li>
+            <li>リスク分析AI（エリアリスク・テナントリスクの評価）</li>
+            <li>ポートフォリオ最適化AI（分散投資の提案）</li>
+          </ul>
+        </div>
+      </div>
+      <p class="art-prose">
+        特に日本市場では、<strong>AI不動産査定の普及</strong>が加速しています。
+        SRE AI査定やHOME4Uなどの主要サービスが精度を向上させ、投資家の初期スクリーニングツールとして定着しつつあります。
+      </p>
+    </section>
+
+    <section class="art-section">
+      <h2 class="art-h2">トレンド2：ブロックチェーン/不動産トークン化</h2>
+      <p class="art-prose">
+        <strong>不動産トークン化</strong>は、不動産の所有権をブロックチェーン上のデジタルトークンとして分割・発行し、
+        小口から投資可能にする仕組みです。従来は数千万〜数億円単位だった不動産投資を、1万円〜数十万円単位にまで細分化できます。
+      </p>
+      <div class="example-box">
+        <p class="example-label">不動産トークン化のメリット</p>
+        <ul class="example-list">
+          <li>投資の小口化：1万円〜数十万円から不動産投資が可能に</li>
+          <li>流動性の向上：セキュリティトークン取引所での売買が可能</li>
+          <li>透明性：ブロックチェーンで取引履歴・所有権を改ざん不可能な形で記録</li>
+          <li>グローバル投資：国境を越えた不動産投資が容易に</li>
+          <li>コスト削減：仲介手数料・管理コストの低減</li>
+        </ul>
+      </div>
+      <p class="art-prose">
+        日本では2020年の不動産特定共同事業法の改正により法的枠組みが整備され、
+        セキュリティトークンオファリング（STO）による不動産投資が実現しています。
+        2025年には国内STO市場が前年比2倍以上に成長し、2026年はさらなる拡大が見込まれています。
+      </p>
+    </section>
+
+    <section class="art-section">
+      <h2 class="art-h2">トレンド3：IoT/スマートホーム</h2>
+      <p class="art-prose">
+        IoT技術の進化により、住宅・ビルの<strong>スマート化</strong>が加速しています。
+        スマートロック、スマートサーモスタット、エネルギー管理システムなどが標準装備として普及し始めており、
+        不動産の付加価値として投資判断にも影響を与えるようになっています。
+      </p>
+      <div class="formula-cards">
+        <div class="fc">
+          <div class="fc-label">スマートホーム市場の成長</div>
+          <div class="fc-formula">日本のスマートホーム市場：2025年約1.2兆円 → 2030年予測2.5兆円超（年平均成長率15%以上）</div>
+          <p class="fc-note">スマートロック・エネルギー管理・セキュリティが三大カテゴリー。賃貸物件での導入も増加中。</p>
+        </div>
+      </div>
+      <p class="art-prose">
+        投資家の視点では、スマートホーム設備の導入は<strong>テナント訴求力と賃料プレミアム</strong>に直結します。
+        特に若年層のテナントはスマートロックやIoT家電対応を重視する傾向があり、
+        差別化要因として投資物件選定の重要ポイントになっています。
+      </p>
+    </section>
+
+    <section class="art-section">
+      <h2 class="art-h2">トレンド4：データ活用/BI</h2>
+      <p class="art-prose">
+        不動産業界でも<strong>データドリブンな意思決定</strong>が本格化しています。
+        従来は経験と勘に頼ることの多かった不動産投資判断が、ビッグデータとBI（ビジネスインテリジェンス）ツールにより客観化されつつあります。
+      </p>
+      <div class="cost-list">
+        <div class="cost-group">
+          <h3 class="cost-group-title">活用されるデータ</h3>
+          <ul class="cost-items">
+            <li>地価・取引価格データ（国土交通省、REINS等）</li>
+            <li>人口動態・世帯数推移データ</li>
+            <li>賃料相場データ（エリア別・物件タイプ別）</li>
+            <li>人流データ（モバイル位置情報ベース）</li>
+            <li>建築確認・開発許可データ</li>
+          </ul>
+        </div>
+        <div class="cost-group">
+          <h3 class="cost-group-title">BIツールの活用場面</h3>
+          <ul class="cost-items">
+            <li>エリア分析：人口・賃料・空室率のトレンド可視化</li>
+            <li>物件比較：複数物件の収益性を一元比較</li>
+            <li>ポートフォリオ管理：保有物件の収益状況ダッシュボード</li>
+            <li>市場予測：地価・賃料の将来予測モデル</li>
+            <li>リスク評価：災害リスク・人口減少リスクのスコアリング</li>
+          </ul>
+        </div>
+      </div>
+      <p class="art-prose">
+        日本政府が推進する<strong>「不動産ID」</strong>の整備も、データ活用を大きく後押ししています。
+        不動産IDにより物件ごとに一意の識別子が付与され、異なるデータソース間での物件情報の名寄せ・統合が容易になります。
+        これはPropTechサービスのデータ基盤として極めて重要なインフラです。
+      </p>
+    </section>
+
+    <section class="art-section">
+      <h2 class="art-h2">トレンド5：サブスクリプション/共有型モデル</h2>
+      <p class="art-prose">
+        「所有」から「利用」への流れは不動産分野でも進んでおり、<strong>サブスクリプション型の住居・オフィス</strong>が新しいカテゴリーとして成長しています。
+      </p>
+      <div class="example-box">
+        <p class="example-label">主な共有型・サブスク型モデル</p>
+        <ul class="example-list">
+          <li>多拠点居住サービス：月額定額で全国の住居を利用可能</li>
+          <li>フレキシブルオフィス：時間・月単位で柔軟に利用できるオフィス</li>
+          <li>コリビング（Co-Living）：共有リビング+個室の新しい賃貸形態</li>
+          <li>不動産サブスク管理：オーナー向けの定額管理サービス</li>
+          <li>設備サブスク：家具・家電をリースで提供し初期費用を抑制</li>
+        </ul>
+      </div>
+      <p class="art-prose">
+        投資家にとっては、これらの新しい利用形態に対応した物件が<strong>新たな収益機会</strong>を生んでいます。
+        特にフレキシブルオフィスへの転用は、従来型オフィスビルの空室対策として有効であり、
+        コリビング対応のリノベーションは若年単身者向け物件の差別化戦略として注目されています。
+      </p>
+    </section>
+
+    <section class="art-section">
+      <h2 class="art-h2">日本のPropTech動向</h2>
+      <p class="art-prose">
+        日本のPropTech市場は、グローバルなトレンドを追いかけながらも独自の発展を遂げています。
+        主要な動向を整理します。
+      </p>
+
+      <div class="mistake-list">
+        <div class="mistake-item">
+          <div class="mistake-no">①</div>
+          <div class="mistake-body">
+            <strong>不動産IDの整備が加速</strong>
+            <p>国土交通省が推進する不動産IDにより、物件データの横断的な利活用が可能に。PropTechサービスのデータ基盤として整備が進んでいます。</p>
+          </div>
+        </div>
+        <div class="mistake-item">
+          <div class="mistake-no">②</div>
+          <div class="mistake-body">
+            <strong>電子契約・IT重説の普及</strong>
+            <p>2022年の宅建業法改正により不動産取引の電子化が解禁。電子契約・IT重説（オンラインでの重要事項説明）が普及し、取引のデジタル化が進展しています。</p>
+          </div>
+        </div>
+        <div class="mistake-item">
+          <div class="mistake-no">③</div>
+          <div class="mistake-body">
+            <strong>スタートアップの多様化</strong>
+            <p>AI査定、管理DX、クラウドファンディング、スペースシェアリングなど多様な領域でスタートアップが成長中。大手不動産会社との協業・買収も活発化しています。</p>
+          </div>
+        </div>
+        <div class="mistake-item">
+          <div class="mistake-no">④</div>
+          <div class="mistake-body">
+            <strong>ESG/サステナビリティ対応</strong>
+            <p>脱炭素・省エネ要求の高まりにより、ビルのエネルギー管理やグリーン認証取得を支援するPropTechサービスの需要が急増しています。</p>
+          </div>
+        </div>
+      </div>
+
+      <p class="art-prose">
+        日本特有の課題として、<strong>築古物件のストック活用</strong>があります。
+        築30年超のビル・マンションが全体の約40%を占める中、AI査定やスマートレトロフィットといったPropTech技術は、
+        これらの既存ストックの価値向上に大きく貢献します。
+      </p>
+    </section>
+
+    <section class="art-section">
+      <h2 class="art-h2">不動産投資家が注目すべきポイント</h2>
+      <p class="art-prose">
+        PropTechの進化は、不動産投資家の投資判断プロセスにも大きな変化をもたらしています。以下のポイントに注目してください。
+      </p>
+
+      <div class="flow-steps">
+        <div class="flow-step">
+          <span class="flow-no">POINT 1</span>
+          <div class="flow-body">
+            <strong>AI査定で物件スクリーニングを効率化</strong>
+            <p>複数のAI査定サービスを活用し、売出価格の妥当性を即座に判断。割安物件の発見スピードを上げましょう。</p>
+          </div>
+        </div>
+        <div class="flow-step">
+          <span class="flow-no">POINT 2</span>
+          <div class="flow-body">
+            <strong>データドリブンなエリア分析</strong>
+            <p>人口動態・賃料トレンド・空室率データを活用し、投資エリアの将来性を客観的に評価しましょう。</p>
+          </div>
+        </div>
+        <div class="flow-step">
+          <span class="flow-no">POINT 3</span>
+          <div class="flow-body">
+            <strong>スマート設備による差別化</strong>
+            <p>IoT対応やスマートロックなどの先進設備は、テナント訴求力と賃料プレミアムに直結します。物件選定時の評価ポイントに加えましょう。</p>
+          </div>
+        </div>
+        <div class="flow-step">
+          <span class="flow-no">POINT 4</span>
+          <div class="flow-body">
+            <strong>小口投資の選択肢を把握</strong>
+            <p>不動産トークン化やクラウドファンディングにより、少額からの分散投資が可能に。ポートフォリオの一部として検討しましょう。</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="cta-tool">
+        <p>PropTechツールで見つけた物件の収益性を、利回り計算ツールで即座にチェックしましょう。</p>
+        <a href="/calculators/yield" class="cta-link">→ 利回りシミュレーターで今すぐ試算する（無料）</a>
+      </div>
+    </section>
+
+    <section class="art-section">
+      <h2 class="art-h2">既存ツールと組み合わせた投資判断フロー</h2>
+      <p class="art-prose">
+        PropTech時代の投資判断は、複数のテクノロジーツールを組み合わせることで精度が飛躍的に向上します。
+        以下のフローを参考にしてください。
+      </p>
+
+      <div class="example-box">
+        <p class="example-label">PropTech × 利回り計算ツールの投資判断フロー</p>
+        <ul class="example-list">
+          <li>1. AI査定サービスで対象物件の市場価格を推定（所要時間：数分）</li>
+          <li>2. 不動産データBIツールでエリアの賃料相場・空室率・人口トレンドを確認</li>
+          <li>3. 利回り計算ツールでAI査定価格ベースの表面・実質利回りを算出</li>
+          <li>4. CFシミュレーターでローン条件を含めたキャッシュフローを試算</li>
+          <li>5. ROI計算ツールで投資総額に対する収益率と回収期間を確認</li>
+          <li>6. 有望物件について現地確認・詳細デューデリジェンスを実施</li>
+        </ul>
+      </div>
+
+      <p class="art-prose">
+        このフローの1〜5はすべてオンラインで完結するため、<strong>物件のスクリーニングスピードが従来の数倍</strong>に向上します。
+        特にAI査定と利回り計算の組み合わせは、割安物件の早期発見に効果的です。
+      </p>
+    </section>
+
+    <section class="art-section">
+      <h2 class="art-h2">よくある質問</h2>
+      <div class="faq-list">
+        <div class="faq-item">
+          <h3 class="faq-q">PropTech（不動産テック）とは何ですか？</h3>
+          <p class="faq-a">PropTech（Property Technology）とは、不動産業界にテクノロジーを適用して業務効率化・新サービス創出・投資判断の高度化などを実現する技術やサービスの総称です。AI査定、VR内見、ブロックチェーンによる不動産トークン化、IoTスマートビル、不動産クラウドファンディングなどが代表的な領域です。</p>
+        </div>
+        <div class="faq-item">
+          <h3 class="faq-q">不動産トークン化とは何ですか？個人投資家でも参加できますか？</h3>
+          <p class="faq-a">不動産トークン化とは、不動産の所有権をブロックチェーン上のデジタルトークンとして分割・発行し、小口から投資可能にする仕組みです。日本では不動産特定共同事業法の改正により法的枠組みが整備され、1万円〜数十万円単位での不動産投資が可能になっています。個人投資家でもセキュリティトークン取引所を通じて参加できます。</p>
+        </div>
+        <div class="faq-item">
+          <h3 class="faq-q">日本のPropTech市場は世界と比べてどの程度の規模ですか？</h3>
+          <p class="faq-a">日本のPropTech市場は世界全体の中ではまだ小規模ですが、成長率は高い水準にあります。不動産業界のDX化が他業界に比べて遅れていた分、伸びしろが大きいとされています。政府のDX推進政策や不動産IDの整備も追い風となり、今後数年でさらなる成長が見込まれています。</p>
+        </div>
+      </div>
+    </section>
+
+    <p class="disclaimer">
+      ※ 本記事の市場データ・統計は2026年4月時点の情報です。PropTech市場は急速に変化しており、最新の動向は各種レポートをご確認ください。
+      不動産投資（トークン化投資含む）には価格変動・流動性リスク等が伴います。投資判断は自己責任でお願いします。
+    </p>
+
+    <div class="related-tools-box">
+      <p class="rtb-label">関連ツール</p>
+      <div class="rtb-links">
+        <a href="/calculators/yield" class="rtb-link">📊 利回り計算ツール</a>
+        <a href="/calculators/cash-flow" class="rtb-link">💰 CFシミュレーター</a>
+        <a href="/calculators/roi" class="rtb-link">💹 ROI計算ツール</a>
+      </div>
+    </div>
+
+    <div class="related-articles-box">
+      <p class="rtb-label">関連記事</p>
+      <div class="rtb-links">
+        <a href="/articles/ai-real-estate-valuation-2026" class="rtb-link">🤖 AI不動産査定の仕組みと精度</a>
+        <a href="/articles/smart-building-technology-guide" class="rtb-link">🏢 スマートビル技術入門</a>
+        <a href="/articles/real-estate-investment-basics" class="rtb-link">📖 不動産投資の基礎知識</a>
+        <a href="/articles/yield-calculation-guide" class="rtb-link">📊 利回り計算完全ガイド</a>
+      </div>
+    </div>
+
+    <div class="back-links">
+      <a href="/articles" class="back-link">← 記事一覧へ</a>
+    </div>
+  </div>
+</ArticleLayout>
+
+<style>
+.article-body { padding-top: 48px; padding-bottom: 80px; max-width: 780px; }
+.art-section { margin-bottom: 52px; }
+.art-h2 {
+  font-size: 1.2rem; font-weight: 700; color: var(--c-primary);
+  border-left: 4px solid var(--c-accent); padding-left: 14px;
+  margin-bottom: 18px; line-height: 1.4;
+}
+.art-prose { font-size: 0.9375rem; line-height: 1.85; color: var(--c-text); margin-bottom: 14px; }
+
+/* Formula Cards */
+.formula-cards { display: grid; gap: 16px; margin-top: 16px; }
+.fc { background: #fff; border: 1px solid var(--c-border); border-radius: var(--radius-md); padding: 18px 20px; }
+.fc--main { border-color: var(--c-primary); background: #f0f7f4; }
+.fc-label { font-size: 0.75rem; font-weight: 700; color: var(--c-primary); margin-bottom: 8px; }
+.fc-formula { font-size: 0.875rem; font-weight: 700; color: var(--c-text); line-height: 1.6; margin-bottom: 8px; word-break: break-all; }
+.fc-note { font-size: 0.78rem; color: var(--c-text-muted); line-height: 1.6; margin: 0; }
+
+/* Example Box */
+.example-box { background: #fff; border: 1px solid var(--c-border); border-radius: var(--radius-md); padding: 18px 20px; margin-top: 16px; }
+.example-label { font-size: 0.75rem; font-weight: 700; color: var(--c-accent); margin-bottom: 10px; }
+.example-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+.example-list li { font-size: 0.875rem; color: var(--c-text); line-height: 1.6; padding-left: 16px; position: relative; }
+.example-list li::before { content: '·'; position: absolute; left: 4px; color: var(--c-accent); font-weight: 700; font-size: 1.1rem; line-height: 1.3; }
+
+/* Cost List */
+.cost-list { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
+@media (max-width: 580px) { .cost-list { grid-template-columns: 1fr; } }
+.cost-group { background: #fff; border: 1px solid var(--c-border); border-radius: var(--radius-md); padding: 18px 20px; }
+.cost-group-title { font-size: 0.875rem; font-weight: 700; color: var(--c-primary); margin-bottom: 12px; }
+.cost-items { list-style: none; display: flex; flex-direction: column; gap: 7px; }
+.cost-items li { font-size: 0.82rem; color: var(--c-text-muted); line-height: 1.6; padding-left: 16px; position: relative; }
+.cost-items li::before { content: '·'; position: absolute; left: 4px; color: var(--c-accent); font-weight: 700; font-size: 1.1rem; line-height: 1.3; }
+
+/* Flow Steps */
+.flow-steps { display: flex; flex-direction: column; gap: 14px; margin-top: 16px; }
+.flow-step { display: flex; gap: 14px; background: #fff; border: 1px solid var(--c-border); border-radius: var(--radius-md); padding: 16px 18px; }
+.flow-no { font-size: 0.72rem; font-weight: 700; color: #fff; background: var(--c-primary); border-radius: var(--radius-sm); padding: 3px 8px; flex-shrink: 0; height: fit-content; white-space: nowrap; }
+.flow-body strong { font-size: 0.9rem; font-weight: 700; color: var(--c-primary); display: block; margin-bottom: 6px; }
+.flow-body p { font-size: 0.82rem; color: var(--c-text-muted); line-height: 1.7; margin: 0; }
+
+/* Mistake List */
+.mistake-list { display: flex; flex-direction: column; gap: 14px; margin-top: 16px; }
+.mistake-item { display: flex; gap: 14px; background: #fff; border: 1px solid var(--c-border); border-radius: var(--radius-md); padding: 16px 18px; }
+.mistake-no { font-size: 1.1rem; font-weight: 700; color: var(--c-accent); flex-shrink: 0; margin-top: 2px; }
+.mistake-body strong { font-size: 0.9rem; font-weight: 700; color: var(--c-primary); display: block; margin-bottom: 6px; }
+.mistake-body p { font-size: 0.82rem; color: var(--c-text-muted); line-height: 1.7; margin: 0; }
+
+/* CTA Tool */
+.cta-tool { background: #f0f7f4; border: 1px solid #c8e0d8; border-radius: var(--radius-md); padding: 18px 22px; margin-top: 20px; }
+.cta-tool p { font-size: 0.875rem; color: var(--c-text); line-height: 1.7; margin-bottom: 10px; }
+.cta-link { font-size: 0.875rem; font-weight: 700; color: var(--c-primary); text-decoration: none; }
+.cta-link:hover { text-decoration: underline; }
+
+/* FAQ */
+.faq-list { display: flex; flex-direction: column; gap: 0; margin-top: 16px; }
+.faq-item { padding: 18px 0; border-bottom: 1px solid var(--c-border); }
+.faq-item:first-child { border-top: 1px solid var(--c-border); }
+.faq-q { font-size: 0.95rem; font-weight: 700; color: var(--c-primary); margin-bottom: 8px; line-height: 1.5; }
+.faq-a { font-size: 0.85rem; color: var(--c-text-muted); line-height: 1.8; margin: 0; }
+
+/* Disclaimer */
+.disclaimer { font-size: 0.78rem; color: var(--c-text-muted); line-height: 1.7; background: #faf9f7; border: 1px solid var(--c-border); border-radius: var(--radius-md); padding: 14px 18px; margin-bottom: 28px; }
+
+/* Related Tools/Articles Box */
+.related-tools-box, .related-articles-box { background: #f0f7f4; border: 1px solid #c8e0d8; border-radius: var(--radius-md); padding: 18px 22px; margin-bottom: 16px; }
+.rtb-label { font-size: 0.82rem; font-weight: 700; color: var(--c-primary); margin-bottom: 12px; }
+.rtb-links { display: flex; flex-wrap: wrap; gap: 10px; }
+.rtb-link { font-size: 0.875rem; font-weight: 600; color: var(--c-primary); background: #fff; border: 1px solid var(--c-border); border-radius: var(--radius-md); padding: 8px 14px; text-decoration: none; transition: border-color 0.15s; }
+.rtb-link:hover { border-color: var(--c-primary); text-decoration: none; }
+.back-links { margin-top: 16px; }
+.back-link { font-size: 0.875rem; color: var(--c-primary); }
+</style>

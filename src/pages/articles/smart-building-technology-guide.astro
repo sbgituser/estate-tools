@@ -1,0 +1,484 @@
+---
+import ArticleLayout from '../../layouts/ArticleLayout.astro';
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: 'スマートビル技術入門｜IoT・AI活用で築古ビルの価値を高める方法2026',
+    url: 'https://estate.kuras-plus.com/articles/smart-building-technology-guide',
+    description: 'スマートビル技術の基礎から導入コスト・投資回収まで解説。IoTセンサー、ビルOS、AIエネルギー最適化、デジタルツインなど主要技術と中小ビルオーナー向けの実践方法を紹介。',
+    author: { '@type': 'Organization', name: '不動産ツールズ | kuras-plus' },
+    publisher: { '@type': 'Organization', name: '不動産ツールズ | kuras-plus', url: 'https://estate.kuras-plus.com' },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'ホーム', item: 'https://estate.kuras-plus.com' },
+      { '@type': 'ListItem', position: 2, name: '記事一覧', item: 'https://estate.kuras-plus.com/articles' },
+      { '@type': 'ListItem', position: 3, name: 'スマートビル技術入門', item: 'https://estate.kuras-plus.com/articles/smart-building-technology-guide' },
+    ],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      {
+        '@type': 'Question',
+        name: 'スマートビルとは何ですか？',
+        acceptedAnswer: { '@type': 'Answer', text: 'スマートビルとは、IoTセンサー・AI・クラウドなどのテクノロジーを活用して、空調・照明・セキュリティ・エネルギー管理などを自動最適化するビルのことです。従来のビル管理では人手による巡回点検や手動制御が中心でしたが、スマートビルではセンサーデータをリアルタイムで分析し、快適性とエネルギー効率を両立します。' },
+      },
+      {
+        '@type': 'Question',
+        name: '築古ビルでもスマート化は可能ですか？',
+        acceptedAnswer: { '@type': 'Answer', text: 'はい、可能です。築古ビルのスマート化は「スマートレトロフィット」と呼ばれ、既存設備にIoTセンサーや無線通信デバイスを後付けする方法が一般的です。大規模な配線工事が不要な無線型センサーを活用すれば、築30年以上のビルでも段階的にスマート化を進められます。日本では築30年超のビルが全ストックの約40%を占めており、レトロフィット需要は非常に大きい市場です。' },
+      },
+      {
+        '@type': 'Question',
+        name: 'スマートビル化の導入コストはどれくらいですか？',
+        acceptedAnswer: { '@type': 'Answer', text: '規模や導入範囲によって大きく異なりますが、中小ビル（延床1,000〜3,000㎡）のスモールスタートであれば初期費用150〜500万円程度が目安です。まずIoTセンサーによるエネルギー可視化から始め、段階的にAI制御を導入するのが一般的です。エネルギーコスト削減（10〜30%）により3〜7年程度で投資回収が見込まれます。' },
+      },
+      {
+        '@type': 'Question',
+        name: 'スマートビル化で不動産の資産価値は上がりますか？',
+        acceptedAnswer: { '@type': 'Answer', text: 'はい、一般的にスマートビル化は資産価値向上に寄与します。エネルギー効率の改善はランニングコストの削減につながり、NOI（営業純利益）が向上することで利回りが改善します。またテナント満足度の向上により空室率低下も期待できます。CASBEE（建築環境総合性能評価）やBELS（建築物省エネルギー性能表示制度）の評価向上も資産価値を高める要因になります。' },
+      },
+      {
+        '@type': 'Question',
+        name: 'デジタルツインとは何ですか？ビル管理でどう活用されますか？',
+        acceptedAnswer: { '@type': 'Answer', text: 'デジタルツインとは、物理的なビルの状態をデジタル空間上にリアルタイムで再現する技術です。IoTセンサーから収集したデータをもとに、ビルの3Dモデル上で温度分布・人流・エネルギー消費などを可視化します。設備の劣化予測、改修シミュレーション、テナントへの環境情報提供など、ビル管理の高度化に活用されています。' },
+      },
+    ],
+  },
+];
+---
+
+<ArticleLayout
+  title="スマートビル技術入門｜IoT・AI活用で築古ビルの価値を高める方法2026"
+  description="スマートビル技術の基礎から導入コスト・投資回収シミュレーションまで徹底解説。IoTセンサー、ビルOS、AIエネルギー最適化、デジタルツインなど主要技術と中小ビルオーナー向けの実践ガイド。"
+  eyebrow="不動産テック特集 · PropTech 2026"
+  heroTitle="スマートビル技術入門"
+  heroDesc="IoT・AI活用で築古ビルの価値を高める方法を解説。導入コストから投資回収まで、中小ビルオーナー向けに実践ガイドを紹介します。"
+  breadcrumb={[
+    { name: '記事一覧', href: '/articles' },
+    { name: 'スマートビル技術入門' },
+  ]}
+  currentPath="/articles/smart-building-technology-guide"
+  jsonLd={jsonLd}
+  updatedDate="2026-04-04"
+>
+  <div class="container article-body">
+
+    <section class="art-section">
+      <h2 class="art-h2">スマートビルとは</h2>
+      <p class="art-prose">
+        スマートビルとは、<strong>IoTセンサー・AI・クラウドなどのテクノロジーを活用して、空調・照明・セキュリティ・エネルギー管理などを自動最適化するビル</strong>のことです。
+        従来のビル管理では、設備の運転は時間帯ごとのスケジュール制御や管理者の手動操作が中心でした。
+      </p>
+      <p class="art-prose">
+        スマートビルではセンサーが温度・湿度・CO2濃度・人の在不在などをリアルタイムで検知し、AIがデータを分析して最適な設備制御を自動で行います。
+        これにより<strong>快適性の向上とエネルギーコスト削減を両立</strong>できることが最大の特徴です。
+      </p>
+      <p class="art-prose">
+        国際的にはスマートビルのレベルを以下のように分類することが一般的です。
+      </p>
+      <div class="level-cards">
+        <div class="level-card">
+          <span class="level-badge">Level 1</span>
+          <strong>モニタリング</strong>
+          <p>センサーでデータを収集・可視化する段階。エネルギー使用量や環境データの「見える化」が主な目的。</p>
+        </div>
+        <div class="level-card">
+          <span class="level-badge">Level 2</span>
+          <strong>自動制御</strong>
+          <p>収集データに基づきルールベースで設備を自動制御。時間帯・在室状況による空調ON/OFF等。</p>
+        </div>
+        <div class="level-card">
+          <span class="level-badge">Level 3</span>
+          <strong>AI最適化</strong>
+          <p>AIが予測・学習を行い、エネルギー消費と快適性を最適化。予兆保全も実現。</p>
+        </div>
+        <div class="level-card">
+          <span class="level-badge">Level 4</span>
+          <strong>自律運用</strong>
+          <p>デジタルツインと連携し、ビル全体が自律的に運用される最先端段階。</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="art-section">
+      <h2 class="art-h2">日本の機会：築30年超ビルとスマートレトロフィット</h2>
+      <p class="art-prose">
+        日本には築30年を超えるビルが全ストックの<strong>約40%</strong>を占めるという特有の状況があります。
+        これらの築古ビルは設備の老朽化が進み、エネルギー効率が低く、テナント獲得でも不利になりがちです。
+      </p>
+      <p class="art-prose">
+        この課題を解決するのが<strong>「スマートレトロフィット」</strong>（後付けスマート化）です。
+        建て替えではなく、既存ビルにIoTセンサーや制御デバイスを後付けすることで、比較的低コストでスマートビル化を実現します。
+      </p>
+      <div class="formula-cards">
+        <div class="fc fc--main">
+          <div class="fc-label">日本のスマートレトロフィット市場</div>
+          <div class="fc-formula">築30年超ビル約40% × エネルギーコスト削減10〜30% × テナント満足度向上 ＝ 巨大な市場機会</div>
+          <p class="fc-note">2025年の改正省エネ法により中規模ビルにもエネルギー報告義務が拡大。対応ニーズが急増中。</p>
+        </div>
+      </div>
+      <p class="art-prose">
+        特に2025年の改正省エネ法（建築物のエネルギー消費性能の向上に関する法律）により、
+        中規模ビルにもエネルギー消費報告の義務が拡大されました。
+        スマートビル化によるエネルギー管理は、<strong>法令遵守とコスト削減を同時に実現する手段</strong>として注目されています。
+      </p>
+    </section>
+
+    <section class="art-section">
+      <h2 class="art-h2">主要技術要素：IoTセンサー</h2>
+      <p class="art-prose">
+        スマートビルの基盤となるのが各種<strong>IoTセンサー</strong>です。ビル内の環境をリアルタイムで計測し、データ化します。
+      </p>
+      <div class="cost-list">
+        <div class="cost-group">
+          <h3 class="cost-group-title">環境センサー</h3>
+          <ul class="cost-items">
+            <li>温湿度センサー：室内の温度・湿度を計測。空調制御の基礎データ</li>
+            <li>CO2センサー：室内のCO2濃度を計測。換気量の最適化に活用</li>
+            <li>照度センサー：自然光の量を計測し、照明の自動調光に使用</li>
+            <li>PM2.5/VOCセンサー：空気質モニタリング。テナント満足度向上に寄与</li>
+          </ul>
+        </div>
+        <div class="cost-group">
+          <h3 class="cost-group-title">人流・利用センサー</h3>
+          <ul class="cost-items">
+            <li>人感センサー（PIR）：在室検知。不在時の空調・照明自動OFF</li>
+            <li>カウンターセンサー：出入口の通過人数を計測。利用率の可視化</li>
+            <li>BLEビーコン：位置情報サービス。会議室予約・ナビゲーション</li>
+            <li>電力計測センサー：テナント別・フロア別のエネルギー消費を把握</li>
+          </ul>
+        </div>
+      </div>
+      <p class="art-prose">
+        最新のIoTセンサーはバッテリー駆動で無線通信（LoRaWAN、BLE、Wi-Fi）に対応しており、
+        <strong>配線工事不要で後付け設置</strong>が可能です。
+        1フロアあたり数個〜十数個のセンサーを設置することで、ビル全体の環境データをリアルタイムで把握できます。
+      </p>
+    </section>
+
+    <section class="art-section">
+      <h2 class="art-h2">主要技術要素：ビルOS / BMS</h2>
+      <p class="art-prose">
+        <strong>ビルOS（Building Operating System）</strong>は、各種センサーや設備からのデータを統合管理し、ビル全体を一元制御するソフトウェアプラットフォームです。
+        従来のBMS（Building Management System）をクラウドベースで進化させたものと位置づけられます。
+      </p>
+      <div class="example-box">
+        <p class="example-label">ビルOSの主な機能</p>
+        <ul class="example-list">
+          <li>センサーデータの統合ダッシュボード（温度、湿度、CO2、電力等）</li>
+          <li>空調・照明・換気の統合制御インターフェース</li>
+          <li>異常検知・アラート通知（設備故障の予兆検知）</li>
+          <li>エネルギーレポートの自動生成（省エネ法対応）</li>
+          <li>テナント向けアプリ連携（環境情報表示、設備リクエスト）</li>
+          <li>外部システム（ERP、不動産管理システム等）とのAPI連携</li>
+        </ul>
+      </div>
+      <p class="art-prose">
+        従来型BMSはメーカー独自のプロトコルで構成され、異なるメーカーの機器を統合しにくいという課題がありました。
+        最新のビルOSはオープンなAPIとマルチプロトコル対応により、<strong>メーカーを問わず設備を統合管理</strong>できるのが大きな進歩です。
+      </p>
+    </section>
+
+    <section class="art-section">
+      <h2 class="art-h2">主要技術要素：AIエネルギー最適化</h2>
+      <p class="art-prose">
+        AIエネルギー最適化は、<strong>機械学習モデルがビルのエネルギー消費パターンを学習し、空調・照明などの運転を自動で最適化</strong>する技術です。
+        人手では不可能な多変数のリアルタイム最適化を実現します。
+      </p>
+      <div class="formula-cards">
+        <div class="fc fc--main">
+          <div class="fc-label">AIエネルギー最適化の効果目安</div>
+          <div class="fc-formula">エネルギーコスト削減：10〜30% ／ CO2排出削減：15〜25% ／ テナント快適性：維持または向上</div>
+          <p class="fc-note">削減率はビルの規模・築年数・既存設備の状態により変動。築古ビルほど改善幅が大きい傾向。</p>
+        </div>
+      </div>
+      <p class="art-prose">
+        具体的には、AIが外気温・天気予報・曜日・時間帯・在室人数の予測データを総合的に分析し、
+        「明日は外気温が高いため、早朝から予冷運転を開始する」「今日は在室率が低いため、空調能力を抑制する」
+        といった<strong>先読み制御</strong>を行います。
+        これにより、従来のスケジュール制御と比べて10〜30%のエネルギーコスト削減が報告されています。
+      </p>
+    </section>
+
+    <section class="art-section">
+      <h2 class="art-h2">主要技術要素：デジタルツイン</h2>
+      <p class="art-prose">
+        <strong>デジタルツイン</strong>とは、物理的なビルの状態をデジタル空間上にリアルタイムで再現する技術です。
+        ビルの3Dモデルとセンサーデータを統合し、温度分布・人流・エネルギー消費・設備状態などをビジュアルに表示します。
+      </p>
+      <div class="cost-list">
+        <div class="cost-group">
+          <h3 class="cost-group-title">デジタルツインの活用場面</h3>
+          <ul class="cost-items">
+            <li>設備の劣化予測：センサーデータの傾向から交換時期を事前予測</li>
+            <li>改修シミュレーション：レイアウト変更・設備更新の効果を事前検証</li>
+            <li>災害対策：避難経路のシミュレーション・安全性評価</li>
+            <li>テナント向けサービス：館内ナビ・空室情報・環境スコア表示</li>
+          </ul>
+        </div>
+        <div class="cost-group">
+          <h3 class="cost-group-title">導入に必要な要素</h3>
+          <ul class="cost-items">
+            <li>ビルの3Dモデル（BIMデータまたは3Dスキャン）</li>
+            <li>IoTセンサー群（環境・設備・人流データ）</li>
+            <li>データ統合プラットフォーム（ビルOS等）</li>
+            <li>可視化ツール（Webダッシュボード、AR/VR対応も可）</li>
+          </ul>
+        </div>
+      </div>
+      <p class="art-prose">
+        デジタルツインは現時点では大規模ビルでの導入が先行していますが、
+        BIMデータの普及と3Dスキャン技術のコスト低下により、中規模ビルへの展開も始まっています。
+        <strong>中長期的にはビルの「健康診断書」</strong>として、売買時の価値評価にも活用されると予想されています。
+      </p>
+    </section>
+
+    <section class="art-section">
+      <h2 class="art-h2">導入コストと投資回収シミュレーション</h2>
+      <p class="art-prose">
+        スマートビル化の導入コストは規模と範囲によって大きく変わります。以下に中小ビル（延床1,000〜3,000㎡）を想定した投資回収シミュレーションを示します。
+      </p>
+
+      <div class="example-box">
+        <p class="example-label">投資回収シミュレーション（延床2,000㎡・築35年オフィスビル）</p>
+        <ul class="example-list">
+          <li>年間エネルギーコスト（現状）：480万円（電気代400万円＋ガス代80万円）</li>
+          <li>スマート化初期投資：350万円（IoTセンサー150万円＋ビルOS導入100万円＋AI制御100万円）</li>
+          <li>年間ランニングコスト（クラウド・保守）：36万円</li>
+          <li>エネルギー削減率：20%（年間96万円の削減）</li>
+          <li>年間純削減額：96万円 − 36万円 ＝ <strong>60万円/年</strong></li>
+          <li>投資回収期間：350万円 ÷ 60万円 ≒ <strong>約5.8年</strong></li>
+        </ul>
+      </div>
+
+      <div class="formula-cards">
+        <div class="fc">
+          <div class="fc-label">間接的な収益向上効果（ROIに加算）</div>
+          <div class="fc-formula">テナント満足度向上 → 空室率低下（1〜3%改善）＋ 賃料プレミアム（3〜5%上乗せ可能性）</div>
+          <p class="fc-note">NOI向上によるキャップレート改善で、物件売却時の資産価値向上も期待できる。</p>
+        </div>
+      </div>
+
+      <p class="art-prose">
+        エネルギー削減効果に加え、<strong>テナント満足度の向上による空室率低下と賃料プレミアム</strong>を加味すると、
+        実質的な投資回収はさらに短縮されます。
+        特にESG投資の観点から環境性能の高いビルを優先するテナントが増えており、スマートビル化は収益面でも合理的な投資と言えます。
+      </p>
+    </section>
+
+    <section class="art-section">
+      <h2 class="art-h2">中小ビルオーナー向けスモールスタート方法</h2>
+      <p class="art-prose">
+        大規模な設備投資が難しい中小ビルオーナーでも、段階的にスマートビル化を進めることが可能です。以下の3ステップが推奨されます。
+      </p>
+
+      <div class="flow-steps">
+        <div class="flow-step">
+          <span class="flow-no">STEP 1</span>
+          <div class="flow-body">
+            <strong>エネルギー可視化（初期費用50〜100万円）</strong>
+            <p>電力計測センサーと温湿度センサーを設置し、フロア別・テナント別のエネルギー消費を「見える化」。無駄の発見と改善ポイントの特定から始めます。</p>
+          </div>
+        </div>
+        <div class="flow-step">
+          <span class="flow-no">STEP 2</span>
+          <div class="flow-body">
+            <strong>ルールベース自動制御（追加費用100〜150万円）</strong>
+            <p>人感センサーとCO2センサーを追加し、「不在時は空調OFF」「CO2濃度が閾値を超えたら換気量UP」等の自動制御を導入。即効性のあるコスト削減を実現します。</p>
+          </div>
+        </div>
+        <div class="flow-step">
+          <span class="flow-no">STEP 3</span>
+          <div class="flow-body">
+            <strong>AI最適化（追加費用100〜200万円）</strong>
+            <p>蓄積した1〜2年分のデータをもとにAIモデルを導入。予測制御によるさらなるエネルギー削減と、設備の予兆保全を実現します。</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="cta-tool">
+        <p>スマートビル化による利回り改善効果を、利回り計算ツールでシミュレーションしてみましょう。</p>
+        <a href="/calculators/yield" class="cta-link">→ 利回りシミュレーターで今すぐ試算する（無料）</a>
+      </div>
+    </section>
+
+    <section class="art-section">
+      <h2 class="art-h2">不動産投資のROI向上との関連</h2>
+      <p class="art-prose">
+        スマートビル化は不動産投資のROI（投資収益率）向上に直結します。具体的な影響経路は以下の通りです。
+      </p>
+      <div class="mistake-list">
+        <div class="mistake-item">
+          <div class="mistake-no">①</div>
+          <div class="mistake-body">
+            <strong>NOI（営業純利益）の向上</strong>
+            <p>エネルギーコスト削減と保守費用の最適化により、年間の営業経費が低減。結果としてNOIが増加し、実質利回りが改善します。</p>
+          </div>
+        </div>
+        <div class="mistake-item">
+          <div class="mistake-no">②</div>
+          <div class="mistake-body">
+            <strong>空室率の低下</strong>
+            <p>快適な室内環境・先進的なビル設備はテナント満足度を高め、既存テナントの解約率低下と新規テナント誘引力の向上につながります。</p>
+          </div>
+        </div>
+        <div class="mistake-item">
+          <div class="mistake-no">③</div>
+          <div class="mistake-body">
+            <strong>賃料プレミアムの獲得</strong>
+            <p>環境認証（CASBEE、BELS等）やウェルネス認証（WELL等）の取得により、一般的なビルと比べて3〜5%の賃料プレミアムが期待できます。</p>
+          </div>
+        </div>
+        <div class="mistake-item">
+          <div class="mistake-no">④</div>
+          <div class="mistake-body">
+            <strong>物件売却時の資産価値向上</strong>
+            <p>NOI向上と環境性能の高さは、キャップレート（還元利回り）の改善を通じて売却価格の上昇につながります。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="art-section">
+      <h2 class="art-h2">よくある質問</h2>
+      <div class="faq-list">
+        <div class="faq-item">
+          <h3 class="faq-q">スマートビルとは何ですか？</h3>
+          <p class="faq-a">スマートビルとは、IoTセンサー・AI・クラウドなどのテクノロジーを活用して、空調・照明・セキュリティ・エネルギー管理などを自動最適化するビルのことです。センサーデータをリアルタイムで分析し、快適性とエネルギー効率を両立します。</p>
+        </div>
+        <div class="faq-item">
+          <h3 class="faq-q">築古ビルでもスマート化は可能ですか？</h3>
+          <p class="faq-a">はい、可能です。「スマートレトロフィット」として、既存設備にIoTセンサーや無線通信デバイスを後付けする方法が一般的です。大規模な配線工事不要の無線型センサーを活用すれば、築30年以上のビルでも段階的にスマート化できます。</p>
+        </div>
+        <div class="faq-item">
+          <h3 class="faq-q">スマートビル化の導入コストはどれくらいですか？</h3>
+          <p class="faq-a">中小ビル（延床1,000〜3,000㎡）のスモールスタートであれば初期費用150〜500万円程度が目安です。エネルギー可視化から始め、段階的にAI制御を導入するのが一般的で、3〜7年程度で投資回収が見込まれます。</p>
+        </div>
+        <div class="faq-item">
+          <h3 class="faq-q">スマートビル化で不動産の資産価値は上がりますか？</h3>
+          <p class="faq-a">一般的にスマートビル化は資産価値向上に寄与します。エネルギー効率改善によるNOI向上、テナント満足度向上による空室率低下、環境認証取得による賃料プレミアムなど複数の経路で資産価値を高めます。</p>
+        </div>
+        <div class="faq-item">
+          <h3 class="faq-q">デジタルツインとは何ですか？</h3>
+          <p class="faq-a">物理的なビルの状態をデジタル空間上にリアルタイムで再現する技術です。IoTセンサーから収集したデータをもとに、ビルの3Dモデル上で温度分布・人流・エネルギー消費などを可視化し、設備の劣化予測や改修シミュレーションに活用されます。</p>
+        </div>
+      </div>
+    </section>
+
+    <p class="disclaimer">
+      ※ 本記事の情報は2026年4月時点のものです。スマートビル技術・製品・コスト等は急速に変化しています。
+      導入検討の際は最新情報を各メーカー・ベンダーにご確認ください。不動産投資には価格変動・空室等のリスクが伴います。
+    </p>
+
+    <div class="related-tools-box">
+      <p class="rtb-label">関連ツール</p>
+      <div class="rtb-links">
+        <a href="/calculators/yield" class="rtb-link">📊 利回り計算ツール</a>
+        <a href="/calculators/cash-flow" class="rtb-link">💰 CFシミュレーター</a>
+        <a href="/calculators/roi" class="rtb-link">💹 ROI計算ツール</a>
+      </div>
+    </div>
+
+    <div class="related-articles-box">
+      <p class="rtb-label">関連記事</p>
+      <div class="rtb-links">
+        <a href="/articles/ai-real-estate-valuation-2026" class="rtb-link">🤖 AI不動産査定の仕組みと精度</a>
+        <a href="/articles/proptech-investment-trends-2026" class="rtb-link">📈 PropTech投資トレンド2026</a>
+        <a href="/articles/yield-calculation-guide" class="rtb-link">📖 利回り計算完全ガイド</a>
+        <a href="/articles/vacancy-rate" class="rtb-link">📉 空室率の目安と見込み方</a>
+      </div>
+    </div>
+
+    <div class="back-links">
+      <a href="/articles" class="back-link">← 記事一覧へ</a>
+    </div>
+  </div>
+</ArticleLayout>
+
+<style>
+.article-body { padding-top: 48px; padding-bottom: 80px; max-width: 780px; }
+.art-section { margin-bottom: 52px; }
+.art-h2 {
+  font-size: 1.2rem; font-weight: 700; color: var(--c-primary);
+  border-left: 4px solid var(--c-accent); padding-left: 14px;
+  margin-bottom: 18px; line-height: 1.4;
+}
+.art-prose { font-size: 0.9375rem; line-height: 1.85; color: var(--c-text); margin-bottom: 14px; }
+
+/* Formula Cards */
+.formula-cards { display: grid; gap: 16px; margin-top: 16px; }
+.fc { background: #fff; border: 1px solid var(--c-border); border-radius: var(--radius-md); padding: 18px 20px; }
+.fc--main { border-color: var(--c-primary); background: #f0f7f4; }
+.fc-label { font-size: 0.75rem; font-weight: 700; color: var(--c-primary); margin-bottom: 8px; }
+.fc-formula { font-size: 0.875rem; font-weight: 700; color: var(--c-text); line-height: 1.6; margin-bottom: 8px; word-break: break-all; }
+.fc-note { font-size: 0.78rem; color: var(--c-text-muted); line-height: 1.6; margin: 0; }
+
+/* Example Box */
+.example-box { background: #fff; border: 1px solid var(--c-border); border-radius: var(--radius-md); padding: 18px 20px; margin-top: 16px; }
+.example-label { font-size: 0.75rem; font-weight: 700; color: var(--c-accent); margin-bottom: 10px; }
+.example-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+.example-list li { font-size: 0.875rem; color: var(--c-text); line-height: 1.6; padding-left: 16px; position: relative; }
+.example-list li::before { content: '·'; position: absolute; left: 4px; color: var(--c-accent); font-weight: 700; font-size: 1.1rem; line-height: 1.3; }
+
+/* Cost List */
+.cost-list { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
+@media (max-width: 580px) { .cost-list { grid-template-columns: 1fr; } }
+.cost-group { background: #fff; border: 1px solid var(--c-border); border-radius: var(--radius-md); padding: 18px 20px; }
+.cost-group-title { font-size: 0.875rem; font-weight: 700; color: var(--c-primary); margin-bottom: 12px; }
+.cost-items { list-style: none; display: flex; flex-direction: column; gap: 7px; }
+.cost-items li { font-size: 0.82rem; color: var(--c-text-muted); line-height: 1.6; padding-left: 16px; position: relative; }
+.cost-items li::before { content: '·'; position: absolute; left: 4px; color: var(--c-accent); font-weight: 700; font-size: 1.1rem; line-height: 1.3; }
+
+/* Level Cards */
+.level-cards { display: flex; flex-direction: column; gap: 12px; margin-top: 16px; }
+.level-card { background: #fff; border: 1px solid var(--c-border); border-radius: var(--radius-md); padding: 16px 18px; }
+.level-badge { font-size: 0.7rem; font-weight: 700; color: #fff; background: var(--c-primary); border-radius: 20px; padding: 2px 10px; margin-right: 8px; }
+.level-card strong { font-size: 0.9rem; color: var(--c-primary); }
+.level-card p { font-size: 0.82rem; color: var(--c-text-muted); line-height: 1.7; margin: 8px 0 0; }
+
+/* Flow Steps */
+.flow-steps { display: flex; flex-direction: column; gap: 14px; margin-top: 16px; }
+.flow-step { display: flex; gap: 14px; background: #fff; border: 1px solid var(--c-border); border-radius: var(--radius-md); padding: 16px 18px; }
+.flow-no { font-size: 0.72rem; font-weight: 700; color: #fff; background: var(--c-primary); border-radius: var(--radius-sm); padding: 3px 8px; flex-shrink: 0; height: fit-content; white-space: nowrap; }
+.flow-body strong { font-size: 0.9rem; font-weight: 700; color: var(--c-primary); display: block; margin-bottom: 6px; }
+.flow-body p { font-size: 0.82rem; color: var(--c-text-muted); line-height: 1.7; margin: 0; }
+
+/* Mistake List */
+.mistake-list { display: flex; flex-direction: column; gap: 14px; margin-top: 16px; }
+.mistake-item { display: flex; gap: 14px; background: #fff; border: 1px solid var(--c-border); border-radius: var(--radius-md); padding: 16px 18px; }
+.mistake-no { font-size: 1.1rem; font-weight: 700; color: var(--c-accent); flex-shrink: 0; margin-top: 2px; }
+.mistake-body strong { font-size: 0.9rem; font-weight: 700; color: var(--c-primary); display: block; margin-bottom: 6px; }
+.mistake-body p { font-size: 0.82rem; color: var(--c-text-muted); line-height: 1.7; margin: 0; }
+
+/* CTA Tool */
+.cta-tool { background: #f0f7f4; border: 1px solid #c8e0d8; border-radius: var(--radius-md); padding: 18px 22px; margin-top: 20px; }
+.cta-tool p { font-size: 0.875rem; color: var(--c-text); line-height: 1.7; margin-bottom: 10px; }
+.cta-link { font-size: 0.875rem; font-weight: 700; color: var(--c-primary); text-decoration: none; }
+.cta-link:hover { text-decoration: underline; }
+
+/* FAQ */
+.faq-list { display: flex; flex-direction: column; gap: 0; margin-top: 16px; }
+.faq-item { padding: 18px 0; border-bottom: 1px solid var(--c-border); }
+.faq-item:first-child { border-top: 1px solid var(--c-border); }
+.faq-q { font-size: 0.95rem; font-weight: 700; color: var(--c-primary); margin-bottom: 8px; line-height: 1.5; }
+.faq-a { font-size: 0.85rem; color: var(--c-text-muted); line-height: 1.8; margin: 0; }
+
+/* Disclaimer */
+.disclaimer { font-size: 0.78rem; color: var(--c-text-muted); line-height: 1.7; background: #faf9f7; border: 1px solid var(--c-border); border-radius: var(--radius-md); padding: 14px 18px; margin-bottom: 28px; }
+
+/* Related Tools/Articles Box */
+.related-tools-box, .related-articles-box { background: #f0f7f4; border: 1px solid #c8e0d8; border-radius: var(--radius-md); padding: 18px 22px; margin-bottom: 16px; }
+.rtb-label { font-size: 0.82rem; font-weight: 700; color: var(--c-primary); margin-bottom: 12px; }
+.rtb-links { display: flex; flex-wrap: wrap; gap: 10px; }
+.rtb-link { font-size: 0.875rem; font-weight: 600; color: var(--c-primary); background: #fff; border: 1px solid var(--c-border); border-radius: var(--radius-md); padding: 8px 14px; text-decoration: none; transition: border-color 0.15s; }
+.rtb-link:hover { border-color: var(--c-primary); text-decoration: none; }
+.back-links { margin-top: 16px; }
+.back-link { font-size: 0.875rem; color: var(--c-primary); }
+</style>
