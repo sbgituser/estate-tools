@@ -1,0 +1,729 @@
+---
+import ArticleLayout from '../../layouts/ArticleLayout.astro';
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: '不動産投資初心者ガイド2026｜ワンルームから始める資産形成の基本',
+    url: 'https://estate.kuras-plus.com/articles/real-estate-investment-beginner-guide-2026',
+    description: '不動産投資の始め方を初心者向けに解説。ワンルーム・アパート一棟・REITの比較、利回り・ROI・CCRなど投資指標、2026年の市場動向まで網羅。',
+    author: { '@type': 'Organization', name: '不動産ツールズ | kuras-plus' },
+    publisher: { '@type': 'Organization', name: '不動産ツールズ | kuras-plus', url: 'https://estate.kuras-plus.com' },
+    keywords: '不動産投資 初心者, 不動産投資 始め方, ワンルーム投資 2026',
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'ホーム', item: 'https://estate.kuras-plus.com' },
+      { '@type': 'ListItem', position: 2, name: '記事一覧', item: 'https://estate.kuras-plus.com/articles' },
+      { '@type': 'ListItem', position: 3, name: '不動産投資初心者ガイド2026', item: 'https://estate.kuras-plus.com/articles/real-estate-investment-beginner-guide-2026' },
+    ],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      {
+        '@type': 'Question',
+        name: '不動産投資は自己資金いくらから始められますか？',
+        acceptedAnswer: { '@type': 'Answer', text: 'ワンルームマンション投資であれば、物件価格の10〜20%程度の自己資金（頭金＋諸費用）が目安です。例えば2,000万円の物件なら200〜400万円が初期資金の目安になります。フルローンを利用できるケースもありますが、金利負担が大きくなるため余裕を持った資金計画を推奨します。' },
+      },
+      {
+        '@type': 'Question',
+        name: 'ワンルーム投資と一棟アパート投資はどちらが初心者向きですか？',
+        acceptedAnswer: { '@type': 'Answer', text: 'ワンルームマンション投資が初心者向きです。購入価格が1,500〜3,000万円程度と比較的低く、管理組合が共用部を管理するため手間が少ないのが利点です。一棟アパートは利回りが高い傾向がありますが、数千万〜億単位の資金が必要で、修繕・入居者管理の負担も大きくなります。' },
+      },
+      {
+        '@type': 'Question',
+        name: '表面利回りと実質利回りの違いは何ですか？',
+        acceptedAnswer: { '@type': 'Answer', text: '表面利回りは「年間家賃収入÷物件価格×100」で計算する簡易的な指標です。実質利回りは管理費・修繕積立金・固定資産税・空室損失などの経費を差し引いた「年間純収益÷（物件価格＋購入時諸費用）×100」で計算します。投資判断では実質利回りを重視してください。' },
+      },
+      {
+        '@type': 'Question',
+        name: '不動産投資ローンの審査では何が見られますか？',
+        acceptedAnswer: { '@type': 'Answer', text: '主に「年収（目安400万円以上）」「勤続年数（3年以上が有利）」「既存借入の有無」「物件の収益性・担保価値」が審査されます。会社員・公務員は安定収入として評価されやすく、自営業者はより厳しく審査される傾向があります。事前審査で借入可能額を確認してから物件探しを始めるのが効率的です。' },
+      },
+      {
+        '@type': 'Question',
+        name: '2026年に不動産投資を始める際の注意点は？',
+        acceptedAnswer: { '@type': 'Answer', text: '2026年は日銀の金融政策正常化に伴う金利上昇リスクに注意が必要です。変動金利ローンを利用する場合は金利上昇シナリオでのシミュレーションを必ず行いましょう。また都心部では物件価格が高止まりしているため、表面利回りが低下傾向にあります。無理のない借入額と十分なキャッシュフローマージンを確保することが重要です。' },
+      },
+      {
+        '@type': 'Question',
+        name: 'REITと現物不動産投資の違いは何ですか？',
+        acceptedAnswer: { '@type': 'Answer', text: 'REIT（不動産投資信託）は数万円から証券口座で購入でき、分散投資・高い流動性が魅力です。一方、現物不動産はローンを活用したレバレッジ効果、減価償却による節税、物件価値のコントロールが可能です。REITは手軽さ、現物は資産形成の効率性で優れており、併用する投資家も多くいます。' },
+      },
+      {
+        '@type': 'Question',
+        name: 'CCR（キャッシュ・オン・キャッシュ・リターン）とは何ですか？',
+        acceptedAnswer: { '@type': 'Answer', text: 'CCRは「年間キャッシュフロー÷自己資金投下額×100」で計算する指標です。ROIと似ていますが、CCRはローン返済後の実際の手残り（キャッシュフロー）を分子に使うため、レバレッジ効果を含めた自己資金の実質的な運用効率を示します。目安として8〜12%以上が良好とされます。' },
+      },
+    ],
+  },
+];
+---
+
+<ArticleLayout
+  title="不動産投資初心者ガイド2026｜ワンルームから始める資産形成の基本"
+  description="不動産投資の始め方を初心者向けに徹底解説。ワンルーム・アパート一棟・REITの比較、利回り・ROI・CCRなどの投資指標、資金計画から物件購入までのステップ、2026年の市場動向まで網羅した完全ガイド。"
+  eyebrow="初心者ガイド · Beginner's Guide 2026"
+  heroTitle="不動産投資初心者ガイド2026｜ワンルームから始める資産形成の基本"
+  heroDesc="不動産投資の仕組みから始め方、知っておくべき指標、2026年の市場動向まで。これから投資を始める方のための完全ガイドです。"
+  breadcrumb={[
+    { name: '記事一覧', href: '/articles' },
+    { name: '不動産投資初心者ガイド2026' },
+  ]}
+  currentPath="/articles/real-estate-investment-beginner-guide-2026"
+  jsonLd={jsonLd}
+>
+  <div class="container article-body">
+
+    <!-- 導入 -->
+    <section class="art-section">
+      <p class="art-prose">
+        「不動産投資に興味はあるけれど、何から始めればよいか分からない」——そんな方に向けた総合ガイドです。
+        不動産投資は正しい知識と計画があれば、サラリーマンでも取り組める資産形成の手段です。
+        本記事では、投資の仕組みからメリット・デメリット、具体的な始め方のステップ、知っておくべき指標、
+        そして2026年の市場動向まで体系的に解説します。
+      </p>
+    </section>
+
+    <!-- 1. 不動産投資の基本 -->
+    <section class="art-section">
+      <h2 class="art-h2">不動産投資の仕組み</h2>
+      <p class="art-prose">
+        不動産投資とは、マンションやアパートなどの物件を購入し、入居者からの家賃収入（インカムゲイン）や
+        将来の売却益（キャピタルゲイン）を得る投資手法です。
+        多くの場合、金融機関からの融資（不動産投資ローン）を活用して物件を購入し、
+        家賃収入でローンを返済しながら資産を形成していきます。
+      </p>
+
+      <h3 class="art-h3">メリット</h3>
+      <ul class="art-list">
+        <li><strong>安定したインカムゲイン：</strong>入居者がいる限り毎月の家賃収入が得られる。株式の配当と比べて安定性が高い。</li>
+        <li><strong>レバレッジ効果：</strong>ローンを活用することで、自己資金の数倍の資産を運用できる。少ない元手で大きなリターンを狙える。</li>
+        <li><strong>節税効果：</strong>減価償却費を経費計上することで所得税・住民税を圧縮できる。特に高所得者にメリットが大きい。</li>
+        <li><strong>インフレヘッジ：</strong>物価上昇に伴い不動産価値・家賃も上昇する傾向があり、インフレ対策として機能する。</li>
+        <li><strong>生命保険代わり：</strong>団体信用生命保険（団信）により、万が一の際にローン残債がゼロになり、家族に資産を残せる。</li>
+      </ul>
+
+      <h3 class="art-h3">デメリット・リスク</h3>
+      <ul class="art-list">
+        <li><strong>空室リスク：</strong>入居者が見つからなければ家賃収入がゼロになる。立地選びと適切な家賃設定が重要。</li>
+        <li><strong>金利上昇リスク：</strong>変動金利ローンの場合、金利上昇で返済額が増加しキャッシュフローが悪化する。</li>
+        <li><strong>流動性の低さ：</strong>株式のように即日売却できない。売却に数ヶ月かかることが一般的。</li>
+        <li><strong>修繕・維持費用：</strong>経年劣化に伴う修繕費用、設備更新費用が発生する。築年数が古いほど負担が大きい。</li>
+        <li><strong>家賃下落リスク：</strong>築年数の経過や周辺環境の変化で家賃が下がる可能性がある。</li>
+      </ul>
+    </section>
+
+    <!-- 2. 投資タイプ別比較 -->
+    <section class="art-section">
+      <h2 class="art-h2">投資タイプ別比較｜ワンルーム・一棟アパート・REIT</h2>
+      <p class="art-prose">
+        不動産投資にはいくつかのタイプがあり、それぞれ特徴が異なります。
+        自分の資金力・リスク許容度・投資目的に合ったタイプを選ぶことが重要です。
+      </p>
+
+      <div class="type-table-wrap">
+        <table class="type-table">
+          <thead>
+            <tr>
+              <th></th>
+              <th>ワンルームマンション</th>
+              <th>一棟アパート</th>
+              <th>REIT（不動産投資信託）</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="row-label">初期資金目安</td>
+              <td>200〜500万円</td>
+              <td>1,000〜3,000万円</td>
+              <td>数万円〜</td>
+            </tr>
+            <tr>
+              <td class="row-label">物件価格帯</td>
+              <td>1,500〜3,500万円</td>
+              <td>5,000万〜2億円</td>
+              <td>—</td>
+            </tr>
+            <tr>
+              <td class="row-label">表面利回り目安</td>
+              <td>4〜6%（都心）</td>
+              <td>7〜12%</td>
+              <td>3〜5%（分配金）</td>
+            </tr>
+            <tr>
+              <td class="row-label">管理の手間</td>
+              <td>少ない（管理会社委託）</td>
+              <td>多い（自主管理の場合）</td>
+              <td>なし</td>
+            </tr>
+            <tr>
+              <td class="row-label">レバレッジ</td>
+              <td>可能（ローン活用）</td>
+              <td>可能（ローン活用）</td>
+              <td>不可</td>
+            </tr>
+            <tr>
+              <td class="row-label">流動性</td>
+              <td>中（売却に1〜3ヶ月）</td>
+              <td>低（売却に3〜6ヶ月）</td>
+              <td>高（即日売買可能）</td>
+            </tr>
+            <tr>
+              <td class="row-label">初心者おすすめ度</td>
+              <td><strong>★★★★★</strong></td>
+              <td>★★☆☆☆</td>
+              <td>★★★★☆</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p class="art-prose">
+        初心者にはワンルームマンション投資が最も取り組みやすいタイプです。
+        購入価格が比較的低く、管理組合が建物の維持管理を行うため、投資家の負担が軽減されます。
+        まずはワンルーム1戸から始めて経験を積み、慣れてきたら物件数を増やすのが王道パターンです。
+      </p>
+    </section>
+
+    <!-- 3. 始め方ステップ -->
+    <section class="art-section">
+      <h2 class="art-h2">不動産投資の始め方｜5つのステップ</h2>
+
+      <div class="step-cards">
+        <div class="step-card">
+          <div class="step-number">Step 1</div>
+          <h3 class="step-title">資金計画を立てる</h3>
+          <p class="step-desc">
+            まず自己資金（頭金＋諸費用）をいくら用意できるか確認します。
+            物件価格の10〜20%が目安です。生活防衛資金（生活費6ヶ月分）は別途確保してください。
+            <a href="/calculators/down-payment">頭金シミュレーター</a>で頭金額による返済額の変化を確認できます。
+          </p>
+        </div>
+        <div class="step-card">
+          <div class="step-number">Step 2</div>
+          <h3 class="step-title">物件を選ぶ</h3>
+          <p class="step-desc">
+            立地（駅徒歩10分以内、都心へのアクセス）、築年数、管理状態を重視します。
+            <a href="/calculators/yield">利回り計算ツール</a>で収益性を確認し、
+            <a href="/calculators/price-check">価格妥当性チェッカー</a>で相場との比較を行いましょう。
+          </p>
+        </div>
+        <div class="step-card">
+          <div class="step-number">Step 3</div>
+          <h3 class="step-title">融資を受ける</h3>
+          <p class="step-desc">
+            不動産投資ローンの事前審査を受けます。複数の金融機関を比較し、金利・返済条件が有利なローンを選びます。
+            <a href="/calculators/mortgage">ローン返済シミュレーター</a>で月々の返済額と総返済額を事前に把握してください。
+          </p>
+        </div>
+        <div class="step-card">
+          <div class="step-number">Step 4</div>
+          <h3 class="step-title">購入・契約する</h3>
+          <p class="step-desc">
+            重要事項説明を受け、売買契約を締結します。登記費用・不動産取得税・仲介手数料など
+            の諸費用が発生します。<a href="/calculators/real-estate-acquisition-tax">不動産取得税シミュレーター</a>で
+            取得時のコストを事前に把握しておきましょう。
+          </p>
+        </div>
+        <div class="step-card">
+          <div class="step-number">Step 5</div>
+          <h3 class="step-title">管理・運用する</h3>
+          <p class="step-desc">
+            賃貸管理会社に管理を委託するのが一般的です（管理費は家賃の3〜5%程度）。
+            毎月のキャッシュフローを<a href="/calculators/cash-flow">CFシミュレーター</a>で定期的にチェックし、
+            収支状況を把握しましょう。
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. 知っておくべき指標 -->
+    <section class="art-section">
+      <h2 class="art-h2">知っておくべき4つの投資指標</h2>
+      <p class="art-prose">
+        不動産投資の収益性を正しく判断するために、以下の4つの指標を理解しておきましょう。
+        それぞれ異なる観点から投資の良し悪しを評価します。
+      </p>
+
+      <div class="indicator-cards">
+        <div class="indicator-card">
+          <div class="indicator-icon">📊</div>
+          <h3 class="indicator-title">表面利回り（グロス利回り）</h3>
+          <div class="indicator-formula">年間家賃収入 ÷ 物件価格 × 100</div>
+          <p class="indicator-desc">
+            最も基本的な指標で、物件の収益力を大まかに把握するのに使います。
+            経費を含まないため、物件の「第一印象」として活用します。
+            目安：都心4〜6%、地方8〜12%。
+          </p>
+          <a href="/calculators/yield" class="indicator-link">利回り計算ツールで計算する →</a>
+        </div>
+        <div class="indicator-card">
+          <div class="indicator-icon">📈</div>
+          <h3 class="indicator-title">実質利回り（ネット利回り）</h3>
+          <div class="indicator-formula">（年間家賃収入 − 年間経費）÷（物件価格 + 購入諸費用）× 100</div>
+          <p class="indicator-desc">
+            管理費・修繕積立金・固定資産税・空室損失など実際の経費を差し引いた指標です。
+            表面利回りより1〜3%程度低くなるのが一般的で、投資判断ではこちらを重視します。
+          </p>
+          <a href="/calculators/yield" class="indicator-link">利回り計算ツールで計算する →</a>
+        </div>
+        <div class="indicator-card">
+          <div class="indicator-icon">💹</div>
+          <h3 class="indicator-title">ROI（投資収益率）</h3>
+          <div class="indicator-formula">年間手残り ÷ 自己資金（頭金 + 諸費用）× 100</div>
+          <p class="indicator-desc">
+            自己資金に対するリターンを示す指標です。ローンのレバレッジ効果を含むため、
+            少ない自己資金で高い収益率を実現できているかを確認できます。
+          </p>
+          <a href="/calculators/roi" class="indicator-link">ROI計算ツールで計算する →</a>
+        </div>
+        <div class="indicator-card">
+          <div class="indicator-icon">💰</div>
+          <h3 class="indicator-title">CCR（キャッシュ・オン・キャッシュ・リターン）</h3>
+          <div class="indicator-formula">年間キャッシュフロー ÷ 自己資金投下額 × 100</div>
+          <p class="indicator-desc">
+            ローン返済後の実際の手残り（キャッシュフロー）を分子に使う指標です。
+            ROIと似ていますが、より実態に近い自己資金の運用効率を示します。
+            目安として8〜12%以上が良好とされます。
+          </p>
+          <a href="/calculators/cash-flow" class="indicator-link">CFシミュレーターで確認する →</a>
+        </div>
+      </div>
+
+      <p class="art-prose">
+        これらの指標を単独で見るのではなく、組み合わせて判断することが重要です。
+        「<a href="/articles/real-estate-investment-basics">利回り・ROI・CFの基礎知識</a>」記事も合わせてお読みください。
+      </p>
+    </section>
+
+    <!-- 5. 2026年の市場動向 -->
+    <section class="art-section">
+      <h2 class="art-h2">2026年の市場動向と注意点</h2>
+      <p class="art-prose">
+        2026年の不動産投資環境は、いくつかの重要な変化が起きています。投資判断に影響する主なポイントを押さえておきましょう。
+      </p>
+
+      <div class="trend-cards">
+        <div class="trend-card">
+          <div class="trend-icon">📈</div>
+          <h3 class="trend-title">金利上昇トレンド</h3>
+          <p class="trend-desc">
+            日銀の金融政策正常化に伴い、長期金利は上昇傾向にあります。
+            変動金利ローンを利用する場合は、金利が1〜2%上昇したケースでもキャッシュフローが
+            黒字を維持できるか、<a href="/calculators/mortgage">ローン返済シミュレーター</a>で必ず確認しましょう。
+          </p>
+        </div>
+        <div class="trend-card">
+          <div class="trend-icon">🏙️</div>
+          <h3 class="trend-title">都心部の価格高止まり</h3>
+          <p class="trend-desc">
+            東京23区を中心にマンション価格は高水準が続いています。
+            表面利回りが低下する中で、実質利回りとキャッシュフローを重視した物件選びが重要です。
+            郊外や地方中核都市にも目を向けることで、より良い投資機会が見つかる場合があります。
+          </p>
+        </div>
+        <div class="trend-card">
+          <div class="trend-icon">👥</div>
+          <h3 class="trend-title">単身世帯の増加</h3>
+          <p class="trend-desc">
+            単身世帯の増加傾向が続いており、ワンルーム・1Kの賃貸需要は底堅い状況です。
+            特に駅近・都心アクセスの良い物件は空室リスクが低く、安定した運用が期待できます。
+          </p>
+        </div>
+        <div class="trend-card">
+          <div class="trend-icon">🏗️</div>
+          <h3 class="trend-title">建築コストの上昇</h3>
+          <p class="trend-desc">
+            資材価格・人件費の上昇により新築物件の価格が上がっています。
+            中古物件は相対的に割安感が出ており、築10〜20年の良好な物件に注目する投資家が増えています。
+            ただし<a href="/calculators/repair-cost">修繕費シミュレーター</a>で長期コストを必ず確認してください。
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. ツール活用ガイド -->
+    <section class="art-section">
+      <h2 class="art-h2">無料ツールを活用した投資シミュレーション</h2>
+      <p class="art-prose">
+        不動産投資の判断では、感覚ではなく数字に基づいたシミュレーションが不可欠です。
+        当サイトの無料ツールを活用して、投資判断の精度を高めましょう。
+      </p>
+
+      <div class="tool-flow">
+        <div class="tool-flow-item">
+          <div class="tool-flow-step">Step 1</div>
+          <div class="tool-flow-body">
+            <a href="/calculators/yield" class="tool-flow-link">📊 利回り計算ツール</a>
+            <p class="tool-flow-desc">まず物件の表面利回り・実質利回りを計算し、収益性の目安を確認します。</p>
+          </div>
+        </div>
+        <div class="tool-flow-arrow">↓</div>
+        <div class="tool-flow-item">
+          <div class="tool-flow-step">Step 2</div>
+          <div class="tool-flow-body">
+            <a href="/calculators/mortgage" class="tool-flow-link">🏦 ローン返済シミュレーター</a>
+            <p class="tool-flow-desc">借入額・金利・返済期間から月々の返済額と総返済額を把握。元利均等と元金均等の比較も。</p>
+          </div>
+        </div>
+        <div class="tool-flow-arrow">↓</div>
+        <div class="tool-flow-item">
+          <div class="tool-flow-step">Step 3</div>
+          <div class="tool-flow-body">
+            <a href="/calculators/cash-flow" class="tool-flow-link">💰 CFシミュレーター</a>
+            <p class="tool-flow-desc">年次のキャッシュフロー推移・黒字転換年・自己資金回収年を確認します。</p>
+          </div>
+        </div>
+        <div class="tool-flow-arrow">↓</div>
+        <div class="tool-flow-item">
+          <div class="tool-flow-step">Step 4</div>
+          <div class="tool-flow-body">
+            <a href="/calculators/rent-vacancy-impact" class="tool-flow-link">📉 家賃下落・空室率影響シミュレーター</a>
+            <p class="tool-flow-desc">悲観シナリオでの収支を確認し、リスク耐性を把握します。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="art-section">
+      <h2 class="art-h2">よくある質問（FAQ）</h2>
+      <div class="faq-list">
+        <details class="faq-item">
+          <summary class="faq-q">不動産投資は自己資金いくらから始められますか？</summary>
+          <p class="faq-a">ワンルームマンション投資であれば、物件価格の10〜20%程度の自己資金（頭金＋諸費用）が目安です。例えば2,000万円の物件なら200〜400万円が初期資金の目安になります。フルローンを利用できるケースもありますが、金利負担が大きくなるため余裕を持った資金計画を推奨します。<a href="/calculators/down-payment">頭金シミュレーター</a>で具体的な金額を確認できます。</p>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-q">ワンルーム投資と一棟アパート投資はどちらが初心者向きですか？</summary>
+          <p class="faq-a">ワンルームマンション投資が初心者向きです。購入価格が1,500〜3,000万円程度と比較的低く、管理組合が共用部を管理するため手間が少ないのが利点です。一棟アパートは利回りが高い傾向がありますが、数千万〜億単位の資金が必要で、修繕・入居者管理の負担も大きくなります。</p>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-q">表面利回りと実質利回りの違いは何ですか？</summary>
+          <p class="faq-a">表面利回りは「年間家賃収入÷物件価格×100」で計算する簡易的な指標です。実質利回りは管理費・修繕積立金・固定資産税・空室損失などの経費を差し引いた「年間純収益÷（物件価格＋購入時諸費用）×100」で計算します。投資判断では実質利回りを重視してください。<a href="/articles/gross-vs-net-yield">詳しい解説はこちら</a>。</p>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-q">不動産投資ローンの審査では何が見られますか？</summary>
+          <p class="faq-a">主に「年収（目安400万円以上）」「勤続年数（3年以上が有利）」「既存借入の有無」「物件の収益性・担保価値」が審査されます。会社員・公務員は安定収入として評価されやすく、自営業者はより厳しく審査される傾向があります。事前審査で借入可能額を確認してから物件探しを始めるのが効率的です。</p>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-q">2026年に不動産投資を始める際の注意点は？</summary>
+          <p class="faq-a">2026年は日銀の金融政策正常化に伴う金利上昇リスクに注意が必要です。変動金利ローンを利用する場合は金利上昇シナリオでのシミュレーションを必ず行いましょう。また都心部では物件価格が高止まりしているため、表面利回りが低下傾向にあります。無理のない借入額と十分なキャッシュフローマージンを確保することが重要です。</p>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-q">REITと現物不動産投資の違いは何ですか？</summary>
+          <p class="faq-a">REIT（不動産投資信託）は数万円から証券口座で購入でき、分散投資・高い流動性が魅力です。一方、現物不動産はローンを活用したレバレッジ効果、減価償却による節税、物件価値のコントロールが可能です。REITは手軽さ、現物は資産形成の効率性で優れており、併用する投資家も多くいます。</p>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-q">CCR（キャッシュ・オン・キャッシュ・リターン）とは何ですか？</summary>
+          <p class="faq-a">CCRは「年間キャッシュフロー÷自己資金投下額×100」で計算する指標です。ROIと似ていますが、CCRはローン返済後の実際の手残り（キャッシュフロー）を分子に使うため、レバレッジ効果を含めた自己資金の実質的な運用効率を示します。目安として8〜12%以上が良好とされます。</p>
+        </details>
+      </div>
+    </section>
+
+    <!-- まとめ -->
+    <section class="art-section">
+      <h2 class="art-h2">まとめ：まずは数字で確認してから始めよう</h2>
+      <p class="art-prose">
+        不動産投資は「知識」と「シミュレーション」が成功の鍵です。
+        物件を見つけたら、必ず利回り・ローン返済額・キャッシュフローの3点を数字で確認してから判断してください。
+        当サイトの無料計算ツールを活用して、感覚ではなくデータに基づいた投資判断を行いましょう。
+      </p>
+      <p class="art-prose art-note">
+        ※ 本記事の内容はあくまで参考情報であり、特定の投資を推奨するものではありません。投資判断はご自身の責任において行ってください。
+      </p>
+    </section>
+
+    <div class="related-tools-box">
+      <p class="rtb-label">この記事で紹介したツール</p>
+      <div class="rtb-links">
+        <a href="/calculators/yield" class="rtb-link">📊 利回り計算ツール</a>
+        <a href="/calculators/mortgage" class="rtb-link">🏦 ローン返済シミュレーター</a>
+        <a href="/calculators/cash-flow" class="rtb-link">💰 CFシミュレーター</a>
+        <a href="/calculators/roi" class="rtb-link">💹 ROI計算ツール</a>
+        <a href="/calculators/down-payment" class="rtb-link">💴 頭金シミュレーター</a>
+        <a href="/calculators/price-check" class="rtb-link">🔍 価格妥当性チェッカー</a>
+      </div>
+    </div>
+
+    <div class="back-links">
+      <a href="/articles" class="back-link">&larr; 記事一覧へ</a>
+    </div>
+  </div>
+</ArticleLayout>
+
+<style>
+.article-body {
+  padding-top: 48px;
+  padding-bottom: 80px;
+  max-width: 780px;
+}
+.art-section { margin-bottom: 52px; }
+.art-h2 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--c-primary);
+  border-left: 4px solid var(--c-accent);
+  padding-left: 14px;
+  margin-bottom: 18px;
+  line-height: 1.4;
+}
+.art-h3 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--c-text);
+  margin: 24px 0 12px;
+}
+.art-prose {
+  font-size: 0.9375rem;
+  line-height: 1.85;
+  color: var(--c-text);
+  margin-bottom: 14px;
+}
+.art-prose a { color: var(--c-primary); text-decoration: underline; text-underline-offset: 2px; }
+.art-note { color: var(--c-text-muted); font-size: 0.82rem; }
+.art-list {
+  padding-left: 1.4em;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.art-list li {
+  font-size: 0.9rem;
+  line-height: 1.7;
+  color: var(--c-text);
+}
+.art-list a { color: var(--c-primary); text-decoration: underline; text-underline-offset: 2px; }
+
+/* Type Comparison Table */
+.type-table-wrap {
+  overflow-x: auto;
+  margin: 16px 0;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--c-border);
+}
+.type-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+  min-width: 600px;
+}
+.type-table th {
+  background: var(--c-primary);
+  color: #fff;
+  padding: 12px 14px;
+  font-weight: 600;
+  text-align: center;
+  white-space: nowrap;
+}
+.type-table th:first-child { background: #245e4b; }
+.type-table td {
+  padding: 10px 14px;
+  border-top: 1px solid var(--c-border);
+  text-align: center;
+  color: var(--c-text);
+}
+.type-table .row-label {
+  font-weight: 600;
+  color: var(--c-primary);
+  text-align: left;
+  background: #f9f8f6;
+  white-space: nowrap;
+}
+.type-table tbody tr:hover { background: #f5f3ef; }
+
+/* Step Cards */
+.step-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 16px;
+}
+.step-card {
+  background: #fff;
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-md);
+  padding: 20px 24px;
+}
+.step-number {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--c-accent);
+  margin-bottom: 8px;
+}
+.step-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--c-primary);
+  margin-bottom: 10px;
+}
+.step-desc {
+  font-size: 0.875rem;
+  line-height: 1.75;
+  color: var(--c-text);
+}
+.step-desc a { color: var(--c-primary); text-decoration: underline; text-underline-offset: 2px; }
+
+/* Indicator Cards */
+.indicator-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+.indicator-card {
+  background: #fff;
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-md);
+  padding: 20px;
+}
+.indicator-icon { font-size: 1.5rem; margin-bottom: 10px; }
+.indicator-title { font-size: 0.95rem; font-weight: 700; color: var(--c-primary); margin-bottom: 10px; }
+.indicator-formula {
+  font-size: 0.8rem;
+  font-family: monospace;
+  background: #f5f3ef;
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+  margin-bottom: 12px;
+  color: var(--c-text);
+}
+.indicator-desc { font-size: 0.82rem; color: var(--c-text-muted); line-height: 1.65; margin-bottom: 12px; }
+.indicator-link { font-size: 0.8rem; color: var(--c-primary); font-weight: 600; text-decoration: none; }
+.indicator-link:hover { text-decoration: underline; }
+
+/* Trend Cards */
+.trend-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+.trend-card {
+  background: #fff;
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-md);
+  padding: 20px;
+}
+.trend-icon { font-size: 1.3rem; margin-bottom: 8px; }
+.trend-title { font-size: 0.95rem; font-weight: 700; color: var(--c-primary); margin-bottom: 10px; }
+.trend-desc { font-size: 0.85rem; color: var(--c-text); line-height: 1.7; }
+.trend-desc a { color: var(--c-primary); text-decoration: underline; text-underline-offset: 2px; }
+
+/* Tool Flow */
+.tool-flow {
+  margin-top: 16px;
+}
+.tool-flow-item {
+  display: flex;
+  gap: 16px;
+  background: #fff;
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-md);
+  padding: 16px 20px;
+}
+.tool-flow-step {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: #fff;
+  background: var(--c-primary);
+  border-radius: var(--radius-sm);
+  padding: 4px 10px;
+  white-space: nowrap;
+  align-self: flex-start;
+  line-height: 1.6;
+}
+.tool-flow-body { flex: 1; }
+.tool-flow-link {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--c-primary);
+  text-decoration: none;
+}
+.tool-flow-link:hover { text-decoration: underline; }
+.tool-flow-desc {
+  font-size: 0.82rem;
+  color: var(--c-text-muted);
+  line-height: 1.6;
+  margin-top: 6px;
+}
+.tool-flow-arrow {
+  text-align: center;
+  color: var(--c-accent);
+  font-size: 1.2rem;
+  padding: 4px 0;
+}
+
+/* FAQ */
+.faq-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.faq-item {
+  background: #fff;
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+.faq-q {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--c-primary);
+  padding: 16px 20px;
+  cursor: pointer;
+  list-style: none;
+}
+.faq-q::before { content: 'Q. '; color: var(--c-accent); font-weight: 700; }
+.faq-q::-webkit-details-marker { display: none; }
+.faq-a {
+  font-size: 0.85rem;
+  line-height: 1.75;
+  color: var(--c-text);
+  padding: 0 20px 16px;
+  border-top: 1px solid var(--c-border);
+  margin: 0;
+  padding-top: 14px;
+}
+.faq-a a { color: var(--c-primary); text-decoration: underline; text-underline-offset: 2px; }
+
+/* Related Tools Box */
+.related-tools-box {
+  background: #f0f7f4;
+  border: 1px solid #c8e0d8;
+  border-radius: var(--radius-md);
+  padding: 20px 24px;
+  margin-bottom: 32px;
+}
+.rtb-label { font-size: 0.82rem; font-weight: 700; color: var(--c-primary); margin-bottom: 14px; }
+.rtb-links { display: flex; flex-wrap: wrap; gap: 10px; }
+.rtb-link {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--c-primary);
+  background: #fff;
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-md);
+  padding: 8px 14px;
+  text-decoration: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.rtb-link:hover { border-color: var(--c-primary); box-shadow: var(--shadow-sm); text-decoration: none; }
+
+.back-links { margin-top: 16px; }
+.back-link { font-size: 0.875rem; color: var(--c-primary); }
+
+@media (max-width: 640px) {
+  .indicator-cards,
+  .trend-cards { grid-template-columns: 1fr; }
+  .tool-flow-item { flex-direction: column; gap: 10px; }
+}
+</style>

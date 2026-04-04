@@ -2,6 +2,14 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
+import RelatedArticles from '../../components/RelatedArticles.astro';
+
+const relatedArticles = [
+  { href: '/articles/cashflow-basics', tag: 'CF', title: '不動産投資のキャッシュフローとは｜計算方法と目安を解説', desc: 'ローン返済後の実態収支「手残り」の考え方を分かりやすく解説' },
+  { href: '/articles/real-estate-investment-basics', tag: '基礎知識', title: '不動産投資の基礎知識｜利回り・ROI・CFで何を見ればよいか', desc: '投資判断に必要な3指標の違いと使い方を初心者向けに解説' },
+  { href: '/articles/vacancy-rate', tag: 'リスク', title: '空室率の目安と見込み方｜不動産投資リスク管理の基本', desc: 'エリア別の空室率目安とシミュレーション時の設定方法' },
+  { href: '/articles/real-estate-investment-beginner-guide-2026', tag: '初心者ガイド', title: '不動産投資初心者ガイド2026｜ワンルームから始める資産形成の基本', desc: '投資の仕組み・始め方・指標・2026年の市場動向まで初心者向けに解説' },
+];
 
 const jsonLd = [
   {
@@ -581,6 +589,13 @@ const jsonLd = [
         </a>
       </div>
     </section>
+
+    <!-- ─── Related Articles ─── -->
+    <RelatedArticles
+      articles={relatedArticles}
+      heading="関連記事"
+      subheading="キャッシュフロー計算に関連する重要な知識をまとめました"
+    />
 
   </div><!-- /container -->
 
